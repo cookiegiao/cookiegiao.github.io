@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>build my blog</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">Hexo</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">build my blog</h1>
+    <div class="post-info">
+      <span class="date">2019-01-22</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>  搭建博客使用hexo+github，这里我会将我搭这个博客的过程写出来，不是什么新奇的东西，但是在linux中搭博客不同与windows的是，全程使用命令行，好玩的同时，也学会了linux的基本语法。<br>    Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页,而github用于创建一个远程库，我们可以将本地的博客文件上传至github库中，这样子在这里就会使用到SSH协议，生成SSH公钥和密钥，用于保证本地和远程库的连接。</p>
+<p><strong>0x01</strong><br> 准备工作：<br> 安装node.js的命令如下：<br>     <code>apt-get install gcc g++ make -y</code><br>     <code>wget https://nodejs.org/dist/v8.1.2/node-v8.1.2.tar.gz</code><br>     <code>tar zxf node-v8.1.2.tar.gz &amp;&amp; cd node-v8.1.2</code><br>     <code>./configure &amp;&amp; make &amp;&amp; make install</code></p>
+<p> 安装git的命令如下：<br>     <code>apt-get install git</code>    </p>
+<p> 安装npm的命令如下：<br>     <code>apt-get install npm</code></p>
+<p><strong>0x02</strong><br> 这里，我们需要创建一个github的账号，并且新建一个repository,如下图所示：<br> <img src="build-my-blog/1.png" alt="1"><br> <img src="build-my-blog/2.png" alt="2"><br> 创建一个新的repository.(<strong>注意：repository的名称一定要是你的用户名，比如你的名称是min,那么库名就要是min.github.io</strong>)</p>
+<p> 接着获取SSH KEY,命令如下：<br>    ‘’’<br>      mkdir ~/.ssh<br>      cd ~/.ssh<br>      ssh-keygen -t rsa<br>    ‘’’<br> 自己用的电脑，不用设置密码啥的，一路回车就行，这时候会在 ~/.ssh/下生成两个ssh key<br> 使用刚才生成那个公钥作为本机ssh使用的口令:<br>    ‘ssh-add ~/.ssh/id_rsa.pub’<br> 获取本机的公钥：<br>    ‘cat ~/.ssh/id_rsa.pub’<br> 进入github，在setting页面中，将公钥复制到Deploy Keys页面中<br> <img src="build-my-blog/3.png" alt="3"><br> <img src="build-my-blog/4.png" alt="4"><br> <img src="build-my-blog/5.png" alt="5"><br> 接着配置git<br>    ‘’’<br>    git config –global user.name “xxx”<br>    git config –global user.email “<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>”<br>    ‘’’<br> 最后测试一下：<br>    ‘ssh -T <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>‘</p>
+<p><strong>0x03</strong><br> 搭建本地hexo<br> 选择一个位置放hexo文件夹<br>    ‘’’<br>    npm install hexo-cli -g (安装hexo-cli)<br>    hexo init blog（安装hexo）<br>    cd blog (进入hexo)<br>    npm install (安装依赖)<br>    npm install hexo-deployer-git –save(用于将文件部署到github上)<br>    ‘’’<br>  进入blog文件夹，找到_config.yml，修改配置如下：<br>    ‘’’<br>      deploy:<br>        type: git<br>        repo: 你的库地址<br>        branch: master<br>    ‘’’<br>  <strong>注意：“：”后面有一个空格，否则会出大事</strong><br>    <code>hexo g</code><br>  把你写的文件部署到hexo上</p>
+<pre><code>`hexo s`
+</code></pre><p>  本地查看hexo博客，登录<a href="https://localhost：4000查看" target="_blank" rel="noopener">https://localhost：4000查看</a><br>  <img src="bulid-my-blog/6.png" alt="6"></p>
+<pre><code>`hexo clean`
+</code></pre><p>  清除缓存</p>
+<pre><code>&apos;hexo d&apos;
+</code></pre><p>  将markdown文件部署到github上</p>
+<p> <strong>0x04</strong><br>修改hexo主题的步骤：<br> github上找到自己想要的主题的源码–&gt;解压到hexo的themes文件–&gt;修改_config.yml文件中的theme位置的参数，改为主题的文件名<br> 最后重新部署就好了。</p>
+
+    <span class="date end-date">2019-01-22</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/08/BUGKU-WEB/">BUGKU-WEB</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/05/hello-world/">Hello World</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/31/mysql注入常见load-file路径/">mysql注入常见load_file路径</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/28/巩固sql注入/">巩固sql注入</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

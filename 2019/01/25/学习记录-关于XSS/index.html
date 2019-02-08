@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>学习记录--关于XSS攻击</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">Hexo</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">学习记录--关于XSS攻击</h1>
+    <div class="post-info">
+      <span class="date">2019-01-25</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>关于XSS的学习，昨天花了一天的时候看了很多关于XSS的文章，自我感觉已经略知一二，今天把自己的学习心得，包括一些定义和原理，我将会用DVWA上的靶场以及自己通过Express搭建的平台来演示XSS的一些基本的操作，希望在往后的学习过程中能了解更多，这里放上一个知乎博主的文章，关于他发现百度网盘上有一个XSS漏洞，现在已经修复了，但是还是蛮有意思的,<a href="https://zhuanlan.zhihu.com/p/24249045" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24249045</a>.</p>
+<p><strong>0x01</strong><br>首先什么是XSS漏洞：<br>XSS, 即为（Cross Site Scripting）, 中文名为跨站脚本, 是发生在目标用户的浏览器层面上的，当渲染DOM树的过程成发生了不在预期内执行的JS代码时，就发生了XSS攻击。<br>跨站脚本的重点不在‘跨站’上，而在于‘脚本’上。大多数XSS攻击的主要方式是嵌入一段远程或者第三方域上的JS代码。实际上是在目标网站的作用域下执行了这段js代码。</p>
+<p>在学习XSS漏洞前要对javaScript有所了解，以及HTTP,DOM,Ajax有所认识.(上一个暑假花时间学习了关于了前端的知识，所以刚好用得上)</p>
+<p>XSS的攻击方式分为：(1)反射型XSS (2)存储型XSS (3)DOM XSS</p>
+<hr>
+<p>(1)反射型XSS:<br>反射型XSS，也叫非持久型XSS，是指发生请求时，XSS代码出现在请求URL中，作为参数提交到服务器，服务器解析并响应。响应结果中包含XSS代码，最后浏览器解析并执行。</p>
+<p>从概念上可以看出，反射型XSS代码是首先出现在URL中的，然后需要服务端解析，最后需要浏览器解析之后XSS代码才能够攻击。</p>
+<p><strong>(题外话：使用express搭建简易的服务器)</strong></p>
+<p>本机已有node.js的前提下，安装express<br>    <code>sudo npm install -g express</code><br>    <code>sudo npm install -g express-generator</code></p>
+<p>创建一个目录xss,使用express创建一个简易的web应用框架<br>    <code>express -e ./</code>(-e 表示使用ejs框架)<br><img src="学习记录-关于XSS/1.png" alt="1"><br>然后npm install，安装所有依赖，最后在xss目录下 npm start，就可以开启这个web框架，访问https:localhost:3000就可以访问了<br>然后修改一下xss文件中的router-&gt;index.js文件，修改后如下：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var express = require(&apos;express&apos;);</span><br><span class="line">var router = express.Router();</span><br><span class="line">/* GET home page. */</span><br><span class="line">router.get(&apos;/&apos;, function(req, res, next) &#123;</span><br><span class="line">res.set(&apos;X-XSS-Protection&apos;,0);</span><br><span class="line">res.render(&apos;index&apos;, &#123; title: &apos;Express&apos;,xss:req.query.xss&#125;);</span><br><span class="line">&#125;);</span><br><span class="line">module.exports = router;</span><br></pre></td></tr></table></figure></p>
+<p>修改views-&gt;index.js文件，修改后如下：<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;&lt;%= title %&gt;&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h1&gt;&lt;%= title %&gt;&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;Welcome to &lt;%= title %&gt;&lt;/p&gt;</span><br><span class="line">    &lt;div class=&quot;&quot;&gt;</span><br><span class="line">    	&lt;%- xss %&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这两步就是为了添加一个XSS的接口，使得我们可以输入一个名为$xss的变量，仅为实验环境，弱智了一点。<br><img src="学习记录-关于XSS/2.png" alt="1"></p>
+<p>那么在这里我先抛砖引玉地挂上一个栗子，初步理解一下XSS的整个攻击流程，</p>
+<p>查看未攻击时的源代码<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Express&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Express&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;Welcome to Express&lt;/p&gt;</span><br><span class="line">    &lt;div class=&quot;&quot;&gt;</span><br><span class="line">    	</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>现在进行反射型xss攻击，我们的payload如下：<br>    <code>http://localhost:3000/?xss=&lt;img src=&quot;null&quot; onerror=&quot;alert(1)&quot;/&gt;</code></p>
+<p>这时候再观察页面还有源码<br><img src="学习记录-关于XSS/3.png" alt="3"><br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Express&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Express&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;Welcome to Express&lt;/p&gt;</span><br><span class="line">    &lt;div class=&quot;&quot;&gt;</span><br><span class="line">    	&lt;img src=&quot;null&quot; onerror=&quot;alert(1)&quot;/&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>有没有发现有什么不一样，我们输入的东西被解析成script语句，又被浏览器解析，所以一次很简单的反射型xss攻击就由此完成了。<br>然后好玩的东西来了，我们再把payload改成其他的东西<br>    <code>http://localhost:3000/?xss=&lt;p onclick=&quot;alert(&#39;you a foolish dog&#39;)&quot;&gt;你点我啊&lt;/p&gt;</code><br>查看效果以及源码<br>    <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;Express&lt;/title&gt;</span><br><span class="line">    &lt;link rel=&apos;stylesheet&apos; href=&apos;/stylesheets/style.css&apos; /&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Express&lt;/h1&gt;</span><br><span class="line">    &lt;p&gt;Welcome to Express&lt;/p&gt;</span><br><span class="line">    &lt;div class=&quot;&quot;&gt;</span><br><span class="line">    	&lt;p onclick=&quot;alert(&apos;you a foolish dog&apos;)&quot;&gt;你点我啊&lt;/p&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="学习记录-关于XSS/4.png" alt="4"></p>
+<hr>
+<p>(2)存储型XSS:<br>存储型XSS，也叫持久型XSS，主要是将XSS代码发送到服务器（不管是数据库、内存还是文件系统等。），然后在下次请求页面的时候就不用带上XSS代码了。</p>
+<p>最典型的就是留言板XSS。用户提交了一条包含XSS代码的留言到数据库。当目标用户查询留言时，那些留言的内容会从服务器解析之后加载出来。浏览器发现有XSS代码，就当做正常的HTML和JS解析执行。XSS攻击就发生了。</p>
+<p>现在我在通过一个小栗子来理解一下存储型XSS,先写一段小代码xss.php（这里要在mysql中配好相应的数据库和数据表以及其中的columns），<br>先看看这段代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;  </span><br><span class="line">     &lt;input type=&quot;text&quot; name=&quot;xss&quot;/&gt;  </span><br><span class="line">    &lt;input type=&quot;submit&quot; value=&quot;test&quot;/&gt;  </span><br><span class="line">&lt;/form&gt;</span><br><span class="line">&lt;?php</span><br><span class="line">$xss=@$_POST[&apos;xss&apos;];  </span><br><span class="line">mysql_connect(&quot;localhost&quot;,&quot;root&quot;,&quot;root&quot;);  </span><br><span class="line">mysql_select_db(&quot;xss&quot;);  </span><br><span class="line">if($xss!==null)&#123;  </span><br><span class="line">    $sql=&quot;insert into temp(id,payload) values(&apos;14&apos;,&apos;$xss&apos;)&quot;;  </span><br><span class="line">    $result=mysql_query($sql);  </span><br><span class="line">    echo $result;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>看完应该能懂我在做什么，那个数字自己可以改的，本来是想着，连id都做成自己输入的，但是代码不会写，只能这样将就了，有点low.<br>然后再写一段代码show.php，用于返回，插入数据库的信息.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">mysql_connect(&quot;localhost&quot;,&quot;root&quot;,&quot;root&quot;);  </span><br><span class="line">mysql_select_db(&quot;xss&quot;);  </span><br><span class="line">$sql=&quot;select payload from temp where id=14&quot;;  </span><br><span class="line">$result=mysql_query($sql);  </span><br><span class="line">while($row=mysql_fetch_array($result))&#123;  </span><br><span class="line">   echo $row[&apos;payload&apos;];  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="学习记录-关于XSS/5.png" alt="5"><br>文本框中输入：<script>alert(\’you foolish\’)</script>,点击text<br>然后再看show.php,就会发现这种情况<br><img src="学习记录-关于XSS/6.png" alt="6"><br>然后我们再查找数据库<br><img src="学习记录-关于XSS/7.png" alt="7"></p>
+<h2 id="说明我们成功地完成了一次存储型XSS攻击"><a href="#说明我们成功地完成了一次存储型XSS攻击" class="headerlink" title="说明我们成功地完成了一次存储型XSS攻击"></a>说明我们成功地完成了一次存储型XSS攻击</h2>
+    <span class="date end-date">2019-01-25</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/08/BUGKU-WEB/">BUGKU-WEB</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/05/hello-world/">Hello World</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/31/mysql注入常见load-file路径/">mysql注入常见load_file路径</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/28/巩固sql注入/">巩固sql注入</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
