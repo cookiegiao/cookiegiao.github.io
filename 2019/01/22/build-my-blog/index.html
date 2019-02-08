@@ -66,11 +66,11 @@
 <p><strong>0x01</strong><br> 准备工作：<br> 安装node.js的命令如下：<br>     <code>apt-get install gcc g++ make -y</code><br>     <code>wget https://nodejs.org/dist/v8.1.2/node-v8.1.2.tar.gz</code><br>     <code>tar zxf node-v8.1.2.tar.gz &amp;&amp; cd node-v8.1.2</code><br>     <code>./configure &amp;&amp; make &amp;&amp; make install</code></p>
 <p> 安装git的命令如下：<br>     <code>apt-get install git</code>    </p>
 <p> 安装npm的命令如下：<br>     <code>apt-get install npm</code></p>
-<p><strong>0x02</strong><br> 这里，我们需要创建一个github的账号，并且新建一个repository,如下图所示：<br> <img src="build-my-blog/1.png" alt="1"><br> <img src="build-my-blog/2.png" alt="2"><br> 创建一个新的repository.(<strong>注意：repository的名称一定要是你的用户名，比如你的名称是min,那么库名就要是min.github.io</strong>)</p>
-<p> 接着获取SSH KEY,命令如下：<br>    ‘’’<br>      mkdir ~/.ssh<br>      cd ~/.ssh<br>      ssh-keygen -t rsa<br>    ‘’’<br> 自己用的电脑，不用设置密码啥的，一路回车就行，这时候会在 ~/.ssh/下生成两个ssh key<br> 使用刚才生成那个公钥作为本机ssh使用的口令:<br>    ‘ssh-add ~/.ssh/id_rsa.pub’<br> 获取本机的公钥：<br>    ‘cat ~/.ssh/id_rsa.pub’<br> 进入github，在setting页面中，将公钥复制到Deploy Keys页面中<br> <img src="build-my-blog/3.png" alt="3"><br> <img src="build-my-blog/4.png" alt="4"><br> <img src="build-my-blog/5.png" alt="5"><br> 接着配置git<br>    ‘’’<br>    git config –global user.name “xxx”<br>    git config –global user.email “<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>”<br>    ‘’’<br> 最后测试一下：<br>    ‘ssh -T <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>‘</p>
+<p><strong>0x02</strong><br> 这里，我们需要创建一个github的账号，并且新建一个repository,如下图所示：<br> <img src="/2019/01/22/build-my-blog/1.png" alt="1"><br> <img src="/2019/01/22/build-my-blog/2.png" alt="2"><br> 创建一个新的repository.(<strong>注意：repository的名称一定要是你的用户名，比如你的名称是min,那么库名就要是min.github.io</strong>)</p>
+<p> 接着获取SSH KEY,命令如下：<br>    ‘’’<br>      mkdir ~/.ssh<br>      cd ~/.ssh<br>      ssh-keygen -t rsa<br>    ‘’’<br> 自己用的电脑，不用设置密码啥的，一路回车就行，这时候会在 ~/.ssh/下生成两个ssh key<br> 使用刚才生成那个公钥作为本机ssh使用的口令:<br>    ‘ssh-add ~/.ssh/id_rsa.pub’<br> 获取本机的公钥：<br>    ‘cat ~/.ssh/id_rsa.pub’<br> 进入github，在setting页面中，将公钥复制到Deploy Keys页面中<br> <img src="/2019/01/22/build-my-blog/3.png" alt="3"><br> <img src="/2019/01/22/build-my-blog/4.png" alt="4"><br> <img src="/2019/01/22/build-my-blog/5.png" alt="5"><br> 接着配置git<br>    ‘’’<br>    git config –global user.name “xxx”<br>    git config –global user.email “<a href="mailto:xxx@xxx.com" target="_blank" rel="noopener">xxx@xxx.com</a>”<br>    ‘’’<br> 最后测试一下：<br>    ‘ssh -T <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>‘</p>
 <p><strong>0x03</strong><br> 搭建本地hexo<br> 选择一个位置放hexo文件夹<br>    ‘’’<br>    npm install hexo-cli -g (安装hexo-cli)<br>    hexo init blog（安装hexo）<br>    cd blog (进入hexo)<br>    npm install (安装依赖)<br>    npm install hexo-deployer-git –save(用于将文件部署到github上)<br>    ‘’’<br>  进入blog文件夹，找到_config.yml，修改配置如下：<br>    ‘’’<br>      deploy:<br>        type: git<br>        repo: 你的库地址<br>        branch: master<br>    ‘’’<br>  <strong>注意：“：”后面有一个空格，否则会出大事</strong><br>    <code>hexo g</code><br>  把你写的文件部署到hexo上</p>
 <pre><code>`hexo s`
-</code></pre><p>  本地查看hexo博客，登录<a href="https://localhost：4000查看" target="_blank" rel="noopener">https://localhost：4000查看</a><br>  <img src="bulid-my-blog/6.png" alt="6"></p>
+</code></pre><p>  本地查看hexo博客，登录<a href="https://localhost：4000查看" target="_blank" rel="noopener">https://localhost：4000查看</a><br>  <img src="/2019/01/22/build-my-blog/bulid-my-blog/6.png" alt="6"></p>
 <pre><code>`hexo clean`
 </code></pre><p>  清除缓存</p>
 <pre><code>&apos;hexo d&apos;
@@ -110,15 +110,15 @@
         </li>
       
         <li>
-          <a class="footer-post" href="/2019/02/05/hello-world/">Hello World</a>
-        </li>
-      
-        <li>
           <a class="footer-post" href="/2019/01/31/mysql注入常见load-file路径/">mysql注入常见load_file路径</a>
         </li>
       
         <li>
           <a class="footer-post" href="/2019/01/28/巩固sql注入/">巩固sql注入</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/25/sql基础语法的二次学习/">巩固sql基础语法</a>
         </li>
       
     </ul>
