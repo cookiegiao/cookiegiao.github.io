@@ -68,10 +68,13 @@
 <p>mysqldump基本语法：<br>mysqldump -u username -p password dbname table1 table2 .. -&gt; BackupName.sql</p>
 <p>其中：</p>
 <p>dbname参数表示数据库的名称；<br>table1和table2参数表示需要备份的表的名称，为空则整个数据库备份；<br>BackupName.sql参数表设计备份文件的名称，文件名前面可以加上一个绝对路径。通常将数据库被分成一个后缀名为sql的文件；</p>
-<p>使用root备份数据库message<br>    <code>msyqldump -u root -p root  message&gt;c:/message.sql</code><br>此时将会生成一个sql的脚本文件，开头将会记录mysql的版本号，备份主机的主机名和数据库名</p>
+<p>使用root备份数据库message<br>    <code>msyqldump -u root -p root  message&gt;c:\message.sql</code><br>此时将会生成一个sql的脚本文件，开头将会记录mysql的版本号，备份主机的主机名和数据库名</p>
 <p>##2.备份多个数据库</p>
-<p>语法：<br>    <code>mysqldump -u username -p (password) --databases dbname1 dbname2 &gt; Backup.sql</code><br>比如：<br>    <code>mysqldump -u root -p --databases test mysql &gt;c:/backup.sql</code><br><strong>加上了–databases选项，然后后面跟多个数据库</strong></p>
-<p>##3.备份所有数据库<br>mysqldump命令备份所有数据库的命令如下：<br>    <code></code>mysqldump -u username -p -all-databases &gt; Backup.sql<code>比如：</code>mysqldump -u root -p -all-databases &gt; c:/all.sql`</p>
+<p>语法：<br>    <code>mysqldump -u username -p(password) --databases dbname1 dbname2 &gt; Backup.sql</code><br>比如：<br>    <code>mysqldump -u root -p --databases test mysql &gt;c:\backup.sql</code><br><strong>加上了–databases选项，然后后面跟多个数据库</strong></p>
+<p>##3.备份所有数据库<br>mysqldump命令备份所有数据库的命令如下：<br>    <code>mysqldump -u username -p -all-databases &gt; Backup.sql</code><br>比如：<br>    <code>mysqldump -u root -p -all-databases &gt; c:\all.sql</code></p>
+<p>#数据库的还原<br> 使用mysqldump命令还原数据库文件：<br>    <code>mysql -u root -p [dbname] &lt; backup.sql</code></p>
+<p> 比如：<br>    <code>mysql -uroot -proot test &lt; c:\test.sql</code><br> test是mysql中已有的数据库，相当于一个容器，用于存储test.sql的还原的数据。    </p>
+<p><a href="https://www.cnblogs.com/kissdodog/p/4174421.html" target="_blank" rel="noopener">https://www.cnblogs.com/kissdodog/p/4174421.html</a></p>
 
     <span class="date end-date">2019-02-24</span>
   </div>
