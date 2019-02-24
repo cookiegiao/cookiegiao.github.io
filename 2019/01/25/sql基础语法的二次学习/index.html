@@ -82,9 +82,11 @@
 <p>删除数据：<br>     <code>DELETE FROM table_name [WHERE Clause]</code><br>如果没有指定 WHERE 子句，MySQL 表中的所有记录将被删除。<br>你可以在 WHERE 子句中指定任何条件<br>您可以在单个表中一次性删除记录。<br>当你想删除数据表中指定的记录时 WHERE 子句是非常有用的。</p>
 <p>LIKE子句：<br>我就用一个栗子来理解吧，LIKE子句就是用于配合where来使用。<br><img src="/2019/01/25/sql基础语法的二次学习/1.png" alt="sql基础语法的二次学习/1.png"></p>
 <p>我觉得mysql的基本语法就是这些了。</p>
+<p>1.增:<br>insert into 表名 values(0,’测试’);<br>注：如上语句，表结构中有自动增长的列，也必须为其指定一个值，通常为0<br>insert into 表名(id,name) values(0,’尹当’)–同上<br>2.删数据:<br>delete from 表名;<br>delete from 表名 where id=1;<br>删除结构：<br>删数据库：drop database 数据库名;<br>删除表：drop table 表名;<br>删除表中的列:alter table 表名 drop column 列名;<br>3.改:<br>修改所有：updata 表名 set 列名=’新的值，非数字加单引号’ ;<br>带条件的修改：updata 表名 set 列名=’新的值，非数字加单引号’ where id=6;<br>4.查:<br>查询所有的数据：select <em>from 表名;<br>带条件的查询：<br>select </em>from 表名 where 列名=条件值;<br>Select <em> from 表名 where 列名 not like（like） ‘字符值’<br>分页查询：select </em>from 表名 limit 每页数量 offset 偏移量;<br>5.备份数据库：(将数据库test备份)<br>mysqldump -u root -p test&gt;c:/test.txt<br>备份表格：(备份test数据库下的mytable表格)<br>mysqldump -u root -p test mytable&gt;c:/test.txt<br>将备份数据导入到数据库：(导回test数据库)<br>mysql -u root -p test</p>
 <ol>
-<li>增:<br>insert into 表名 values(0,’测试’);<br>注：如上语句，表结构中有自动增长的列，也必须为其指定一个值，通常为0<br>insert into 表名(id,name) values(0,’尹当’)–同上<br>2.删数据:<br>delete from 表名;<br>delete from 表名 where id=1;<br>删除结构：<br>删数据库：drop database 数据库名;<br>删除表：drop table 表名;<br>删除表中的列:alter table 表名 drop column 列名;</li>
-<li>改:<br>修改所有：updata 表名 set 列名=’新的值，非数字加单引号’ ;<br>带条件的修改：updata 表名 set 列名=’新的值，非数字加单引号’ where id=6;<br>4.查:<br>查询所有的数据：select <em>from 表名;<br>带条件的查询：<br>select </em>from 表名 where 列名=条件值;<br>Select <em> from 表名 where 列名 not like（like） ‘字符值’<br>分页查询：select </em>from 表名 limit 每页数量 offset 偏移量;</li>
+<li>导出数据：<br>mysqldump –opt test &gt; mysql.test<br>即将数据库test数据库导出到mysql.test文件，后者是一个文本文件<br>如：mysqldump -u root -p123456 –databases dbname &gt; mysql.dbname<br>就是把数据库dbname导出到文件mysql.dbname中。</li>
+<li>导入数据:<br>mysqlimport -u root -p123456 &lt; mysql.dbname。<br>不用解释了吧。</li>
+<li>将文本数据导入数据库:<br>文本数据的字段数据之间用tab键隔开。<br>use test;<br>load data local infile “文件名” into table 表名;</li>
 </ol>
 <p><strong>0x02–mysql字符串匹配模式</strong><br>（开启数据库test,选择数据表DOG）<br><img src="/2019/01/25/sql基础语法的二次学习/2.png" alt="sql基础语法的二次学习/2.png"></p>
 <p>（1）标准的sql模式匹配(简单)<br>以“t”开头的使用 t%<br><img src="/2019/01/25/sql基础语法的二次学习/3.png" alt="sql基础语法的二次学习/3.png"></p>
