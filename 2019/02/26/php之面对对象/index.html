@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>php之面对对象</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">php之面对对象</h1>
+    <div class="post-info">
+      <span class="date">2019-02-26</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>以前学过java，所以关于面对对象的思想就不再重复了。</p>
+<p>#面对对象内容<br>类 − 定义了一件事物的抽象特点。类的定义包含了数据的形式以及对数据的操作。</p>
+<p>对象 − 是类的实例。</p>
+<p>成员变量 − 定义在类内部的变量。该变量的值对外是不可见的，但是可以通过成员函数访问，在类被实例化为对象后，该变量即可称为对象的属性。</p>
+<p>成员函数 − 定义在类的内部，可用于访问对象的数据。</p>
+<p>继承 − 继承性是子类自动共享父类数据结构和方法的机制，这是类之间的一种关系。在定义和实现一个类的时候，可以在一个已经存在的类的基础之上来进行，把这个已经存在的类所定义的内容作为自己的内容，并加入若干新的内容。</p>
+<p>父类 − 一个类被其他类继承，可将该类称为父类，或基类，或超类。</p>
+<p>子类 − 一个类继承其他类称为子类，也可称为派生类。</p>
+<p>多态 − 多态性是指相同的函数或方法可作用于多种类型的对象上并获得不同的结果。不同的对象，收到同一消息可以产生不同的结果，这种现象称为多态性。</p>
+<p>重载 − 简单说，就是函数或者方法有同样的名称，但是参数列表不相同的情形，这样的同名不同参数的函数或者方法之间，互相称之为重载函数或者方法。</p>
+<p>抽象性 − 抽象性是指将具有一致的数据结构（属性）和行为（操作）的对象抽象成类。一个类就是这样一种抽象，它反映了与应用有关的重要性质，而忽略其他一些无关内容。任何类的划分都是主观的，但必须与具体的应用有关。</p>
+<p>封装 − 封装是指将现实世界中存在的某个客体的属性与行为绑定在一起，并放置在一个逻辑单元内。</p>
+<p>构造函数 − 主要用来在创建对象时初始化对象， 即为对象成员变量赋初始值，总与new运算符一起使用在创建对象的语句中。</p>
+<p>析构函数 − 析构函数(destructor) 与构造函数相反，当对象结束其生命周期时（例如对象所在的函数已调用完毕），系统自动执行析构函数。析构函数往往用来做”清理善后” 的工作（例如在建立对象时用new开辟了一片内存空间，应在退出前在析构函数中用delete释放）。</p>
+<p>#PHP类定义</p>
+<p>PHP定义类通常的语法格式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">class phpClass &#123;</span><br><span class="line">  var $var1;</span><br><span class="line">  var $var2 = &quot;constant string&quot;;</span><br><span class="line">  </span><br><span class="line">  function myfunc ($arg1, $arg2) &#123;</span><br><span class="line">     [..]</span><br><span class="line">  &#125;</span><br><span class="line">  [..]</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>解析如下：</p>
+<p>类使用 class 关键字后加上类名定义。</p>
+<p>类名后的一对大括号({})内可以定义变量和方法。</p>
+<p>类的变量使用 var 来声明, 变量也可以初始化值。</p>
+<p>函数定义类似 PHP 函数的定义，但函数只能通过该类及其实例化的对象访问。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">  class Site&#123;</span><br><span class="line">  	var $url;</span><br><span class="line">  	var $title;</span><br><span class="line"></span><br><span class="line">  	function setURL($par)&#123;</span><br><span class="line">  		$this-&gt;url = $par;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function getURL()&#123;</span><br><span class="line">  		echo $this-&gt;url.PHP_EOL;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function setTitle($par)&#123;</span><br><span class="line">  		$this-&gt;title = $par;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function getTitle()&#123;</span><br><span class="line">  		echo $this -&gt;title.PHP_EOL;</span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>#PHP中创建对象<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$taobao = new Site;</span><br><span class="line">$google= new Site;</span><br></pre></td></tr></table></figure></p>
+<p>类创建后，我们使用new运算符来实例化该类的对象：</p>
+<p>#调用成员方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$taobao-&gt;setTitle( &quot;淘宝&quot; );</span><br><span class="line">$google-&gt;setTitle( &quot;Google 搜索&quot; );</span><br><span class="line"></span><br><span class="line">$taobao-&gt;setUrl( &apos;www.taobao.com&apos; );</span><br><span class="line">$google-&gt;setUrl( &apos;www.google.com&apos; );</span><br><span class="line"></span><br><span class="line">// 调用成员函数，获取标题和URL</span><br><span class="line">$taobao-&gt;getTitle();</span><br><span class="line">$google-&gt;getTitle();</span><br><span class="line"></span><br><span class="line">$taobao-&gt;getUrl();</span><br><span class="line">$google-&gt;getUrl();</span><br></pre></td></tr></table></figure></p>
+<p>所以最终这段代码是这样的<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">  header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">  class Site&#123;</span><br><span class="line">  	var $url;</span><br><span class="line">  	var $title;</span><br><span class="line"></span><br><span class="line">  	function setURL($par)&#123;</span><br><span class="line">  		$this-&gt;url = $par;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function getURL()&#123;</span><br><span class="line">  		echo $this-&gt;url.PHP_EOL;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function setTitle($par)&#123;</span><br><span class="line">  		$this-&gt;title = $par;</span><br><span class="line">  	&#125;</span><br><span class="line"></span><br><span class="line">  	function getTitle()&#123;</span><br><span class="line">  		echo $this -&gt;title.PHP_EOL;</span><br><span class="line">  	&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  $taobao = new Site;</span><br><span class="line">  $google= new Site;</span><br><span class="line"></span><br><span class="line">  $taobao-&gt;setTitle( &quot;淘宝&quot; );</span><br><span class="line">  $google-&gt;setTitle( &quot;Google 搜索&quot; );</span><br><span class="line">  </span><br><span class="line">  $taobao-&gt;setUrl( &apos;www.taobao.com&apos; );</span><br><span class="line">  $google-&gt;setUrl( &apos;www.google.com&apos; );</span><br><span class="line"></span><br><span class="line">// 调用成员函数，获取标题和URL</span><br><span class="line">  $taobao-&gt;getTitle();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $google-&gt;getTitle();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $taobao-&gt;getUrl();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $google-&gt;getUrl();</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php之面对对象/1.png" alt="1">;</p>
+<p>#PHP构造函数<br>构造函数是一种特殊的方法。主要用来在创建对象时初始化对象， 即为对象成员变量赋初始值，在创建对象的语句中与 new 运算符一起使用。PHP 5 <strong>允许开发者在一个类中定义一个方法作为构造函数</strong>，语法格式如下：<br>    <code>void __construct ([ mixed $args [, $... ]] )</code><br>构造函数可以不带参数，就是无参初始化。<br>忽然想明白了$this -&gt; name 这种用法，实际上相当于java中的this.name。    </p>
+<p>所以这里我们通过构造方法初始化$url和$Title变量：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  function __construct( $par1, $par2 ) &#123;</span><br><span class="line">   $this-&gt;url = $par1;</span><br><span class="line">   $this-&gt;title = $par2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以我我们这这时候把代码改成这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">  header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">  class Site&#123;</span><br><span class="line">  	var $url;</span><br><span class="line">  	var $title;</span><br><span class="line"></span><br><span class="line">  function __construct( $par1, $par2 ) &#123;</span><br><span class="line">   $this-&gt;url = $par1;</span><br><span class="line">   $this-&gt;title = $par2;</span><br><span class="line"> &#125;</span><br><span class="line">  function getUrl()&#123;</span><br><span class="line">     echo $this-&gt;url . PHP_EOL;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  function getTitle()&#123;</span><br><span class="line">     echo $this-&gt;title . PHP_EOL;</span><br><span class="line">  &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  $taobao = new Site(&apos;www.taobao.com&apos;,&apos;淘宝&apos;);</span><br><span class="line">  $google = new Site(&apos;www.google.com&apos;,&apos;Google 搜索&apos;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 调用成员函数，获取标题和URL</span><br><span class="line">  $taobao-&gt;getTitle();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $google-&gt;getTitle();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $taobao-&gt;getUrl();</span><br><span class="line">  echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  $google-&gt;getUrl();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实际上效果是一样的：<br><img src="/2019/02/26/php之面对对象/1.png" alt="1"></p>
+<p>#析构函数<br>析构函数(destructor) 与构造函数相反，当对象结束其生命周期时（例如对象所在的函数已调用完毕），系统自动执行析构函数。<br>其语法格式：<br>    <code>void __destruct ( void )</code></p>
+<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">class MyDestructableClass &#123;</span><br><span class="line">   function __construct()&#123;</span><br><span class="line">       print &quot;构造函数\n&quot;;</span><br><span class="line">       $this-&gt;name = &quot;MyDestructableClass&quot;;</span><br><span class="line">       echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   function __destruct()&#123;</span><br><span class="line">       print &quot;销毁 &quot; . $this-&gt;name . &quot;\n&quot;;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$obj = new MyDestructableClass();</span><br><span class="line">?&gt;</span><br><span class="line">```   </span><br><span class="line">![2](php之面对对象/2.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#继承</span><br><span class="line">PHP 使用关键字 extends 来继承一个类，PHP 不支持多继承，格式如下：</span><br></pre></td></tr></table></figure></p>
+<p>class Child extends Parent {<br>   // 代码部分<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">通过继承，我们可以扩展其功能。</span><br><span class="line">子类可以继承父类的一切，但是一个子类只能继承一个父类，一个父类可以派生多个子类。</span><br><span class="line">PHP5.0 以上版本对类的功能进行了很大的扩充。类的构造函数统一命名为__construct()。</span><br><span class="line">子类的构造函数名也是__construct()（也是废话）。</span><br><span class="line">在子类里父类的构造函数会不会执行，分两种情况：</span><br><span class="line">1，如子类不定义构造函数 __construct()，则父类的构造函数默认会被继承下来，且会自动执行。</span><br><span class="line">2，如子类定义了构造函数 __construct()，因为构造函数名也是__construct()，所以子类的构造函数实际上是覆盖(override)了父类的构造函数。这时执行的是该子类的构造函数。</span><br><span class="line">其实关于这个知识，我通过一段代码来论证：</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>header(‘Content-Type: text/html; charset=utf-8’);<br>class MyClass    //父类<br>{<br>    public function <strong>construct()    //父类构造函数<br>    {<br>        echo “父类的构造函数”;<br>    }<br>}<br>class ChildClass extends MyClass     //子类<br>{<br>    public function </strong>construct()    //子类构造函数<br>    {<br>        echo “子类的构造函数”.”<br>“;<br>        parent::__construct();    //调用父类构造函数<br>    }<br>}<br>$childClass = new ChildClass();    //对类的实例化<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">![3](php之面对对象/3.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">所以子类在继承父类后，会拥有父类的属性和方法，这是继承的特性。子类在构造函数会首先调用父类的构造函数来实例化父类的属性，然后调用子类的构造函数，一般你不写，并不表示没有调用，而是首先调用了父类的无参构造函数，如果父类的某些属性需要在父类构造函数中特殊实例化，则你必须显示的调用父类的有参构造函数，这样保证子类属性的完整性。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php</p>
+<p>class Ren{<br>    public $name;</p>
+<pre><code>function Say()
+{
+    echo $this-&gt;name.&quot;正在讲话&quot;;
+}
+</code></pre><p>}</p>
+<p>class China extends Ren           //子类对父类的继承<br>{</p>
+<p>}<br>$c = new China();<br>$c-&gt;Say();<br>var_dump($c);<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">![4](php之面对对象/4.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#方法重写</span><br><span class="line">如果从父类继承的方法不能满足子类的需求，可以对其进行改写，这个过程叫方法的覆盖（override），也称为方法的重写。</span><br></pre></td></tr></table></figure></p>
+<p>function getUrl() {<br>   echo $this-&gt;url . PHP_EOL;<br>   return $this-&gt;url;<br>}</p>
+<p>function getTitle(){<br>   echo $this-&gt;title . PHP_EOL;<br>   return $this-&gt;title;<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据实例我们可以了解到，子类定义一个名字相同的方法可对父类方法进行覆盖</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>class Person<br>{<br>//下面是人的成员属性<br>var $name; //人的名子<br>var $sex; //人的性别<br>var $age; //人的年龄</p>
+<p>//定义一个构造方法参数为属性姓名$name、性别$sex和年龄$age进行赋值<br>function __construct($name, $sex, $age) {<br>$this-&gt;name = $name;<br>$this-&gt;sex = $sex;<br>$this-&gt;age = $age;<br>}<br>//这个人可以说话的方法, 说出自己的属性<br>function say() {<br>echo “my name is:” . $this-&gt;name . “  sex:” . $this-&gt;sex . “  my age is:” . $this-&gt;age;<br>}<br>}</p>
+<p>//定义一个子类“学生类“使用”extends”关键字来继承”人”类：<br>class Student extends Person<br>{<br>var $school; //学生所在学校的属性<br>function <strong>construct($name,$sex,$age,$school)<br>{<br>parent::</strong>construct($name,$sex,$age);<br>$this-&gt;school = $school;<br>}</p>
+<p>// 重写父类的say()方法<br>function say()<br>{<br>echo “my name is:” . $this-&gt;name .” my school is:” . $this-&gt;school;<br>}</p>
+<p>//这个学生学习的方法<br>function study()<br>{<br>echo “my name is:” . $this-&gt;name . “ my school is:” . $this-&gt;school;<br>}<br>}</p>
+<p>$lily = new Student(“lily”,”female”,”12”,”FAFU”);<br>$lily -&gt; say();<br>?&gt;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">如果想要调用父类方法，这里提供两个手段</span><br><span class="line"></span><br><span class="line">可以通过两种方法实现在子类的方法中调用父类被覆盖的方法：</span><br><span class="line"></span><br><span class="line">一种是使用父类的“类名::“来调用父类中被覆盖的方法；</span><br><span class="line"></span><br><span class="line">一种是使用“parent::”的方试来调用父类中被覆盖的方法；</span><br></pre></td></tr></table></figure>
+<p>//定义一个子类“学生类“使用”extends”关键字来继承”人”类：<br>class Student extends Person<br>{<br>var $school; //学生所在学校的属性<br>function <strong>construct($name,$sex,$age,$school)<br>{<br>parent::</strong>construct($name,$sex,$age);<br>$this-&gt;school = $school;<br>}</p>
+<p>// 重写父类的say()方法<br>function say()<br>{</p>
+<p>//使用父类的”类名::”来调用父类中被覆盖的方法；</p>
+<p>// Person::say();</p>
+<p>//或者使用”parent::”的方试来调用父类中被覆盖的方法；</p>
+<p>parent::say();</p>
+<p>echo “my name is:” . $this-&gt;name .” my school is:” . $this-&gt;school;<br>}</p>
+<p>//这个学生学习的方法<br>function study()<br>{<br>echo “my name is:” . $this-&gt;name . “ my school is:” . $this-&gt;school;<br>}<br>}<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#访问控制</span><br><span class="line">PHP 对属性或方法的访问控制，是通过在前面添加关键字 public（公有），protected（受保护）或 private（私有）来实现的。</span><br><span class="line"></span><br><span class="line">public（公有）：公有的类成员可以在任何地方被访问。</span><br><span class="line">protected（受保护）：受保护的类成员则可以被其自身以及其子类和父类访问。</span><br><span class="line">private（私有）：私有的类成员则只能被其定义所在的类访问。</span><br><span class="line"></span><br><span class="line">##属性的访问控制</span><br><span class="line">类属性必须定义为公有，受保护，私有之一。如果用 var 定义，则被视为公有。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>/**</p>
+<ul>
+<li><p>Define MyClass<br>*/<br>class MyClass<br>{<br> public $public = ‘Public’;<br> protected $protected = ‘Protected’;<br> private $private = ‘Private’;</p>
+<p> function printHello()<br> {</p>
+<pre><code>echo $this-&gt;public;
+echo $this-&gt;protected;
+echo $this-&gt;private;
+</code></pre><p> }<br>}</p>
+</li>
+</ul>
+<p>$obj = new MyClass();<br>echo $obj-&gt;public; // 这行能被正常执行<br>echo $obj-&gt;protected; // 这行会产生一个致命错误<br>echo $obj-&gt;private; // 这行也会产生一个致命错误<br>$obj-&gt;printHello(); // 输出 Public、Protected 和 Private</p>
+<p>/**</p>
+<ul>
+<li><p>Define MyClass2<br>*/<br>class MyClass2 extends MyClass<br>{<br> //可以对 public 和 protected 进行重定义，但 private不能</p>
+<p> protected $protected = ‘Protected2’;</p>
+<p> function printHello()<br> {</p>
+<pre><code>echo $this-&gt;public;
+echo $this-&gt;protected;
+echo $this-&gt;private;
+</code></pre><p> }<br>}</p>
+</li>
+</ul>
+<p>$obj2 = new MyClass2();<br>echo $obj2-&gt;public; // 这行能被正常执行<br>echo $obj2-&gt;private; // 未定义 private<br>echo $obj2-&gt;protected; // 这行会产生一个致命错误<br>$obj2-&gt;printHello(); // 输出 Public、Protected2 和 Undefined</p>
+<p>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">##方法的访问控制</span><br><span class="line"></span><br><span class="line">类中的方法可以被定义为公有，私有或受保护。如果没有设置这些关键字，则该方法默认为公有。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>/**</p>
+<ul>
+<li><p>Define MyClass<br>*/<br>class MyClass<br>{<br> // 声明一个公有的构造函数<br> public function __construct() { }</p>
+<p> // 声明一个公有的方法<br> public function MyPublic() { }</p>
+<p> // 声明一个受保护的方法<br> protected function MyProtected() { }</p>
+<p> // 声明一个私有的方法<br> private function MyPrivate() { }</p>
+<p> // 此方法为公有<br> function Foo()<br> {</p>
+<pre><code>$this-&gt;MyPublic();
+$this-&gt;MyProtected();
+$this-&gt;MyPrivate();
+</code></pre><p> }<br>}</p>
+</li>
+</ul>
+<p>$myclass = new MyClass;<br>$myclass-&gt;MyPublic(); // 这行能被正常执行<br>$myclass-&gt;MyProtected(); // 这行会产生一个致命错误<br>$myclass-&gt;MyPrivate(); // 这行会产生一个致命错误<br>$myclass-&gt;Foo(); // 公有，受保护，私有都可以执行</p>
+<p>/**</p>
+<ul>
+<li>Define MyClass2<br>*/<br>class MyClass2 extends MyClass<br>{<br> // 此方法为公有<br> function Foo2()<br> {<pre><code>$this-&gt;MyPublic();
+$this-&gt;MyProtected();
+$this-&gt;MyPrivate(); // 这行会产生一个致命错误
+</code></pre> }<br>}</li>
+</ul>
+<p>$myclass2 = new MyClass2;<br>$myclass2-&gt;MyPublic(); // 这行能被正常执行<br>$myclass2-&gt;Foo2(); // 公有的和受保护的都可执行，但私有的不行</p>
+<p>class Bar<br>{<br>    public function test() {<br>        $this-&gt;testPrivate();<br>        $this-&gt;testPublic();<br>    }</p>
+<pre><code>public function testPublic() {
+    echo &quot;Bar::testPublic\n&quot;;
+}
+
+private function testPrivate() {
+    echo &quot;Bar::testPrivate\n&quot;;
+}
+</code></pre><p>}</p>
+<p>class Foo extends Bar<br>{<br>    public function testPublic() {<br>        echo “Foo::testPublic\n”;<br>    }</p>
+<pre><code>private function testPrivate() {
+    echo &quot;Foo::testPrivate\n&quot;;
+}
+</code></pre><p>}</p>
+<p>$myFoo = new foo();<br>$myFoo-&gt;test(); // Bar::testPrivate<br>                // Foo::testPublic<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#接口</span><br><span class="line">使用接口（interface），可以指定某个类必须实现哪些方法，但不需要定义这些方法的具体内容。</span><br><span class="line"></span><br><span class="line">接口是通过 interface 关键字来定义的，就像定义一个标准的类一样，但其中定义所有的方法都是空的。</span><br><span class="line"></span><br><span class="line">接口中定义的所有方法都必须是公有，这是接口的特性。</span><br><span class="line"></span><br><span class="line">要实现一个接口，使用 implements 操作符。类中必须实现接口中定义的所有方法，否则会报一个致命错误。类可以实现多个接口，用逗号来分隔多个接口的名称。</span><br><span class="line"></span><br><span class="line">个人感觉PHP对于接口的定义要比java要更好理解</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php</p>
+<p>// 声明一个’iTemplate’接口<br>interface iTemplate<br>{<br>    public function setVariable($name, $var);<br>    public function getHtml($template);<br>}</p>
+<p>// 实现接口<br>class Template implements iTemplate<br>{<br>    private $vars = array();</p>
+<pre><code>public function setVariable($name, $var)
+{
+    $this-&gt;vars[$name] = $var;
+}
+
+public function getHtml($template)
+{
+    foreach($this-&gt;vars as $name =&gt; $value) {
+        $template = str_replace(&apos;{&apos; . $name . &apos;}&apos;, $value, $template);
+    }
+
+    return $template;
+}
+</code></pre><p>}</p>
+<p>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#常量</span><br></pre></td></tr></table></figure></p>
+<p>这里插入一下：解释一下 “ :: “<br>“ :: “是一个范围解析操作符.</p>
+<p>范围解析操作符（也可称作 Paamayim Nekudotayim）或者更简单地说是一对冒号，可以用于访问静态成员，类常量，还可以用于覆盖类中的属性和方法。</p>
+<p>当在类定义之外引用到这些项目时，要使用类名。</p>
+<p>自 PHP 5.3.0 起，可以通过变量来引用类，该变量的值不能是关键字（如 self，parent 和 static）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">可以把在类中始终保持不变的值定义为常量。在定义和使用常量的时候不需要使用 $ 符号。</span><br><span class="line"></span><br><span class="line">常量的值必须是一个定值，不能是变量，类属性，数学运算的结果或函数调用。</span><br><span class="line"></span><br><span class="line">自 PHP 5.3.0 起，可以用一个变量来动态调用类。但该变量的值不能为关键字（如 self，parent 或 static）。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>class MyClass<br>{<br>    const constant = ‘常量值’;</p>
+<pre><code>function showConstant() {
+    echo  self::constant . PHP_EOL;
+}
+</code></pre><p>}</p>
+<p>echo MyClass::constant . PHP_EOL;</p>
+<p>$classname = “MyClass”;<br>echo $classname::constant . PHP_EOL; // 自 5.3.0 起</p>
+<p>$class = new MyClass();<br>$class-&gt;showConstant();</p>
+<p>echo $class::constant . PHP_EOL; // 自 PHP 5.3.0 起<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">![5](php之面对对象/5.png)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#抽象类</span><br><span class="line">任何一个类，如果它里面至少有一个方法是被声明为抽象的，那么这个类就必须被声明为抽象的。</span><br><span class="line"></span><br><span class="line">定义为抽象的类不能被实例化。</span><br><span class="line"></span><br><span class="line">被定义为抽象的方法只是声明了其调用方式（参数），不能定义其具体的功能实现。</span><br><span class="line"></span><br><span class="line">继承一个抽象类的时候，子类必须定义父类中的所有抽象方法；另外，这些方法的访问控制必须和父类中一样（或者更为宽松）。例如某个抽象方法被声明为受保护的，那么子类中实现的方法就应该声明为受保护的或者公有的，而不能定义为私有的。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>abstract class AbstractClass<br>{<br> // 强制要求子类定义这些方法<br>    abstract protected function getValue();<br>    abstract protected function prefixValue($prefix);</p>
+<pre><code>// 普通方法（非抽象方法）
+public function printOut() {
+    print $this-&gt;getValue() . PHP_EOL;
+}
+</code></pre><p>}</p>
+<p>class ConcreteClass1 extends AbstractClass<br>{<br>    protected function getValue() {<br>        return “ConcreteClass1”;<br>    }</p>
+<pre><code>public function prefixValue($prefix) {
+    return &quot;{$prefix}ConcreteClass1&quot;;
+}
+</code></pre><p>}</p>
+<p>class ConcreteClass2 extends AbstractClass<br>{<br>    public function getValue() {<br>        return “ConcreteClass2”;<br>    }</p>
+<pre><code>public function prefixValue($prefix) {
+    return &quot;{$prefix}ConcreteClass2&quot;;
+}
+</code></pre><p>}</p>
+<p>$class1 = new ConcreteClass1;<br>$class1-&gt;printOut();<br>echo $class1-&gt;prefixValue(‘FOO_’) . PHP_EOL;</p>
+<p>$class2 = new ConcreteClass2;<br>$class2-&gt;printOut();<br>echo $class2-&gt;prefixValue(‘FOO_’) . PHP_EOL;<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">运行结果如下：</span><br></pre></td></tr></table></figure></p>
+<p>ConcreteClass1<br>FOO_ConcreteClass1<br>ConcreteClass2<br>FOO_ConcreteClass2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#Static 关键字</span><br><span class="line"></span><br><span class="line">声明类属性或方法为 static(静态)，就可以不实例化类而直接访问。</span><br><span class="line"></span><br><span class="line">静态属性不能通过一个类已实例化的对象来访问（但静态方法可以）。</span><br><span class="line"></span><br><span class="line">由于静态方法不需要通过对象即可调用，所以伪变量 $this 在静态方法中不可用。</span><br><span class="line"></span><br><span class="line">静态属性不可以由对象通过 -&gt; 操作符来访问。</span><br><span class="line"></span><br><span class="line">自 PHP 5.3.0 起，可以用一个变量来动态调用类。但该变量的值不能为关键字 self，parent 或 static。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>class Foo {<br>  public static $my_static = ‘foo’;</p>
+<p>  public function staticValue() {<br>     return self::$my_static;<br>  }<br>}</p>
+<p>print Foo::$my_static . PHP_EOL;<br>$foo = new Foo();</p>
+<p>print $foo-&gt;staticValue() . PHP_EOL;<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">结果为</span><br></pre></td></tr></table></figure></p>
+<p>foo<br>foo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">#Final 关键字</span><br><span class="line">PHP 5 新增了一个 final 关键字。如果父类中的方法被声明为 final，则子类无法覆盖该方法。如果一个类被声明为 final，则不能被继承。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>class BaseClass {<br>   public function test() {<br>       echo “BaseClass::test() called” . PHP_EOL;<br>   }</p>
+<p>   final public function moreTesting() {<br>       echo “BaseClass::moreTesting() called”  . PHP_EOL;<br>   }<br>}</p>
+<p>class ChildClass extends BaseClass {<br>   public function moreTesting() {<br>       echo “ChildClass::moreTesting() called”  . PHP_EOL;<br>   }<br>}<br>// 报错信息 Fatal error: Cannot override final method BaseClass::moreTesting()<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">因为**如果父类中的方法被声明为 final，则子类无法覆盖该方法**，所以就会报错。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#调用父类构造方法</span><br><span class="line">PHP 不会在子类的构造方法中自动的调用父类的构造方法。要执行父类的构造方法，需要在子类的构造方法中调用 parent::__construct() 。</span><br></pre></td></tr></table></figure></p>
+<p>&lt;?php<br>class BaseClass {<br>   function <strong>construct() {<br>       print “BaseClass 类中构造方法” . PHP_EOL;<br>   }<br>}<br>class SubClass extends BaseClass {<br>   function </strong>construct() {<br>       parent::__construct();  // 子类构造方法不能自动调用父类的构造方法<br>       print “SubClass 类中构造方法” . PHP_EOL;<br>   }<br>}<br>class OtherSubClass extends BaseClass {<br>    // 继承 BaseClass 的构造方法<br>}</p>
+<p>// 调用 BaseClass 构造方法<br>$obj = new BaseClass();</p>
+<p>// 调用 BaseClass、SubClass 构造方法<br>$obj = new SubClass();</p>
+<p>// 调用 BaseClass 构造方法<br>$obj = new OtherSubClass();<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">执行以上程序，输出结果为：</span><br></pre></td></tr></table></figure></p>
+<p>BaseClass 类中构造方法<br>BaseClass 类中构造方法<br>SubClass 类中构造方法<br>BaseClass 类中构造方法<br><code>`</code></p>
+
+    <span class="date end-date">2019-02-26</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php循环/">php循环</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php数组/">php数组</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

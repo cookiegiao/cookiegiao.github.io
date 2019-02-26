@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>php运算符</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">php运算符</h1>
+    <div class="post-info">
+      <span class="date">2019-02-26</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>#PHP算术运算符<br><img src="/2019/02/26/php运算符/1.png" alt="1"></p>
+<p>这里强调一下：<br>PHP7+ 版本新增整除运算符 intdiv()<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">var_dump(intdiv(10,3));</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>返回3；</p>
+<p>#PHP赋值运算符<br><img src="/2019/02/26/php运算符/2.png" alt="2"></p>
+<p>#PHP递增/递减运算符<br><img src="/2019/02/26/php运算符/3.png" alt="3"></p>
+<p>#PHP数组运算符<br><img src="/2019/02/26/php运算符/4.png" alt="4"></p>
+<p>这里强调关于’==’和’===’的差别<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">if(&apos;123&apos;==123)</span><br><span class="line">&#123;</span><br><span class="line">	echo &apos;yes&apos;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	echo &apos;no&apos;;</span><br><span class="line">&#125;</span><br><span class="line">echo &apos; &apos;;</span><br><span class="line">if(&apos;123&apos;===123)</span><br><span class="line">&#123;</span><br><span class="line">	echo &apos;yes&apos;;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">	echo &apos;no&apos;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>返回：yes no</p>
+<p>如上表所示：<br>===为恒等，有相同的键/值对，并且相同的顺序，以及相同的类型<br>==为相等，有相同的键/值对</p>
+<p>#三元运算符<br>另一个条件运算符是”?:”（或三元）运算符 。</p>
+<p>语法格式：<br>    <code>(expr1) ? (expr2) : (expr3)</code><br>对 expr1 求值为 TRUE 时的值为 expr2，在 expr1 求值为 FALSE 时的值为 expr3<br>自 PHP 5.3 起，可以省略三元运算符中间那部分。<br>表达式 expr1 ?: expr3 在 expr1 求值为 TRUE 时返回 expr1，否则返回 expr3。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$test = &apos;cookie&apos; ;</span><br><span class="line">$username = isset($test) ? $test : &apos;nobody&apos;;</span><br><span class="line">echo $username;</span><br><span class="line"></span><br><span class="line">//5.3版本以后</span><br><span class="line">$test = &apos;cookie&apos;;</span><br><span class="line">$username = $test ?:&apos;nobody&apos;;</span><br><span class="line">echo $username;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>实际上这个例子就是在问是否给test变量赋值，如果有，则返回$test,否则返回nobody;</p>
+<p>#组合比较符(PHP7+)</p>
+<p>语法格式如下：<br><code>$c = $a &lt;=&gt; $b;</code></p>
+<p>解析：<br>如果$a &gt; $b ,则 $c = 1;<br>如果$a = $b ,则 $c = 0;<br>如果$a &lt; $b ,则 $c = -1;</p>
+<p>#运算符优先级<br><img src="/2019/02/26/php运算符/5.png" alt="5"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">// 优先级： &amp;&amp;  &gt;  =  &gt;  and</span><br><span class="line">// 优先级： ||  &gt;  =  &gt;  or</span><br><span class="line"> </span><br><span class="line">$a = 3;</span><br><span class="line">$b = false;</span><br><span class="line">$c = $a or $b;</span><br><span class="line">var_dump($c);          // 这里的 $c 为 int 值3，而不是 boolean 值 true</span><br><span class="line">$d = $a || $b;</span><br><span class="line">var_dump($d);          //这里的 $d 就是 boolean 值 true </span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php运算符/6.png" alt="6"></p>
+
+    <span class="date end-date">2019-02-26</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php循环/">php循环</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php数组/">php数组</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

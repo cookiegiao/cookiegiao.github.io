@@ -1,0 +1,151 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>php超级全局变量</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">php超级全局变量</h1>
+    <div class="post-info">
+      <span class="date">2019-02-26</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>#PHP $GLOBALS<br>$GLOBALS 是PHP的一个超级全局变量组，在一个PHP脚本的全部作用域中都可以访问。<br>$GLOBALS 是一个包含了全部变量的全局组合数组。<br><strong>变量的名字就是数组的键。所以在调用的时候为$GLOBALS[‘var’],而不是$GLOBALS[“$var”]，””存在解析的作用.</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$var1=&apos;www.phpernote.com&apos;;</span><br><span class="line">$var2=&apos;www.google.cn&apos;;</span><br><span class="line">test();</span><br><span class="line">function test()&#123;</span><br><span class="line">    $var1=&apos;taobao&apos;;</span><br><span class="line">    echo $var1,&apos;&lt;br /&gt;&apos;;</span><br><span class="line">    global $var1;</span><br><span class="line">    echo $var1,&apos;&lt;br /&gt;&apos;;</span><br><span class="line">    echo $GLOBALS[&apos;var2&apos;];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php超级全局变量/1.png" alt="1"></p>
+<p>$GLOBALS：引用全局作用域中可用的全部变量（一个包含了全部变量的全局组合数组。变量的名字就是数组的键）<br>所以这就很好理解它的作用了。</p>
+<p>这里要说明一下，$GLOBALS和global的区别：<br>$GLOBALS[‘var’]是外部的全局变量本身，而global $var是外部$var的同名引用或者指针，也就是说global在函数产生一个指向函数外部变量的别名变量，而不是真正的函数外部变量，而$GLOBALS[]确确实实调用的是外部的变量，函数内外会始终保持一致。</p>
+<p>放上一个例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$var1=1;</span><br><span class="line">$var2=2;</span><br><span class="line">function test()&#123;</span><br><span class="line">    $GLOBALS[&apos;var2&apos;]=&amp;$GLOBALS[&apos;var1&apos;];</span><br><span class="line">&#125;  </span><br><span class="line">test();</span><br><span class="line">echo $var2;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>输出：1</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$var1=1;</span><br><span class="line">$var2=2;</span><br><span class="line">function test()&#123;</span><br><span class="line">    global $var1,$var2;</span><br><span class="line">    $var2=&amp;$var1;//&amp;为变量引用符</span><br><span class="line">&#125;  </span><br><span class="line">test();</span><br><span class="line">echo $var2;</span><br></pre></td></tr></table></figure>
+<p>输出：2<br>这里仅仅是因为$var1的引用指向了$var2的引用地址，就好比在这个函数中把房间1的房号给了房间2，等这个函数结束后，房间2还是房间2，房间里的人数都没有改变。</p>
+<p>再放一个例子<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$var1=1;</span><br><span class="line">function test()&#123;</span><br><span class="line">    unset($GLOBALS[&apos;var1&apos;]);</span><br><span class="line">&#125;  </span><br><span class="line">test();</span><br><span class="line">echo $var1;</span><br></pre></td></tr></table></figure></p>
+<p>啥都没有，因为$var1被删除，所以什么东西都没有打印出来。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$var1=1;</span><br><span class="line">function test()&#123;</span><br><span class="line">    global $var1;</span><br><span class="line">    unset($var1);</span><br><span class="line">&#125;  </span><br><span class="line">test();</span><br><span class="line">echo $var1;</span><br></pre></td></tr></table></figure>
+<p>打印结果为1.因为var1只是一个别名，一个门牌号，test()获取了这个门牌号，把门牌号毁掉，那么房间里的人还是在啊。<br>证明了证明删除的只是别名|引用，其本身的值没有受到任何的改变。<br>也就是说<strong>global $var其实就是$var=&amp;$GLOBALS[‘var’]</strong>。</p>
+<p>#PHP $_SERVER<br>$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。<br>这个数组中的项目由 Web 服务器创建。不能保证每个服务器都提供全部项目；服务器可能会忽略一些，或者提供一些没有在这里列举出来的项目<br>这里有一个例子，如何使用 $_SERVER中的元素：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">echo $_SERVER[&apos;PHP_SELF&apos;];</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">echo $_SERVER[&apos;SERVER_NAME&apos;];</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">echo $_SERVER[&apos;HTTP_HOST&apos;];</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">echo $_SERVER[&apos;HTTP_REFERER&apos;];</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">echo $_SERVER[&apos;HTTP_USER_AGENT&apos;];</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">echo $_SERVER[&apos;SCRIPT_NAME&apos;];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>此处列出常见的$_SERVER的元素：<br><img src="/2019/02/26/php超级全局变量/2.png" alt="2"><br><img src="/2019/02/26/php超级全局变量/3.png" alt="3"></p>
+<p>#PHP $_REQUEST<br>PHP $_REQUEST 用于收集HTML表单提交的数据。</p>
+<p>以下实例显示了一个输入字段（input）及提交按钮(submit)的表单(form)。 当用户通过点击 “Submit” 按钮提交表单数据时, 表单数据将发送至<form>标签中 action 属性中指定的脚本文件。 在这个实例中，我们指定文件来处理表单数据。如果你希望其他的PHP文件来处理该数据，你可以修改该指定的脚本文件名。 然后，我们可以使用超级全局变量 $_REQUEST 来收集表单中的 input 字段数据:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"> </span><br><span class="line">&lt;form method=&quot;post&quot; action=&quot;&lt;?php echo $_SERVER[&apos;PHP_SELF&apos;];?&gt;&quot;&gt;</span><br><span class="line">Name: &lt;input type=&quot;text&quot; name=&quot;fname&quot;&gt;</span><br><span class="line">&lt;input type=&quot;submit&quot;&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"> </span><br><span class="line">&lt;?php </span><br><span class="line">$name = $_REQUEST[&apos;fname&apos;]; </span><br><span class="line">echo $name; </span><br><span class="line">?&gt;</span><br><span class="line"> </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></form></p>
+
+    <span class="date end-date">2019-02-26</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php循环/">php循环</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php数组/">php数组</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

@@ -1,0 +1,171 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>php数组</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">php数组</h1>
+    <div class="post-info">
+      <span class="date">2019-02-26</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>数组能够在单个变量中存储多个值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);</span><br><span class="line">echo &quot;I like &quot;.$fruit[0].&quot; &quot;.$fruit[1].&quot; &quot;.$fruit[2];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/1.png" alt="1"></p>
+<p>#PHP数组</p>
+<p>##在PHP中创建数组<br>在PHP中，array()函数用于创建数组</p>
+<p>##PHP数值数组<br>这里有两种创建数值数组的方法：</p>
+<p>自动分配 ID 键（ID 键总是从 0 开始）：<br><code>$cars=array(&quot;Volvo&quot;,&quot;BMW&quot;,&quot;Toyota&quot;);</code></p>
+<p>人工分配 ID 键：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$cars[0]=&quot;Volvo&quot;;</span><br><span class="line">$cars[1]=&quot;BMW&quot;;</span><br><span class="line">$cars[2]=&quot;Toyota&quot;;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);</span><br><span class="line">echo &quot;I like &quot;.$fruit[0].&quot; &quot;.$fruit[1].&quot; &quot;.$fruit[2];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>##获取数组的长度 -count()函数<br>count() 函数用于返回数组的长度（元素的数量）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> $fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);</span><br><span class="line"> echo count($fruit); </span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>返回：3</p>
+<p>##遍历数组数值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);</span><br><span class="line">$arraylength = count($fruit);</span><br><span class="line">for($i=0;$i&lt;$arraylength;$i++)</span><br><span class="line">&#123;</span><br><span class="line">	echo $fruit[$i];</span><br><span class="line">	echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/2.png" alt="2"></p>
+<p>##PHP关联数组<br>关联数组是使用您分配给数组的指定的键的数组。</p>
+<p>这里有两种创建关联数组的方法：<br><code>$age=array(&quot;Peter&quot;=&gt;&quot;35&quot;,&quot;Ben&quot;=&gt;&quot;37&quot;,&quot;Joe&quot;=&gt;&quot;43&quot;);</code><br>or<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$age[&apos;Peter&apos;]=&quot;35&quot;;</span><br><span class="line">$age[&apos;Ben&apos;]=&quot;37&quot;;</span><br><span class="line">$age[&apos;Joe&apos;]=&quot;43&quot;;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$age=array(&quot;Peter&quot;=&gt;&quot;35&quot;,&quot;Ben&quot;=&gt;&quot;37&quot;,&quot;Joe&quot;=&gt;&quot;43&quot;);</span><br><span class="line">echo &quot;Peter is &quot; . $age[&apos;Peter&apos;] . &quot; years old.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/02/26/php数组/3.png" alt="3"><br>或者<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$age[&apos;Peter&apos;]=&apos;35&apos;;</span><br><span class="line">$age[&apos;John&apos;]=&apos;65&apos;;</span><br><span class="line">$age[&apos;Jim&apos;]=&apos;24&apos;;</span><br><span class="line">echo &quot;Peter is &quot; . $age[&apos;Peter&apos;] . &quot; years old.&quot;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>输出同上。</p>
+<p>##遍历关联数组<br>使用foreach循环<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$age=array(&quot;Peter&quot;=&gt;&quot;35&quot;,&quot;Ben&quot;=&gt;&quot;37&quot;,&quot;Joe&quot;=&gt;&quot;43&quot;);</span><br><span class="line"> </span><br><span class="line">foreach($age as $i=&gt;$i_value)</span><br><span class="line">&#123;</span><br><span class="line">    echo &quot;Key=&quot; . $i . &quot;, Value=&quot; . $i_value;</span><br><span class="line">    echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/4.png" alt="4"></p>
+<p>##多维数组<br>一个数组中的值可以是另一个数组，另一个数组的值也可以是一个数组。<br>创建一个二维数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$cars = array</span><br><span class="line">(</span><br><span class="line">    array(&quot;Volvo&quot;,100,96),</span><br><span class="line">    array(&quot;BMW&quot;,60,59),</span><br><span class="line">    array(&quot;Toyota&quot;,110,100)</span><br><span class="line">);</span><br><span class="line">$arrlength = count($cars);</span><br><span class="line">for($i=0;$i&lt;$arrlength;$i++)</span><br><span class="line">&#123;</span><br><span class="line">	print_r($cars[$i]);</span><br><span class="line">	echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/9.png" alt="9"></p>
+<p>创建一个多维数组<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php </span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">$sites = array </span><br><span class="line">( </span><br><span class="line">    &quot;runoob&quot;=&gt;array </span><br><span class="line">    ( </span><br><span class="line">        &quot;菜鸟教程&quot;, </span><br><span class="line">        &quot;http://www.runoob.com&quot; </span><br><span class="line">    ), </span><br><span class="line">    &quot;google&quot;=&gt;array </span><br><span class="line">    ( </span><br><span class="line">        &quot;Google 搜索&quot;, </span><br><span class="line">        &quot;http://www.google.com&quot; </span><br><span class="line">    ), </span><br><span class="line">    &quot;taobao&quot;=&gt;array </span><br><span class="line">    ( </span><br><span class="line">        &quot;淘宝&quot;, </span><br><span class="line">        &quot;http://www.taobao.com&quot; </span><br><span class="line">    ) </span><br><span class="line">); </span><br><span class="line">print(&quot;&lt;pre&gt;&quot;); // 格式化输出数组 </span><br><span class="line">print_r($sites); </span><br><span class="line">print(&quot;&lt;/pre&gt;&quot;); </span><br><span class="line">//试着显示上面数组中的某个值：</span><br><span class="line">echo $sites[&apos;runoob&apos;][0] . &apos;地址为：&apos; . $sites[&apos;runoob&apos;][1];</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/10.png" alt="10"></p>
+<p>#PHP数组排序<br>下列 PHP 数组排序函数：</p>
+<p>sort() - 对数组进行升序排列<br>rsort() - 对数组进行降序排列<br>asort() - 根据关联数组的值，对数组进行升序排列<br>ksort() - 根据关联数组的键，对数组进行升序排列<br>arsort() - 根据关联数组的值，对数组进行降序排列<br>krsort() - 根据关联数组的键，对数组进行降序排列</p>
+<p>##sort() -对数组进行升序排序<br>字符串数组中的元素按照字母升序排序<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> $fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);</span><br><span class="line"> $arraylength = count($fruit);</span><br><span class="line"> for($i=0;$i&lt;$arraylength;$i++)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;$fruit[$i]&quot;,&apos; &apos;;</span><br><span class="line"> &#125;</span><br><span class="line"> echo &quot;&lt;br&gt;&quot;;</span><br><span class="line"> sort($fruit);</span><br><span class="line"> for($i=0;$i&lt;$arraylength;$i++)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;$fruit[$i]&quot;,&apos; &apos;;</span><br><span class="line"> &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/5.png" alt="5"></p>
+<p>数字数组中的元素按照数字升序排列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> $number=array(5,3,4,6,1,2);</span><br><span class="line"> $arraylength = count($number);</span><br><span class="line"> for($i=0;$i&lt;$arraylength;$i++)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;$number[$i]&quot;,&apos; &apos;;</span><br><span class="line"> &#125;</span><br><span class="line"> echo &quot;&lt;br&gt;&quot;;</span><br><span class="line"> sort($number);</span><br><span class="line"> for($i=0;$i&lt;$arraylength;$i++)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;$number[$i]&quot;,&apos; &apos;;</span><br><span class="line"> &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/6.png" alt="6"></p>
+<p>##resort() -对数组进行降序排序<br>同上</p>
+<p>##asort() - 根据数组的值，对数组进行升序排列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> $age=array(&quot;Peter&quot;=&gt;&quot;38&quot;,&quot;Ben&quot;=&gt;&quot;24&quot;,&quot;Joe&quot;=&gt;&quot;43&quot;);</span><br><span class="line"> foreach($age as $i=&gt;$i_value)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;key=&quot;.$i.&quot;,value=&quot;.$i_value.&quot;         &quot;;</span><br><span class="line"> &#125;</span><br><span class="line"> asort($age);</span><br><span class="line"> echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  foreach($age as $i=&gt;$i_value)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;key=&quot;.$i.&quot;,value=&quot;.$i_value.&quot;          &quot;;</span><br><span class="line"> &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/7.png" alt="7"></p>
+<p>##arsort() - 根据数组的值，对数组进行降序排列<br>同上</p>
+<p>##ksort() - 根据数组的值，对数组进行升序排列<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> $age=array(&quot;Peter&quot;=&gt;&quot;38&quot;,&quot;Ben&quot;=&gt;&quot;24&quot;,&quot;Joe&quot;=&gt;&quot;43&quot;);</span><br><span class="line"> foreach($age as $i=&gt;$i_value)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;key=&quot;.$i.&quot;,value=&quot;.$i_value.&quot;         &quot;;</span><br><span class="line"> &#125;</span><br><span class="line"> ksort($age);</span><br><span class="line"> echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">  foreach($age as $i=&gt;$i_value)</span><br><span class="line"> &#123;</span><br><span class="line"> 	echo &quot;key=&quot;.$i.&quot;,value=&quot;.$i_value.&quot;          &quot;;</span><br><span class="line"> &#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php数组/8.png" alt="8"></p>
+<p>##krsort() - 根据数组的值，对数组进行降序排列<br>同上</p>
+
+    <span class="date end-date">2019-02-26</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php循环/">php循环</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php数组/">php数组</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

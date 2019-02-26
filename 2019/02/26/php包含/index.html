@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>php包含</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">php包含</h1>
+    <div class="post-info">
+      <span class="date">2019-02-26</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>#PHP include 和 require 语句</p>
+<p>在 PHP 中，您可以在服务器执行 PHP 文件之前在该文件中插入一个文件的内容。</p>
+<p>include 和 require 语句用于在执行流中插入写在其他文件中的有用的代码。</p>
+<p>include 和 require 除了处理错误的方式不同之外，在其他方面都是相同的：<br>require 生成一个致命错误（E_COMPILE_ERROR），在错误发生后脚本会停止执行。<br>include 生成一个警告（E_WARNING），在错误发生后脚本会继续执行。</p>
+<p>如果您希望继续执行，并向用户输出结果，即使包含文件已丢失，那么请使用 include。<br>在框架、CMS 或者复杂的 PHP 应用程序编程中，请始终使用 require 向执行流引用关键文件。</p>
+<p>语法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">include &apos;filename&apos;;</span><br><span class="line">或者</span><br><span class="line">require &apos;filename&apos;;</span><br></pre></td></tr></table></figure></p>
+<p>这一块的知识点详情看<a href="http://www.runoob.com/php/php-includes.html" target="_blank" rel="noopener">http://www.runoob.com/php/php-includes.html</a></p>
+<p><strong>1、加载失败的处理方式不同</strong><br>然后我在这里放上两个用来论证include以及require的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">include &apos;hello.php&apos;;</span><br><span class="line">echo &apos;world&apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>这时依旧会输出world,但是include会报错</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">require &apos;hello.php&apos;;</span><br><span class="line">echo &apos;world&apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>这里什么都没有，只是报错了，所以require和include的差别就在这儿</p>
+<p><strong>2、include()是有条件包含函数，而 require()则是无条件包含函数。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if(FALSE)&#123;</span><br><span class="line">include &apos;file.php&apos;; //file.php不会被引入</span><br><span class="line">&#125;</span><br><span class="line">if(FALSE)&#123;</span><br><span class="line">require &apos;file.php&apos;; //file.php将会被引入</span><br><span class="line">｝</span><br></pre></td></tr></table></figure></p>
+<p><strong>3、文件引用方式</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">$retVal = include(&apos;somefile.php&apos;);</span><br><span class="line">if(!empty($retVal))&#123;</span><br><span class="line">echo &quot;文件包含成功&quot;;</span><br><span class="line">&#125;else&#123;</span><br><span class="line">echo &quot;文件包含失败&quot;;</span><br><span class="line">&#125;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<p>放回报错信息，以及输出文件包含失败，所以这里论证了另一个差别：<br>include有返回值，而require没有。</p>
+<p>include()执行时需要引用的文件每次都要进行读取和评估,<br>require()执行时需要引用的文件只处理一次(实际上执行时需要引用的文件内容替换了require()语句)</p>
+<p>可以看出若有包含这些指令之一的代码和可能执行多次的代码,则使用require()效率比较高,<br>若每次执行代码时相读取不同的文件或者有通过一组文件叠代的循环,就使用include(),</p>
+<p>require通常使用方法，这个函数通常放在 PHP 程序的最前面，PHP 程序在执行前，就会先读入 require 所指定引入的文件，使它变成 PHP 程序网页的一部份。常用的函数，亦可以这个方法将它引入网页中。</p>
+<p>include通常使用方法，这个函数一般是放在流程控制的处理部分中。PHP 程序网页在读到 include 的文件时，才将它读进来。这种方式，可以把程序执行时的流程简单化</p>
+<p>这里重点讲一下require与require_once与include以及include_once的区别</p>
+<p><strong>1.include() 函数会将指定的档案读入并且执行里面的程序。</strong><br>例如：include(‘/home/me/myfile’);<br>被导入的档案中的程序代码都会被执行，而且这些程序在执行的时候会拥有和源文件中呼叫到 include() 函数的位置相同的变量范围（variable scope）。你可以导入同一个服务器中的静态档案，甚至可以通过合并使用 include() 与 fopen() 函数来导入其它服务器上面的档案。</p>
+<p><strong>2.include_once()函数的作用和 include() 是几乎相同的</strong><br>唯一的差别在于 include_once() 函数会先检查要导入的档案是不是已经在该程序中的其它地方被导入过了，如果有的话就不会再次重复导入该档案（这项功能有时候是很重要的，比方说要导入的档案里面宣告了一些你自行定义好的函数，那么如果在同一个程序重复导入这个档案，在第二次导入的时候便会发生错误讯息，因为 PHP 不允许相同名称的函数被重复宣告第二次）。</p>
+<p><strong>3.require()函数会将目标档案的内容读入，并且把自己本身代换成这些读入的内容。</strong><br>这个读入并且代换的动作是在 PHP 引擎编译你的程序代码的时候发生的，而不是发生在 PHP 引擎开始执行编译好的程序代码的时候（PHP 3.0 引擎的工作方式是编译一行执行一行，但是到了 PHP 4.0 就有所改变了，PHP 4.0 是先把整个程序代码全部编译完成后，再将这些编译好的程序代码一次执行完毕，在编译的过程中不会执行任何程序代码）。require() 通常来导入静态的内容，而 include() 则适合用来导入动态的程序代码。</p>
+<p><strong>4.如同 include_once()函数</strong><br>require_once() 函数会先检查目标档案的内容是不是在之前就已经导入过了，如果是的话，便不会再次重复导入同样的内容。<br>我个人习惯使用 require() 函数来导入版权宣告（copyrights），静态文字或其它本身不含有变量，或者本身需要倚赖其它执行过的程序才能正确执行的程序代码。</p>
+
+    <span class="date end-date">2019-02-26</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php循环/">php循环</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php数组/">php数组</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
