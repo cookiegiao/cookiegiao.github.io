@@ -13,10 +13,10 @@
 <link rel="stylesheet" href="/css/style.css">
 
 
-<body oncontextmenu='return false'>
-  <div class=aios_content>
-    <div class=bg-gradient></div>
-    <div class=bg-pattern></div>
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
     <div class="menu-bg">
   <div class="menu-container">
     <ul>
@@ -37,9 +37,9 @@
   <a></a>
 </nav>
 
-    <div class=container style='padding-bottom:40px'>
-      <div class=row>
-  <div class=col-sm-12>
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
     <header>
   <div class="logo">
     <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
@@ -47,18 +47,18 @@
 </header>
 
 
-    <section class=main>
-      <div class=post>
-  <div class=post-header>
-    <h1 class=title>PHP之cookie-session</h1>
-    <div class=post-info>
-      <span class=date>2019-02-27</span>
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">PHP之cookie-session</h1>
+    <div class="post-info">
+      <span class="date">2019-02-27</span>
 
       
     </div>
   </div>
 
-  <div class=content>
+  <div class="content">
     <!-- Gallery -->
     
 
@@ -66,43 +66,35 @@
 <h1 id="PHP-Cookie"><a href="#PHP-Cookie" class="headerlink" title="PHP Cookie"></a>PHP Cookie</h1><p>cookie常用来识别用户。</p>
 <h2 id="如何创建Cookie"><a href="#如何创建Cookie" class="headerlink" title="如何创建Cookie?"></a>如何创建Cookie?</h2><p>setcookie() 函数用于设置 cookie。</p>
 <p><strong>注释：</strong>：setcookie() 函数必须位于 <html> 标签之前。</html></p>
-<p>语法：<br>    <code>setcookie(name, value, expire, path, domain);</code></p>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">**注释：在发送 cookie 时，cookie 的值会自动进行 URL 编码，在取回时进行自动解码。（为防止 URL 编码，请使用 setrawcookie() 取而代之。）**</span><br><span class="line"></span><br><span class="line">实例二：</span><br></pre></td></tr></table></figure></p>
-<p>&lt;?php<br>$expire=time()+60<em>60</em>24*30;<br>setcookie(“user”, “runoob”, $expire);<br>?&gt;</p>
-<html>
+<p>语法：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setcookie(name, value, expire, path, domain);</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">实例一</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">"runoob"</span>, time()+<span class="number">3600</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">....</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">实例二</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$expire=time()+<span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>*<span class="number">30</span>;</span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">"runoob"</span>, $expire);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br></pre></td></tr></table></figure>
+<p>在上面的实例中，过期时间被设置为一个月（60 秒 <em> 60 分 </em> 24 小时 * 30 天）。</p>
+<h2 id="如何取回Cookie值"><a href="#如何取回Cookie值" class="headerlink" title="如何取回Cookie值"></a>如何取回Cookie值</h2><p>这里使用到一个PHP的超级全局变量$_COOKIE</p>
+<p>PHP 的 $_COOKIE 变量用于取回 cookie 的值</p>
+<p>在下面的实例中，我们取回了名为”user”的cookie值，并把它显示在页面上：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 输出 cookie 值</span></span><br><span class="line"><span class="keyword">echo</span> $_COOKIE[<span class="string">"user"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看所有 cookie</span></span><br><span class="line">print_r($_COOKIE);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在下面的实例中，我们使用 isset() 函数来确认是否已设置了 cookie：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_COOKIE[<span class="string">"user"</span>]))</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"欢迎 "</span> . $_COOKIE[<span class="string">"user"</span>] . <span class="string">"!&lt;br&gt;"</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"普通访客!&lt;br&gt;"</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="如何删除-Cookie"><a href="#如何删除-Cookie" class="headerlink" title="如何删除 Cookie"></a>如何删除 Cookie</h2><p>当删除 cookie 时，您应当使过期日期变更为过去的时间点。</p>
+<p>删除的实例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 设置 cookie 过期时间为过去 1 小时</span></span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">""</span>, time()<span class="number">-3600</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>总结：所有的操作基本都与setcookie(),这个函数有关。</p>
+<h1 id="PHP-session"><a href="#PHP-session" class="headerlink" title="PHP session"></a>PHP session</h1><h2 id="开始-PHP-Session"><a href="#开始-PHP-Session" class="headerlink" title="开始 PHP Session"></a>开始 PHP Session</h2><p>session_start()函数</p>
+<p>在您把用户信息存储到 PHP session 中之前，<strong>首先必须启动会话。</strong></p>
+<p><strong>注释</strong>：session_start() 函数必须位于 <html> 标签之前：</html></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> session_start(); <span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>上面的代码会向服务器注册用户的会话，以便您可以开始保存用户信息，同时会为用户会话分配一个 UID。</p>
+<p>参考文章：<br><a href="https://blog.csdn.net/zhengxijia2012/article/details/73437376" target="_blank" rel="noopener">https://blog.csdn.net/zhengxijia2012/article/details/73437376</a></p>
+<h2 id="存储-Session-变量"><a href="#存储-Session-变量" class="headerlink" title="存储 Session 变量"></a>存储 Session 变量</h2><p>引入另外一个超全局变量$_SESSION。</p>
+<p>存储和取回 session 变量的正确方法是使用 PHP $_SESSION 变量<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="comment">// 存储 session 数据</span></span><br><span class="line">$_SESSION[<span class="string">'views'</span>]=<span class="number">1</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 检索 session 数据</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">"浏览量："</span>. $_SESSION[<span class="string">'views'</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>输出：1</p>
+<p>在下面的实例中，我们创建了一个简单的 page-view 计数器。isset() 函数检测是否已设置 “views” 变量。如果已设置 “views” 变量，我们累加计数器。如果 “views” 不存在，则创建 “views” 变量，并把它设置为 1：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">'views'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $_SESSION[<span class="string">'views'</span>]=$_SESSION[<span class="string">'views'</span>]+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    $_SESSION[<span class="string">'views'</span>]=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"浏览量："</span>. $_SESSION[<span class="string">'views'</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="销毁-Session"><a href="#销毁-Session" class="headerlink" title="销毁 Session"></a>销毁 Session</h2><p>如果您希望删除某些 session 数据，可以使用 unset() 或 session_destroy() 函数。</p>
+<p>unset() 函数用于释放指定的 session 变量：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">'views'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">unset</span>($_SESSION[<span class="string">'views'</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>也可以通过调用 session_destroy() 函数彻底销毁 session：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>注释：</strong>session_destroy() 将重置 session，您将失去所有已存储的 session 数据。</p>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">在上面的实例中，过期时间被设置为一个月（60 秒 * 60 分 * 24 小时 * 30 天）。</span><br><span class="line"></span><br><span class="line">## 如何取回Cookie值</span><br><span class="line">这里使用到一个PHP的超级全局变量$_COOKIE</span><br><span class="line"></span><br><span class="line">PHP 的 $_COOKIE 变量用于取回 cookie 的值</span><br><span class="line"></span><br><span class="line">在下面的实例中，我们取回了名为&quot;user&quot;的cookie值，并把它显示在页面上：</span><br></pre></td></tr></table></figure>
-<p>&lt;?php<br>// 输出 cookie 值<br>echo $_COOKIE[“user”];</p>
-<p>// 查看所有 cookie<br>print_r($_COOKIE);<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在下面的实例中，我们使用 isset() 函数来确认是否已设置了 cookie：</span><br></pre></td></tr></table></figure></p>
-<p><html></html></p>
-<p><head><meta name="generator" content="Hexo 3.8.0"></head></p>
-<p><meta charset="utf-8"></p>
-<p><title>菜鸟教程(runoob.com)</title><br></p>
-<body>
-
-<p>&lt;?php<br>if (isset($_COOKIE[“user”]))<br>    echo “欢迎 “ . $_COOKIE[“user”] . “!<br>“;<br>else<br>    echo “普通访客!<br>“;<br>?&gt;</p>
-<p></p></body><br></html><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">## 如何删除 Cookie</span><br><span class="line">当删除 cookie 时，您应当使过期日期变更为过去的时间点。</span><br><span class="line"></span><br><span class="line">删除的实例：</span><br></pre></td></tr></table></figure><p></p>
-<p>&lt;?php<br>// 设置 cookie 过期时间为过去 1 小时<br>setcookie(“user”, “”, time()-3600);<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">总结：所有的操作基本都与setcookie(),这个函数有关。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># PHP session</span><br><span class="line">## 开始 PHP Session</span><br><span class="line"></span><br><span class="line">session_start()函数</span><br><span class="line"></span><br><span class="line">在您把用户信息存储到 PHP session 中之前，**首先必须启动会话。**</span><br><span class="line"></span><br><span class="line">**注释**：session_start() 函数必须位于 &lt;html&gt; 标签之前：</span><br></pre></td></tr></table></figure></p>
-<p>&lt;?php session_start(); ?&gt;</p>
-<p><html></html></p>
-<body>
-
-<p></p></body><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">上面的代码会向服务器注册用户的会话，以便您可以开始保存用户信息，同时会为用户会话分配一个 UID。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">参考文章：</span><br><span class="line">[https://blog.csdn.net/zhengxijia2012/article/details/73437376](https://blog.csdn.net/zhengxijia2012/article/details/73437376)</span><br><span class="line">## 存储 Session 变量</span><br><span class="line">引入另外一个超全局变量$_SESSION。</span><br><span class="line"></span><br><span class="line">存储和取回 session 变量的正确方法是使用 PHP $_SESSION 变量：</span><br></pre></td></tr></table></figure><p></p>
-<p>&lt;?php<br>session_start();<br>// 存储 session 数据<br>$_SESSION[‘views’]=1;<br>?&gt;</p>
-<p><html></html></p>
-<p><head><meta name="generator" content="Hexo 3.8.0"></head></p>
-<p><meta charset="utf-8"></p>
-<p><title>菜鸟教程(runoob.com)</title><br></p>
-<body>
-
-<p>&lt;?php<br>// 检索 session 数据<br>echo “浏览量：”. $_SESSION[‘views’];<br>?&gt;</p>
-<p></p></body><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">输出：1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">在下面的实例中，我们创建了一个简单的 page-view 计数器。isset() 函数检测是否已设置 &quot;views&quot; 变量。如果已设置 &quot;views&quot; 变量，我们累加计数器。如果 &quot;views&quot; 不存在，则创建 &quot;views&quot; 变量，并把它设置为 1：</span><br></pre></td></tr></table></figure><p></p>
-<p>&lt;?php<br>session_start();</p>
-<p>if(isset($_SESSION[‘views’]))<br>{<br>    $_SESSION[‘views’]=$_SESSION[‘views’]+1;<br>}<br>else<br>{<br>    $_SESSION[‘views’]=1;<br>}<br>echo “浏览量：”. $_SESSION[‘views’];<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">## 销毁 Session</span><br><span class="line"></span><br><span class="line">如果您希望删除某些 session 数据，可以使用 unset() 或 session_destroy() 函数。</span><br><span class="line"></span><br><span class="line">unset() 函数用于释放指定的 session 变量：</span><br></pre></td></tr></table></figure></p>
-<p>&lt;?php<br>session_start();<br>if(isset($_SESSION[‘views’]))<br>{<br>    unset($_SESSION[‘views’]);<br>}<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">也可以通过调用 session_destroy() 函数彻底销毁 session：</span><br></pre></td></tr></table></figure></p>
-<p>&lt;?php<br>session_destroy();<br>?&gt;<br><code>`</code><br><strong>注释：</strong>session_destroy() 将重置 session，您将失去所有已存储的 session 数据。</p>
-
-    <span class='date end-date'>2019-02-27</span>
+    <span class="date end-date">2019-02-27</span>
   </div>
 
   
@@ -131,6 +123,10 @@
     <ul>
       
         <li>
+          <a class="footer-post" href="/2019/02/27/HTTP之COOKIE及SESSION/">HTTP之COOKIE及SESSION</a>
+        </li>
+      
+        <li>
           <a class="footer-post" href="/2019/02/27/php之文件以及文件上传/">php之文件以及文件上传</a>
         </li>
       
@@ -140,10 +136,6 @@
       
         <li>
           <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
         </li>
       
     </ul>

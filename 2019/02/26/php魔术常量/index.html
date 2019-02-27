@@ -66,15 +66,15 @@
 <p>不过很多常量都是由不同的扩展库定义的，只有在加载了这些扩展库时才会出现，或者动态加载后，或者在编译时已经包括进去了。</p>
 <p>有八个魔术常量它们的值随着它们在代码中的位置改变而改变。</p>
 <p>例如 <strong>LINE</strong> 的值就依赖于它在脚本中所处的行来决定。这些特殊的常量不区分大小写.</p>
-<h1 id="LINE"><a href="#LINE" class="headerlink" title="LINE"></a><em>LINE</em></h1><p>文件的当前行号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">echo &apos;这是第 &quot; &apos;  . __LINE__ . &apos; &quot; 行&apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="LINE"><a href="#LINE" class="headerlink" title="LINE"></a><em>LINE</em></h1><p>文件的当前行号<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">'这是第 " '</span>  . <span class="keyword">__LINE__</span> . <span class="string">' " 行'</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>返回：这是第 “ 2 ” 行</p>
-<h1 id="FILE"><a href="#FILE" class="headerlink" title="FILE"></a><em>FILE</em></h1><p>文件的完整路径和文件名，如果用在被包含文件中，则返回被包含的文件名。<br>自 PHP 4.0.2 起，<strong>FILE</strong> 总是包含一个绝对路径（如果是符号连接，则是解析后的绝对路径），而在此之前的版本有时会包含一个相对路径。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">echo &apos;该文件位于 &quot; &apos;  . __FILE__ . &apos; &quot; &apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/02/26/php魔术常量/php魔术变量/1.png" alt="1"></p>
+<h1 id="FILE"><a href="#FILE" class="headerlink" title="FILE"></a><em>FILE</em></h1><p>文件的完整路径和文件名，如果用在被包含文件中，则返回被包含的文件名。<br>自 PHP 4.0.2 起，<strong>FILE</strong> 总是包含一个绝对路径（如果是符号连接，则是解析后的绝对路径），而在此之前的版本有时会包含一个相对路径。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">'该文件位于 " '</span>  . <span class="keyword">__FILE__</span> . <span class="string">' " '</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php魔术常量/1.png" alt="1"></p>
 <h1 id="DIR"><a href="#DIR" class="headerlink" title="DIR"></a><em>DIR</em></h1><p>文件所在的目录。如果用在被包括文件中，则返回被包括的文件所在的目录。</p>
-<p>它等价于 dirname(<strong>FILE</strong>)。除非是根目录，否则目录中名不包括末尾的斜杠。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">echo &apos;该文件位于 &quot; &apos;  . __DIR__ . &apos; &quot; &apos;;</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/02/26/php魔术常量/php魔术变量/2.png" alt="2"></p>
-<h1 id="FUNCTION"><a href="#FUNCTION" class="headerlink" title="FUNCTION"></a><em>FUNCTION</em></h1><p>函数名称（PHP 4.3.0 新加）。自 PHP 5 起本常量返回该函数被定义时的名字（区分大小写）。在 PHP 4 中该值总是小写字母的。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">header(&apos;Content-Type: text/html; charset=utf-8&apos;);</span><br><span class="line">function test() &#123;</span><br><span class="line">    echo  &apos;函数名为：&apos; . __FUNCTION__ ;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/02/26/php魔术常量/php魔术变量/3.png" alt="3"></p>
+<p>它等价于 dirname(<strong>FILE</strong>)。除非是根目录，否则目录中名不包括末尾的斜杠。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">'该文件位于 " '</span>  . <span class="keyword">__DIR__</span> . <span class="string">' " '</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php魔术常量/2.png" alt="2"></p>
+<h1 id="FUNCTION"><a href="#FUNCTION" class="headerlink" title="FUNCTION"></a><em>FUNCTION</em></h1><p>函数名称（PHP 4.3.0 新加）。自 PHP 5 起本常量返回该函数被定义时的名字（区分大小写）。在 PHP 4 中该值总是小写字母的。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">'Content-Type: text/html; charset=utf-8'</span>);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span>  <span class="string">'函数名为：'</span> . <span class="keyword">__FUNCTION__</span> ;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/02/26/php魔术常量/3.png" alt="3"></p>
 
     <span class="date end-date">2019-02-26</span>
   </div>
@@ -105,6 +105,10 @@
     <ul>
       
         <li>
+          <a class="footer-post" href="/2019/02/27/HTTP之COOKIE及SESSION/">HTTP之COOKIE及SESSION</a>
+        </li>
+      
+        <li>
           <a class="footer-post" href="/2019/02/27/php之文件以及文件上传/">php之文件以及文件上传</a>
         </li>
       
@@ -114,10 +118,6 @@
       
         <li>
           <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
         </li>
       
     </ul>
