@@ -65,11 +65,12 @@
     <p>关于cookie以及sesssion的知识点，我总结在另一篇博客里。</p>
 <h1 id="PHP-Cookie"><a href="#PHP-Cookie" class="headerlink" title="PHP Cookie"></a>PHP Cookie</h1><p>cookie常用来识别用户。</p>
 <h2 id="如何创建Cookie"><a href="#如何创建Cookie" class="headerlink" title="如何创建Cookie?"></a>如何创建Cookie?</h2><p>setcookie() 函数用于设置 cookie。</p>
-<p><strong>注释：</strong>注释：setcookie() 函数必须位于 <html> 标签之前。</html></p>
+<p><strong>注释：</strong>：setcookie() 函数必须位于 <html> 标签之前。</html></p>
 <p>语法：<br>    <code>setcookie(name, value, expire, path, domain);</code></p>
 <p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">.....</span><br><span class="line">```    </span><br><span class="line">**注释：在发送 cookie 时，cookie 的值会自动进行 URL 编码，在取回时进行自动解码。（为防止 URL 编码，请使用 setrawcookie() 取而代之。）**</span><br><span class="line"></span><br><span class="line">实例二：</span><br></pre></td></tr></table></figure></p>
 <p>&lt;?php<br>$expire=time()+60<em>60</em>24*30;<br>setcookie(“user”, “runoob”, $expire);<br>?&gt;</p>
-<p><html><br>…..</html></p>
+<html>
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">在上面的实例中，过期时间被设置为一个月（60 秒 * 60 分 * 24 小时 * 30 天）。</span><br><span class="line"></span><br><span class="line">## 如何取回Cookie值</span><br><span class="line">这里使用到一个PHP的超级全局变量$_COOKIE</span><br><span class="line"></span><br><span class="line">PHP 的 $_COOKIE 变量用于取回 cookie 的值</span><br><span class="line"></span><br><span class="line">在下面的实例中，我们取回了名为&quot;user&quot;的cookie值，并把它显示在页面上：</span><br></pre></td></tr></table></figure>
 <p>&lt;?php<br>// 输出 cookie 值<br>echo $_COOKIE[“user”];</p>
 <p>// 查看所有 cookie<br>print_r($_COOKIE);<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">在下面的实例中，我们使用 isset() 函数来确认是否已设置了 cookie：</span><br></pre></td></tr></table></figure></p>
@@ -80,7 +81,7 @@
 <body>
 
 <p>&lt;?php<br>if (isset($_COOKIE[“user”]))<br>    echo “欢迎 “ . $_COOKIE[“user”] . “!<br>“;<br>else<br>    echo “普通访客!<br>“;<br>?&gt;</p>
-<p></p></body><br><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">## 如何删除 Cookie</span><br><span class="line">当删除 cookie 时，您应当使过期日期变更为过去的时间点。</span><br><span class="line"></span><br><span class="line">删除的实例：</span><br></pre></td></tr></table></figure><p></p>
+<p></p></body><br></html><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">## 如何删除 Cookie</span><br><span class="line">当删除 cookie 时，您应当使过期日期变更为过去的时间点。</span><br><span class="line"></span><br><span class="line">删除的实例：</span><br></pre></td></tr></table></figure><p></p>
 <p>&lt;?php<br>// 设置 cookie 过期时间为过去 1 小时<br>setcookie(“user”, “”, time()-3600);<br>?&gt;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">总结：所有的操作基本都与setcookie(),这个函数有关。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"># PHP session</span><br><span class="line">## 开始 PHP Session</span><br><span class="line"></span><br><span class="line">session_start()函数</span><br><span class="line"></span><br><span class="line">在您把用户信息存储到 PHP session 中之前，**首先必须启动会话。**</span><br><span class="line"></span><br><span class="line">**注释**：session_start() 函数必须位于 &lt;html&gt; 标签之前：</span><br></pre></td></tr></table></figure></p>
 <p>&lt;?php session_start(); ?&gt;</p>
 <p><html></html></p>
@@ -130,6 +131,10 @@
     <ul>
       
         <li>
+          <a class="footer-post" href="/2019/02/27/http-cookie/">http-cookie/session</a>
+        </li>
+      
+        <li>
           <a class="footer-post" href="/2019/02/27/php之文件以及文件上传/">php之文件以及文件上传</a>
         </li>
       
@@ -138,11 +143,7 @@
         </li>
       
         <li>
-          <a class="footer-post" href="/2019/02/27/http-cookie/">http-cookie/session</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+          <a class="footer-post" href="/2019/02/27/http的cookie和session/">http-cookie/session</a>
         </li>
       
     </ul>
