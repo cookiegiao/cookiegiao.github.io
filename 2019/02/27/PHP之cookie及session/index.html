@@ -67,7 +67,7 @@
 <h2 id="如何创建Cookie"><a href="#如何创建Cookie" class="headerlink" title="如何创建Cookie?"></a>如何创建Cookie?</h2><p>setcookie() 函数用于设置 cookie。</p>
 <p><strong>注释：</strong>：setcookie() 函数必须位于 <html> 标签之前。</html></p>
 <p>语法：<br>    <code>setcookie(name, value, expire, path, domain);</code></p>
-<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">.....</span><br><span class="line">```    </span><br><span class="line">**注释：在发送 cookie 时，cookie 的值会自动进行 URL 编码，在取回时进行自动解码。（为防止 URL 编码，请使用 setrawcookie() 取而代之。）**</span><br><span class="line"></span><br><span class="line">实例二：</span><br></pre></td></tr></table></figure></p>
+<p>实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">setcookie(&quot;user&quot;, &quot;runoob&quot;, time()+3600);</span><br><span class="line">?&gt;</span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">**注释：在发送 cookie 时，cookie 的值会自动进行 URL 编码，在取回时进行自动解码。（为防止 URL 编码，请使用 setrawcookie() 取而代之。）**</span><br><span class="line"></span><br><span class="line">实例二：</span><br></pre></td></tr></table></figure></p>
 <p>&lt;?php<br>$expire=time()+60<em>60</em>24*30;<br>setcookie(“user”, “runoob”, $expire);<br>?&gt;</p>
 <html>
 
@@ -131,10 +131,6 @@
     <ul>
       
         <li>
-          <a class="footer-post" href="/2019/02/27/http-cookie/">http-cookie/session</a>
-        </li>
-      
-        <li>
           <a class="footer-post" href="/2019/02/27/php之文件以及文件上传/">php之文件以及文件上传</a>
         </li>
       
@@ -143,7 +139,11 @@
         </li>
       
         <li>
-          <a class="footer-post" href="/2019/02/27/http的cookie和session/">http-cookie/session</a>
+          <a class="footer-post" href="/2019/02/26/php之面对对象/">php之面对对象</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/26/php运算符/">php运算符</a>
         </li>
       
     </ul>
