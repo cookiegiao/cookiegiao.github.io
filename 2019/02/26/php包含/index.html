@@ -62,8 +62,7 @@
     <!-- Gallery -->
     
 
-    <p>#PHP include 和 require 语句</p>
-<p>在 PHP 中，您可以在服务器执行 PHP 文件之前在该文件中插入一个文件的内容。</p>
+    <h1 id="PHP-include-和-require-语句"><a href="#PHP-include-和-require-语句" class="headerlink" title="PHP include 和 require 语句"></a>PHP include 和 require 语句</h1><p>在 PHP 中，您可以在服务器执行 PHP 文件之前在该文件中插入一个文件的内容。</p>
 <p>include 和 require 语句用于在执行流中插入写在其他文件中的有用的代码。</p>
 <p>include 和 require 除了处理错误的方式不同之外，在其他方面都是相同的：<br>require 生成一个致命错误（E_COMPILE_ERROR），在错误发生后脚本会停止执行。<br>include 生成一个警告（E_WARNING），在错误发生后脚本会继续执行。</p>
 <p>如果您希望继续执行，并向用户输出结果，即使包含文件已丢失，那么请使用 include。<br>在框架、CMS 或者复杂的 PHP 应用程序编程中，请始终使用 require 向执行流引用关键文件。</p>
