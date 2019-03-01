@@ -1,0 +1,167 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>mysql基本使用与用户管理</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">mysql基本使用与用户管理</h1>
+    <div class="post-info">
+      <span class="date">2019-03-01</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <h1 id="与其哀叹，不如埋头苦干"><a href="#与其哀叹，不如埋头苦干" class="headerlink" title="与其哀叹，不如埋头苦干"></a>与其哀叹，不如埋头苦干</h1><p>怪自己，之前的学习过程中囫囵吞枣，没有好好复习，现在还是个半吊子。<br>所以现在开始，认真记录自己所学的每一点知识，不和别人比。</p>
+<h1 id="mysql之alert命令"><a href="#mysql之alert命令" class="headerlink" title="mysql之alert命令"></a>mysql之alert命令</h1><h2 id="对表字段进行删除，添加，修改"><a href="#对表字段进行删除，添加，修改" class="headerlink" title="对表字段进行删除，添加，修改"></a>对表字段进行删除，添加，修改</h2><p>ALTER 命令及 DROP 子句来删除以上创建表的 i 字段：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl  DROP i;</span><br></pre></td></tr></table></figure></p>
+<p>如果数据表中只剩余一个字段则无法使用DROP来删除字段。</p>
+<p>MySQL 中使用 ADD 子句来向数据表中添加列，如下实例在表 testalter_tbl 中添加 i 字段，并定义数据类型:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ADD i INT;</span><br></pre></td></tr></table></figure></p>
+<p>如果你需要指定新增字段的位置，可以使用MySQL提供的关键字 FIRST (设定位第一列)， AFTER 字段名（设定位于某个字段之后）。</p>
+<p>尝试以下 ALTER TABLE 语句, 在执行成功后，使用 SHOW COLUMNS 查看表结构的变化：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT FIRST;</span><br><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT AFTER c;</span><br></pre></td></tr></table></figure></p>
+<p>FIRST 和 AFTER 关键字可用于 ADD 与 MODIFY 子句，所以如果你想重置数据表字段的位置就需要先使用 DROP 删除字段然后使用 ADD 来添加字段并设置位置。</p>
+<h2 id="修改字段类型及名称"><a href="#修改字段类型及名称" class="headerlink" title="修改字段类型及名称"></a>修改字段类型及名称</h2><p>如果需要修改字段类型及名称, 你可以在ALTER命令中使用 MODIFY 或 CHANGE 子句 。</p>
+<p>例如，把字段 c 的类型从 CHAR(1) 改为 CHAR(10)，可以执行以下命令:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl MODIFY c CHAR(<span class="number">10</span>);</span><br></pre></td></tr></table></figure></p>
+<p>使用 CHANGE 子句, 语法有很大的不同。 在 CHANGE 关键字之后，紧跟着的是你要修改的字段名，然后指定新字段名及类型。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE i j BIGINT;</span><br><span class="line"></span><br><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE j j INT;</span><br></pre></td></tr></table></figure></p>
+<p>这么看来，似乎CHANGE的作用更大一些。</p>
+<h2 id="修改表名"><a href="#修改表名" class="headerlink" title="修改表名"></a>修改表名</h2><p>如果需要修改数据表的名称，可以在 ALTER TABLE 语句中使用 RENAME 子句来实现。</p>
+<p>尝试以下实例将数据表 testalter_tbl 重命名为 alter_tbl：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl RENAME TO alter_tbl;</span><br></pre></td></tr></table></figure></p>
+<p>参考文章：<a href="http://www.runoob.com/mysql/mysql-alter.html" target="_blank" rel="noopener">http://www.runoob.com/mysql/mysql-alter.html</a></p>
+<h1 id="mysql-用户管理和权限设置"><a href="#mysql-用户管理和权限设置" class="headerlink" title="mysql 用户管理和权限设置"></a>mysql 用户管理和权限设置</h1><h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="keyword">use</span> <span class="title">mysql</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select host,user,password from user ;</span><br></pre></td></tr></table></figure>
+<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>命令：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER <span class="string">'username'</span>@<span class="string">'host'</span> IDENTIFIED BY <span class="string">'password'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>说明：<br>username：你将创建的用户名<br>host：指定该用户在哪个主机上可以登陆，如果是本地用户可用localhost，如果想让该用户可以从任意远程主机登陆，可以使用通配符%<br>password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器</p>
+<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create user  <span class="string">'zx_root'</span>@<span class="string">'localhost'</span>  IDENTIFIED by <span class="string">'123456'</span>;   <span class="comment">//identified by 会将纯文本密码加密作为散列值存储</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;drop user <span class="string">'username'</span>@<span class="string">'host'</span>;   <span class="comment">//mysql5之前删除用户时必须先使用revoke 删除用户权限，然后删除用户，mysql5之后drop 命令可以删除用户的同时删除用户的相关权限</span></span><br></pre></td></tr></table></figure>
+<h3 id="更改密码"><a href="#更改密码" class="headerlink" title="更改密码"></a>更改密码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD <span class="keyword">FOR</span> <span class="string">'username'</span>@<span class="string">'host'</span> = PASSWORD(<span class="string">'newpassword'</span>);</span><br></pre></td></tr></table></figure>
+<p>如果是当前登陆用户用:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD = PASSWORD(<span class="string">"newpassword"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD <span class="keyword">FOR</span> <span class="string">'pig'</span>@<span class="string">'%'</span> = PASSWORD(<span class="string">"123456"</span>);</span><br></pre></td></tr></table></figure></p>
+<h2 id="赋权"><a href="#赋权" class="headerlink" title="赋权"></a>赋权</h2><h3 id="查看用户权限"><a href="#查看用户权限" class="headerlink" title="查看用户权限"></a>查看用户权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show grants <span class="keyword">for</span> <span class="string">'username'</span>@<span class="string">'host'</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="赋予权限"><a href="#赋予权限" class="headerlink" title="赋予权限"></a>赋予权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT privileges ON databasename.tablename TO <span class="string">'username'</span>@<span class="string">'host'</span></span><br></pre></td></tr></table></figure>
+<p>说明:<br>privileges：用户的操作权限，如SELECT，INSERT，UPDATE等，如果要授予所的权限则使用ALL<br>databasename：数据库名<br>tablename：表名，如果要授予该用户对所有数据库和表的相应操作权限则可用<em>表示，如</em>.*</p>
+<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GRANT SELECT, INSERT ON test.user TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br><span class="line">GRANT ALL ON *.* TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br><span class="line">GRANT ALL ON maindataplus.* TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>注意:<br>用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT privileges ON databasename.tablename TO <span class="string">'username'</span>@<span class="string">'host'</span> WITH GRANT OPTION;</span><br></pre></td></tr></table></figure></p>
+<h3 id="回收权限"><a href="#回收权限" class="headerlink" title="回收权限"></a>回收权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REVOKE privilege ON databasename.tablename FROM <span class="string">'username'</span>@<span class="string">'host'</span>;</span><br></pre></td></tr></table></figure>
+<p>说明:<br>privilege, databasename, tablename：同授权部分</p>
+<p>例子:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REVOKE SELECT ON *.* FROM <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>参考文章:<a href="https://www.cnblogs.com/sos-blue/p/6852945.html" target="_blank" rel="noopener">https://www.cnblogs.com/sos-blue/p/6852945.html</a></p>
+
+    <span class="date end-date">2019-03-01</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/28/HTTP笔记/">HTTP笔记</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/28/PHP中POST-GET/">PHP中POST&amp;&amp;GET</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/27/PHP中-PHP-SELE/">PHP中的$_SERVER(PHP_SELF)</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
