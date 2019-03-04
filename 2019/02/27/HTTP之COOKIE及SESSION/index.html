@@ -83,7 +83,8 @@
 <p>2 ) 这个用户随后的所有请求都应包括这个标识号。服务器会校对这个标识号以判断请求属于哪个session。</p>
 <p>这种机制不使用IP作为标识，是因为很多机器是通过代理服务器方式上网，没法区分每一台机器。</p>
 <p>对于session标识号（sessionID），有两种方式实现：cookies和URL重写。</p>
-<p>然后用一个很形象的比喻来理解session<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">假设Web Server是一个商场的存包处，</span><br><span class="line">顾客(HTTP-request)，第一次来到存包处，管理员把顾客的物品存放在某一个柜子里面（这个柜子就相当于Session），然后把一个号码牌交给这个顾 客，作为取包凭证（这个号码牌就是Session ID）。顾客（HTTP Request）下一次来的时候，就要把号码牌（Session ID）交给存包处（Web Server）的管理员。管理员根据号码牌（Session ID）找到相应的柜子（Session），根据顾客（HTTP Request）的请求，Web Server可以取出、更换、添加柜子（Session）中的物品，Web Server也可以让顾客（HTTP Request）的号码牌和号码牌对应的柜子（Session）失效。顾客（HTTP Request）的忘性很大，管理员在顾客回去的时候（HTTP Response）都要重新提醒顾客记住自己的号码牌（Session ID）。这样，顾客（HTTP Request）下次来的时候，就又带着号码牌回来了。</span><br></pre></td></tr></table></figure></p>
+<p>然后用一个很形象的比喻来理解session</p>
+<p>假设Web Server是一个商场的存包处，<br>顾客(HTTP-request)，第一次来到存包处，管理员把顾客的物品存放在某一个柜子里面（这个柜子就相当于Session），然后把一个号码牌交给这个顾 客，作为取包凭证（这个号码牌就是Session ID）。顾客（HTTP Request）下一次来的时候，就要把号码牌（Session ID）交给存包处（Web Server）的管理员。管理员根据号码牌（Session ID）找到相应的柜子（Session），根据顾客（HTTP Request）的请求，Web Server可以取出、更换、添加柜子（Session）中的物品，Web Server也可以让顾客（HTTP Request）的号码牌和号码牌对应的柜子（Session）失效。顾客（HTTP Request）的忘性很大，管理员在顾客回去的时候（HTTP Response）都要重新提醒顾客记住自己的号码牌（Session ID）。这样，顾客（HTTP Request）下次来的时候，就又带着号码牌回来了。 </p>
 <h2 id="实现session的两种方式"><a href="#实现session的两种方式" class="headerlink" title="实现session的两种方式"></a>实现session的两种方式</h2><h3 id="1）URL重写。"><a href="#1）URL重写。" class="headerlink" title="1）URL重写。"></a>1）URL重写。</h3><p>Web Server在返回Response的时候，检查页面中所有的URL，包括所有的连接，和HTML Form的Action属性，在这些URL后面加上“;jsessionid=XXX”。<br>下一次，用户访问这个页面中的URL。jsessionid就会传回到Web Server。</p>
 <h3 id="2）Cookie。"><a href="#2）Cookie。" class="headerlink" title="2）Cookie。"></a>2）Cookie。</h3><p>如果客户端支持Cookie，Web Server在返回Response的时候，在Response的Header部分，加入一个“set-cookie: jsessionid=XXXX”header属性，把jsessionid放在Cookie里传到客户端。 </p>
 <p>客户端会把Cookie存放在本地文件里，下一次访问Web Server的时候，再把Cookie的信息放到HTTP Request的“Cookie”header属性里面，这样jsessionid就随着HTTP Request返回给Web Server。</p>
@@ -119,6 +120,10 @@
     <ul>
       
         <li>
+          <a class="footer-post" href="/2019/03/03/HTTP污染拙见/">HTTP污染拙见</a>
+        </li>
+      
+        <li>
           <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
         </li>
       
@@ -128,10 +133,6 @@
       
         <li>
           <a class="footer-post" href="/2019/02/28/PHP中POST-GET/">PHP中POST&amp;&amp;GET</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/02/27/PHP中-PHP-SELE/">PHP中的$_SERVER(PHP_SELF)</a>
         </li>
       
     </ul>
