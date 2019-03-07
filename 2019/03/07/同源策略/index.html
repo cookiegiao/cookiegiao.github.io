@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>同源策略</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">同源策略</h1>
+    <div class="post-info">
+      <span class="date">2019-03-07</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>感觉同源策略还挺难的，23333……</p>
+<h1 id="URL和URI的区别："><a href="#URL和URI的区别：" class="headerlink" title="URL和URI的区别："></a>URL和URI的区别：</h1><p>参考文章：<a href="https://www.cnblogs.com/chengdabelief/p/6635045.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengdabelief/p/6635045.html</a></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">理解URI和URL的区别，我们引入URN这个概念。</span><br><span class="line"></span><br><span class="line">URI = Universal Resource Identifier 统一资源标志符</span><br><span class="line"></span><br><span class="line">URL = Universal Resource Locator 统一资源定位符</span><br><span class="line"></span><br><span class="line">URN = Universal Resource Name 统一资源名称</span><br></pre></td></tr></table></figure>
+<p>三者的关系如下：<br><img src="/2019/03/07/同源策略/1.png" alt=""></p>
+<p>换句话说：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">URI分为三种，URL or URN or （URL and URI）</span><br><span class="line"></span><br><span class="line">URL代表资源的路径地址，而URI代表资源的名称。</span><br></pre></td></tr></table></figure></p>
+<p>通过URL找到资源的网络位置进行标识，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://example.org/absolute/URI/with/absolute/path/to/resource.txt</span><br><span class="line"></span><br><span class="line">ftp://example.org/resource.txt</span><br></pre></td></tr></table></figure></p>
+<p>通过URI找到资源是通过对名称进行标识，这个名称在某命名空间中，并不代表网络地址，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">urn:issn:1535-3612</span><br></pre></td></tr></table></figure></p>
+<h1 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h1><h2 id="什么是同源策略？"><a href="#什么是同源策略？" class="headerlink" title="什么是同源策略？"></a>什么是同源策略？</h2><p>话说在前面，同源策略是一个模型，并非一个标准，毕竟一个标准在不同的情况下的实现可能是千变万化的。</p>
+<p>web应用的安全模型中是一个重要概念。在这个策略下，web浏览器允许第一个页面的脚本访问第二个页面里的数据，但是也只有在两个页面有相同的源时。源是由URI，主机名，端口号组合而成的。这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</p>
+<p>对于普遍依赖于cookie维护授权用户session的现代浏览器来说，这种机制有特殊意义。客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</p>
+<h2 id="既为同源，何时同源？"><a href="#既为同源，何时同源？" class="headerlink" title="既为同源，何时同源？"></a>既为同源，何时同源？</h2><p>RFC6454中有定义URI源的算法定义。<strong>对于绝对的URIs，源就是{协议，主机，端口}定义的。只有这些值完全一样才认为两个资源是同源的。</strong><br><img src="/2019/03/07/同源策略/3.png" alt=""><br>只要三个元素中有一个不符合，便称为跨域。</p>
+<p>为了举例，下面的表格给出了与URL “<a href="http://www.example.com/dir/page.html&quot;" target="_blank" rel="noopener">http://www.example.com/dir/page.html&quot;</a> 的对比<br><img src="/2019/03/07/同源策略/2.png" alt=""></p>
+<p>由此可见，只要且必须满足{协议，主机，端口}一致的两个值就是同源的。</p>
+<h2 id="安全考量"><a href="#安全考量" class="headerlink" title="安全考量"></a>安全考量</h2><p>现在记住一句话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</span><br><span class="line">客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</span><br></pre></td></tr></table></figure></p>
+<p>然后来看一个例子，关于同源策略所能预防的问题</p>
+<p>假设用户在访问银行网站，并且没有登出。然后他又去了任意的其他网站，刚好这个网站有恶意的js代码，在后台请求银行网站的信息。因为用户目前仍然是银行站点的登陆状态，那么恶意代码就可以在银行站点做任意事情。例如，获取你的最近交易记录，创建一个新的交易等等。因为浏览器可以发送接收银行站点的session cookies，在银行站点域上。访问恶意站点的用户希望他访问的站点没有权限访问银行站点的cookie。当然确实是这样的，js不能直接获取银行站点的session cookie，但是他仍然可以向银行站点发送接收附带银行站点session cookie的请求，本质上就像一个正常用户访问银行站点一样。关于发送的新交易，甚至银行站点的CSRF（跨站请求伪造）防护都无能无力，因为脚本可以轻易的实现正常用户一样的行为。所以如果你需要session或者需要登陆时，所有网站都面临这个问题。</p>
+<p>如果未有同源策略，那么非同源的网站，也就是某些非正规的网站中的恶意代码可能对我们的银行网站进行访问，甚至进行一些操作，如果有同源策略进行防护的话，那么在同源网站和非同源网站便会存在一道墙，非同源网站的恶意代码想要进入就困难了，对于同源的站点就如有一条通道一样。</p>
+<p>简而言之：<strong>浏览器的同源策略，限制了来自不同源的”document”或脚本，对当前“document”读取或设置某些属性。</strong></p>
+
+    <span class="date end-date">2019-03-07</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/07/同源策略/">同源策略</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/05/XSS-反射型/">XSS(反射型与存储型)</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/03/HTTP污染拙见/">HTTP污染拙见</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
