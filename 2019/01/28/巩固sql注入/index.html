@@ -1,68 +1,68 @@
-<!DOCTYPE HTML>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>巩固sql注入</title>
-<meta name="author" content="John Doe">
-<!--[if IE]>
-  <meta http-equiv=refresh content='0, http://browsehappy.com'>
-<![endif]-->
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css">
-<link rel="stylesheet" href="/css/style.css">
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>巩固sql注入 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
 
-
-<body oncontextmenu="return false">
-  <div class="aios_content">
-    <div class="bg-gradient"></div>
-    <div class="bg-pattern"></div>
-    <div class="menu-bg">
-  <div class="menu-container">
-    <ul>
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
       
-        <li class="menu-item">
-          <a href="/">Home</a>
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
         </li>
       
-        <li class="menu-item">
-          <a href="/archives">Docs</a>
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
         </li>
       
     </ul>
   </div>
-</div>
-
-<nav>
-  <a></a>
-</nav>
-
-    <div class="container" style="padding-bottom:40px">
-      <div class="row">
-  <div class="col-sm-12">
-    <header>
-  <div class="logo">
-    <h1 id="main-title" class="title"><a href="/">The clown is laughing at you</a></h1>
-  </div>
 </header>
 
-
-    <section class="main">
-      <div class="post">
-  <div class="post-header">
-    <h1 class="title">巩固sql注入</h1>
-    <div class="post-info">
-      <span class="date">2019-01-28</span>
-
-      
-    </div>
-  </div>
-
+  <main id="post">
   <div class="content">
-    <!-- Gallery -->
-    
-
-    <p><strong>0x01 认证绕过</strong><br>sqlilab 1<br>整个注入的流程：<br>数据库名–&gt;数据表名–&gt;字段名–&gt;数据名</p>
+    <article>
+        <section class="content markdown-body">
+          <h1>巩固sql注入</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/28</time>
+            
+            
+          </div>
+          <p><strong>0x01 认证绕过</strong><br>sqlilab 1<br>整个注入的流程：<br>数据库名–&gt;数据表名–&gt;字段名–&gt;数据名</p>
 <p>此次的实验平台是sqlilab的第一题，我个人觉得第一题虽然最为简单，但是却最为重要，毕竟万事开头难嘛。<br>这里补充一些关于mysql的知识点：<br>mysql的数据库information_schema，他是系统数据库，安装完就有，记录是当前数据库的数据库，表，列，用户权限等信息，下面说一下常用的几个表</p>
 <p><strong>SCHEMATA表：储存mysql所有数据库的基本信息，包括数据库名，编码类型路径等，show databases的结果取之此表。</strong></p>
 <p><strong>TABLES表：储存mysql中的表信息，（当然也有数据库名这一列，这样才能找到哪个数据库有哪些表嘛）包括这个表是基本表还是系统表，数据库的引擎是什么，表有多少行，创建时间，最后更新时间等。show tables from schemaname的结果取之此表</strong></p>
@@ -168,73 +168,164 @@
 <h2 id="sqlilab-42"><a href="#sqlilab-42" class="headerlink" title="sqlilab-42"></a>sqlilab-42</h2><p>观察下列源码：(login.php)<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sqllogin</span><span class="params">($host,$dbuser,$dbpass, $dbname)</span></span>&#123;</span><br><span class="line">   <span class="comment">// connectivity</span></span><br><span class="line"><span class="comment">//mysql connections for stacked query examples.</span></span><br><span class="line">$con1 = mysqli_connect($host,$dbuser,$dbpass, $dbname);</span><br><span class="line">   </span><br><span class="line">   $username = mysqli_real_escape_string($con1, $_POST[<span class="string">"login_user"</span>]);</span><br><span class="line">   $password = $_POST[<span class="string">"login_password"</span>];</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Check connection</span></span><br><span class="line">   <span class="keyword">if</span> (mysqli_connect_errno($con1))</span><br><span class="line">   &#123;</span><br><span class="line">       <span class="keyword">echo</span> <span class="string">"Failed to connect to MySQL: "</span> . mysqli_connect_error();</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">   &#123;</span><br><span class="line">       @mysqli_select_db($con1, $dbname) <span class="keyword">or</span> <span class="keyword">die</span> ( <span class="string">"Unable to connect to the database ######: "</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="comment">/* execute multi query */</span></span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   $sql = <span class="string">"SELECT * FROM users WHERE username='$username' and password='$password'"</span>;</span><br><span class="line">   <span class="keyword">if</span> (@mysqli_multi_query($con1, $sql))</span><br><span class="line">   &#123;</span><br><span class="line">        <span class="comment">/* store first result set */</span></span><br><span class="line">      <span class="keyword">if</span>($result = @mysqli_store_result($con1))</span><br><span class="line">      &#123;</span><br><span class="line">     <span class="keyword">if</span>($row = @mysqli_fetch_row($result))</span><br><span class="line">     &#123;</span><br><span class="line">        <span class="keyword">if</span> ($row[<span class="number">1</span>])</span><br><span class="line">        &#123;</span><br><span class="line">           <span class="keyword">return</span> $row[<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
 <p>发现username被转义，而password并未被转义，那么payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">username:admin(随便写)</span><br><span class="line">password：<span class="number">-1</span><span class="string">';create table test2 like users#</span></span><br></pre></td></tr></table></figure></p>
 
-    <span class="date end-date">2019-01-28</span>
-  </div>
-
-  
-
-  
-</div>
-
-    </section>
-  </div>
-</div>
-
-    </div>
-  </div>
-  <footer class="footer-content">
-  <div class="container">
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
-        <h2>About</h2>
-        <section>
-          Theme developed by <a href="//github.com/klugjo" target="_blank">Jonathan Klughertz</a><br>Contents created by <a href="//github.com/xaios" target="_blank">AIOS</a>
         </section>
-      </div>
-      
-  <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
-    <h2>New Contents</h2>
-    <ul>
-      
-        <li>
-          <a class="footer-post" href="/2019/03/07/同源策略/">同源策略</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/03/05/XSS-反射型/">XSS(反射型与存储型)</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/03/03/HTTP污染拙见/">HTTP污染拙见</a>
-        </li>
-      
-        <li>
-          <a class="footer-post" href="/2019/03/01/mysql基本使用与用户管理/">mysql基本使用与用户管理</a>
-        </li>
-      
-    </ul>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
   </div>
-
-
-      
-
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03"><span class="toc-number">1.</span> <span class="toc-text">0x03</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04"><span class="toc-number">2.</span> <span class="toc-text">0x04</span></a></li></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#sqlilab–7-考察文件操作"><span class="toc-number"></span> <span class="toc-text">sqlilab–7(考察文件操作)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#load-file"><span class="toc-number">1.</span> <span class="toc-text">load_file()</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#select-…-into-outfile"><span class="toc-number">2.</span> <span class="toc-text">select … into outfile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqli-lab-7"><span class="toc-number">3.</span> <span class="toc-text">sqli-lab 7</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-20"><span class="toc-number">4.</span> <span class="toc-text">sqlilab-20</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-23"><span class="toc-number">5.</span> <span class="toc-text">sqlilab-23</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-24"><span class="toc-number">6.</span> <span class="toc-text">sqlilab-24</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-25"><span class="toc-number">7.</span> <span class="toc-text">sqlilab-25</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-25a"><span class="toc-number">8.</span> <span class="toc-text">sqlilab-25a</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-34"><span class="toc-number">9.</span> <span class="toc-text">sqlilab-34</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-38-堆叠注入"><span class="toc-number">10.</span> <span class="toc-text">sqlilab-38(堆叠注入)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-42"><span class="toc-number">11.</span> <span class="toc-text">sqlilab-42</span></a></li></ol>
+        </li></div>
     </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <ul class="list-inline footer-social-icons"></ul>
-      </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/01/28/巩固sql注入/";
+  var disqus_url = "http://yoursite.com/2019/01/28/巩固sql注入/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
     </div>
-    <div class="row">
-      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-        <div class="footer-copyright">@Untitled. All right reserved | Design & Hexo <a href="//www.codeblocq.com" target="_blank">Jonathan Klughertz</a></div>
-      </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
     </div>
   </div>
 </footer>
 
-</body>
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js"></script>
-<script src="/js/main.js"></script>
 
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
