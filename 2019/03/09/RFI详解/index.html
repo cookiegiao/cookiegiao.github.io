@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>RFI详解 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>RFI详解</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/09</time>
+            
+            
+          </div>
+          <p>其实每次写详解两个字，都觉得自己很不要脸，明明啥都不懂……</p>
+<h1 id="RFI-远程文件包含"><a href="#RFI-远程文件包含" class="headerlink" title="RFI-远程文件包含"></a>RFI-远程文件包含</h1><p>远程文件包含（Remote File Inclusion），简称RFI，与其对应的是本地文件包含（Local File Inclusion，LFI），它们都是通过PHP的包含函数即：require(),require_once(),include()和include_once()来使用。</p>
+<p>一般情况下，用户通过包含函数将具有特定功能的函数或类包含到当前脚本中，是没有什么问题的。但是有时候，为了方便，需要动态的包含文件，这就会留下一些攻击漏洞</p>
+<p>通常情况下，LFI攻击威胁不大，因为本地服务器上的文件是比较确定的，攻击者想要上传带有攻击性代码的文件也不是件容易的事。RFI攻击才是我们需要防范的事。那么，RFI攻击是如何实现的呢？</p>
+<h1 id="RFI是如何实现的？"><a href="#RFI是如何实现的？" class="headerlink" title="RFI是如何实现的？"></a>RFI是如何实现的？</h1><p>首先，先挂上一段存在RFI漏洞的代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="comment">// 存在RFI漏洞的代码片段  </span></span><br><span class="line">  </span><br><span class="line">$file = $_GET[<span class="string">'file'</span>];  </span><br><span class="line"><span class="keyword">include</span> $file;  </span><br><span class="line">  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>在index.php同级目录下存在include.php文件，我们就可以通过访问类似URL“127.0.0.1/lab/index.php?file=include.php”来包含include.php文件，随后，服务器将解析include.php脚本，将产生的HTML代码传送给浏览器执行。</p>
+<p>目前看来，还没出现什么安全问题，因为还仅仅只是包含本地文件。<strong>如果是包含远程文件，问题就来了，因为攻击者是可以任意编码远程文件的。</strong></p>
+<p><strong>进行RFI攻击需要同时具备三个条件（被攻击机器）：</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">allow_url_fopen = On    （默认开启）</span><br><span class="line"></span><br><span class="line">allow_url_include = On  （默认关闭）</span><br><span class="line"></span><br><span class="line">被包含的变量前没有目录的限制</span><br></pre></td></tr></table></figure></p>
+<p>同时满足了这三个条件，就等于为攻击者打开了大门。为了清楚地理解，下面给出一个LFI攻击的实例。（说明：在本地搭建一个存在RFI漏洞的环境，通过包含一个远程主机上的文件来攻击这个本地主机）</p>
+<p>第一步：设置php.ini文件，将“allow_url_fopen ”和“allow_url_include”都开启，重启Apache。</p>
+<p>第二步：创建存在RFI漏洞的脚本文件，test.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $temp = $_GET[<span class="string">'file'</span>];</span><br><span class="line">  <span class="keyword">include</span>($temp);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>第三步：在远程主机上创建一个带攻击性的代码的文本（test.txt）。<br><img src="/2019/03/09/RFI详解/1.png" alt=""><br>注意这个文件不能被服务器解析，如不能为PHP脚本文件。因为只是演示，文本文件被执行就能满足演示效果了。内容如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hahaha,You are hacked. <span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_GET[<span class="string">'a'</span>]; <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/03/09/RFI详解/2.png" alt=""></p>
+<p>第四步：将攻击文件的URL带入include，进行攻击，如图所示：<br><img src="/2019/03/09/RFI详解/3.png" alt=""></p>
+<h1 id="后话"><a href="#后话" class="headerlink" title="后话"></a>后话</h1><p>上面提到，攻击文件不能是PHP文件，所以有些经验丰富的开发者会考虑将被包含文件的扩展名写死，如：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="comment">// 存在RFI漏洞的代码片段  </span></span><br><span class="line">  </span><br><span class="line">$file = $_GET[<span class="string">'file'</span>];  </span><br><span class="line"><span class="keyword">include</span> $file.<span class="string">'.php'</span>;  </span><br><span class="line">  </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这样，通过以上方法包含远程文件，系统就会警告找不到被包含文件，从而避免攻击。<br><img src="/2019/03/09/RFI详解/4.png" alt=""></p>
+<p>这种方法确实能起到一定作用，但对那些有经验的攻击者来说，这不是问题。我们知道PHP引擎是有C来实现的，C中空字符就是字符串结束符，因此可以使用空字符将扩展名截断，实现RFI攻击。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>配置层面，保持PHP的默认设置，将“allow_url_include”关闭；在代码层面，如果一定要动态包含文件，最好明确规定包含哪些文件，进行白名单比对。同时，也可以在包含函数中加入目录限制。</p>
+<p>参考文章：<a href="https://phplaber.iteye.com/blog/1702044" target="_blank" rel="noopener">https://phplaber.iteye.com/blog/1702044</a></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#RFI-远程文件包含"><span class="toc-number">1.</span> <span class="toc-text">RFI-远程文件包含</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RFI是如何实现的？"><span class="toc-number">2.</span> <span class="toc-text">RFI是如何实现的？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后话"><span class="toc-number">3.</span> <span class="toc-text">后话</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/09/RFI详解/";
+  var disqus_url = "http://yoursite.com/2019/03/09/RFI详解/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

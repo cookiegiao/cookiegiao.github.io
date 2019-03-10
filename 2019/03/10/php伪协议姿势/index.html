@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php伪协议姿势 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php伪协议姿势</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/10</time>
+            
+            
+          </div>
+          <p>这么弱鸡，是不是该更用功点</p>
+<h1 id="环境概述"><a href="#环境概述" class="headerlink" title="环境概述"></a>环境概述</h1><p>PHP.ini：</p>
+<p>allow_url_fopen ：on  默认开启  该选项为on便是激活了 URL 形式的 fopen 封装协议使得可以访问 URL 对象文件等。</p>
+<p>allow_url_include：off  默认关闭，该选项为on便是允许 包含URL 对象文件等。</p>
+<p>为了能够尽可能的列举所有情况本次测试使用的PHP版本为&gt;=5.2 具体为5.2，5.3，5.5，7.0；PHP版本&lt;=5.2 可以使用%00进行截断</p>
+<h1 id="什么是php伪协议"><a href="#什么是php伪协议" class="headerlink" title="什么是php伪协议"></a>什么是php伪协议</h1><p>PHP伪协议事实上就是支持的协议与封装协议（12种）</p>
+<p>a.  file:// — 访问本地文件系统</p>
+<p>b.  http:// — 访问 HTTP(s) 网址</p>
+<p>c.  ftp:// — 访问 FTP(s) URLs</p>
+<p>d.  php:// — 访问各个输入/输出流（I/O streams）</p>
+<p>e.  zlib:// — 压缩流</p>
+<p>f.  data:// — 数据（RFC 2397）</p>
+<p>g.  glob:// — 查找匹配的文件路径模式</p>
+<p>h.  phar:// — PHP 归档</p>
+<p>i.  ssh2:// — Secure Shell 2</p>
+<p>j.  rar:// — RAR</p>
+<p>k. ogg:// — 音频流</p>
+<p>l.  expect:// — 处理交互式的流</p>
+<p>在CTF中经常使用的是php://filter和php://input，php://filter用于读取源码，php://input用于执行php代码。</p>
+<h2 id="0x01-php-filter"><a href="#0x01-php-filter" class="headerlink" title="0x01 php:filter"></a>0x01 php:filter</h2><p>php://filter 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 readfile()、 file() 和 file_get_contents()， 在数据流内容读取之前没有机会应用其他过滤器。<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">PHP.ini：</span><br><span class="line"></span><br><span class="line">file:// 协议在双off的情况下也可以正常使用；</span><br><span class="line"></span><br><span class="line">allow_url_fopen ：off/on</span><br><span class="line"></span><br><span class="line">allow_url_include：off/on</span><br></pre></td></tr></table></figure></p>
+<p>简单说经常利用它进行base64编码，如<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php://filter/read=convert.base64-encode/resource=file:///c:/windows/win.ini</span><br></pre></td></tr></table></figure></p>
+<p>可以运用多种过滤器（字符串/转换/压缩/加密） </p>
+<p>输入url<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/test.php?file=php://filter/read=convert.base64-encode/resource=file.php</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/03/10/php伪协议姿势/1.png" alt=""><br>然后这是一个base64的编码，我们在线解码一下：<br><img src="/2019/03/10/php伪协议姿势/2.png" alt=""></p>
+<h2 id="0x02-php-input"><a href="#0x02-php-input" class="headerlink" title="0x02 php://input"></a>0x02 php://input</h2><p>可以访问请求的原始数据的只读流, 将post请求中的数据作为PHP代码执行。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHP.ini：</span><br><span class="line"></span><br><span class="line">allow_url_fopen ：off/on</span><br><span class="line"></span><br><span class="line">allow_url_include：on</span><br></pre></td></tr></table></figure></p>
+<p>test.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">   $temp = $_GET[<span class="string">'file'</span>];</span><br><span class="line">   <span class="keyword">include</span> $temp;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>url<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?file=php://input</span><br></pre></td></tr></table></figure></p>
+<p>POST DATA:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> phpinfo();<span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="0x03-zip-bzip2-zlib-协议"><a href="#0x03-zip-bzip2-zlib-协议" class="headerlink" title="0x03 zip://, bzip2://, zlib://协议"></a>0x03 zip://, bzip2://, zlib://协议</h2><p>PHP.ini：</p>
+<p>zip://, bzip2://, zlib://协议在双off的情况下也可以正常使用；</p>
+<p>allow_url_fopen ：off/on</p>
+<p>allow_url_include：off/on</p>
+<p>zip://, bzip2://, zlib:// 均属于压缩流，可以访问压缩文件中的子文件，更重要的是不需要指定后缀名。</p>
+<h3 id="zip-协议"><a href="#zip-协议" class="headerlink" title="zip://协议"></a>zip://协议</h3><p>使用方法：</p>
+<p>zip://archive.zip#dir/file.txt</p>
+<p>zip:// [压缩文件绝对路径]#[压缩文件内的子文件名]</p>
+<p>测试现象：</p>
+<p><a href="http://127.0.0.1/test.php?file=zip://C:/soft/phpStudy/WWW/file.jpg%23phpcode.txt" target="_blank" rel="noopener">http://127.0.0.1/test.php?file=zip://C:/soft/phpStudy/WWW/file.jpg%23phpcode.txt</a></p>
+<p>先将要执行的PHP代码写好文件名为phpcode.txt，将phpcode.txt进行zip压缩,压缩文件名为file.zip,如果可以上传zip文件便直接上传，若不能便将file.zip重命名为file.jpg后在上传，其他几种压缩格式也可以这样操作。</p>
+<p>由于#在get请求中会将后面的参数忽略所以使用get请求时候应进行url编码为%23，且此处经过测试相对路径是不可行，所以只能用绝对路径。</p>
+<h1 id="php伪协议在ctf中的简单应用"><a href="#php伪协议在ctf中的简单应用" class="headerlink" title="php伪协议在ctf中的简单应用"></a>php伪协议在ctf中的简单应用</h1><h2 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h2><p>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">extract($_GET);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">empty</span>($ac))</span><br><span class="line">&#123;</span><br><span class="line">	$f = trim(file_get_contents($fn));</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>($ac===$f)</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"the flag is this"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"no,you are stupid"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>相关函数：<br>extract():该函数使用数组键名作为变量名，使用数组键值作为变量值。针对数组中的每个元素，将在当前符号表中创建对应的一个变量。</p>
+<p>那也就是说我们以get方法传入的参数，参数名将会成为变量名，参数值值将会成为变量值。$ac与$fn就是我们传入的参数。</p>
+<p>考察php伪协议php://input与file_get_contents()的应用<br>构造url为<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?ac=1&amp;fn=php://input</span><br></pre></td></tr></table></figure></p>
+<p>post data<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="关于file协议的一个很好的例子"><a href="#关于file协议的一个很好的例子" class="headerlink" title="关于file协议的一个很好的例子"></a>关于file协议的一个很好的例子</h1><p><a href="https://www.jianshu.com/p/c60aeca68e03" target="_blank" rel="noopener">curl与file协议</a></p>
+<p>参考文章：<a href="https://blog.csdn.net/Ni9htMar3/article/details/69812306?locationNum=2&amp;fps=1" target="_blank" rel="noopener">https://blog.csdn.net/Ni9htMar3/article/details/69812306?locationNum=2&amp;fps=1</a><br>参考文章：[<a href="https://blog.csdn.net/qq_33904831/article/details/78814567]" target="_blank" rel="noopener">https://blog.csdn.net/qq_33904831/article/details/78814567]</a>(<a href="https://blog.csdn.net/qq_33904831/article/details/78814567" target="_blank" rel="noopener">https://blog.csdn.net/qq_33904831/article/details/78814567</a></p>
+<p>)</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#环境概述"><span class="toc-number">1.</span> <span class="toc-text">环境概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是php伪协议"><span class="toc-number">2.</span> <span class="toc-text">什么是php伪协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-php-filter"><span class="toc-number">2.1.</span> <span class="toc-text">0x01 php:filter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-php-input"><span class="toc-number">2.2.</span> <span class="toc-text">0x02 php://input</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-zip-bzip2-zlib-协议"><span class="toc-number">2.3.</span> <span class="toc-text">0x03 zip://, bzip2://, zlib://协议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#zip-协议"><span class="toc-number">2.3.1.</span> <span class="toc-text">zip://协议</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php伪协议在ctf中的简单应用"><span class="toc-number">3.</span> <span class="toc-text">php伪协议在ctf中的简单应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01"><span class="toc-number">3.1.</span> <span class="toc-text">0x01</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#关于file协议的一个很好的例子"><span class="toc-number">4.</span> <span class="toc-text">关于file协议的一个很好的例子</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/10/php伪协议姿势/";
+  var disqus_url = "http://yoursite.com/2019/03/10/php伪协议姿势/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

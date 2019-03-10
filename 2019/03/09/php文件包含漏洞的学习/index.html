@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php文件包含漏洞的学习 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php文件包含漏洞的学习</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/09</time>
+            
+            
+          </div>
+          <p>继续学习php文件包含漏洞，越来越觉得自己不够用功，要更用功才行。</p>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>如果允许客户端用户输入控制动态包含在服务器端的文件，会导致恶意代码的执行及敏感信息泄露，主要包括本地文件包含和远程文件包含两种形式。</p>
+<h1 id="文件包含函数"><a href="#文件包含函数" class="headerlink" title="文件包含函数"></a>文件包含函数</h1><h2 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">include_once</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">require</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">require_once</span>()</span><br><span class="line"></span><br><span class="line">file_get_contents() <span class="comment">//将文件内容读入到一个字符串中</span></span><br><span class="line"></span><br><span class="line">fopen() <span class="comment">//php中用于打开文件</span></span><br><span class="line"></span><br><span class="line">readfile() <span class="comment">//readfile() 函数输出一个文件。该函数读入一个文件并写入到输出缓冲。</span></span><br></pre></td></tr></table></figure>
+<p>PHP的每个函数包含一个文件的时候，都会把包含的文件当作 php代码进行执行，而不会在意文件的类型。 </p>
+<p><strong>include()</strong>:在代码执行到它的时候才加载文件，发生错误的时候只是给一个警告，然后继续往下执行。</p>
+<p><strong>require()</strong>只要程序一执行就会立即调用文件，发生错误的时候会输出错误信息，并且终止脚本的运行。 </p>
+<p><strong>include_once()</strong>和<strong>require_once()</strong>与 <strong>include()</strong>和<strong>require()</strong>类似，只不过前者只会包含一次文件，防止出现函数重定义或变量赋值的问题。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>假如现在本地有一个test.txt文件。内容如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  phpinfo();</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>然后在服务器中编写代码test.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $temp=$_GET[<span class="string">'c'</span>];</span><br><span class="line">  <span class="keyword">include</span>($temp);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接着输入url:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php/?c=C:\phpStudy\PHPTutorial\WWW\test.txt  //c的值是本地test.txt所在的位置</span><br></pre></td></tr></table></figure></p>
+<p>可以看到这里 $temp没有经过任何的过滤措施，直接带入到了 include函数，这就存在非常大的安全隐患。可以发现成功地执行了 phpinfo()。 这样就简单地实现了文件包含。</p>
+<h1 id="文件包含分类"><a href="#文件包含分类" class="headerlink" title="文件包含分类"></a>文件包含分类</h1><h2 id="LFI"><a href="#LFI" class="headerlink" title="LFI"></a>LFI</h2><p>LFI为本地文件包含，包含本地服务器的文件，可以尝试构造去读取本地服务器的敏感信息。 Windows上的敏感信息：<br><img src="/2019/03/09/php文件包含漏洞的学习/1.png" alt=""></p>
+<p>Linux上的敏感信息:<br><img src="/2019/03/09/php文件包含漏洞的学习/2.png" alt=""></p>
+<h2 id="RFI"><a href="#RFI" class="headerlink" title="RFI"></a>RFI</h2><p>RFI为远程文件包含，包含远程服务器上的文件。可以构造一些恶意代码让被包含的程序执行。 开启远程文件包含需要在 php.ini配置文件中开启相应功能：<br><img src="/2019/03/09/php文件包含漏洞的学习/16.png" alt=""></p>
+<h1 id="php伪协议"><a href="#php伪协议" class="headerlink" title="php伪协议"></a>php伪协议</h1><p>这里就放一个例子，下一次详讲. </p>
+<p>服务器存在一个test.php：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> </span><br><span class="line">  $temp=$_GET[&apos;c&apos;];</span><br><span class="line">  include($temp);</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="php-filter"><a href="#php-filter" class="headerlink" title="php://filter"></a>php://filter</h2><p>可以通过指定 resource的值来读取指定的文件。 通常读取文件的伪协议 Payload:<br><img src="/2019/03/09/php文件包含漏洞的学习/3.png" alt=""></p>
+<h2 id="php-input"><a href="#php-input" class="headerlink" title="php://input"></a>php://input</h2><p>使用 php://input伪协议需要 php.ini开启相应功能：<br><img src="/2019/03/09/php文件包含漏洞的学习/4.png" alt=""></p>
+<p>使用 php://input可以获取 POST请求中的数据 使用方式：<br><img src="/2019/03/09/php文件包含漏洞的学习/5.png" alt=""></p>
+<h2 id="phar"><a href="#phar" class="headerlink" title="phar"></a>phar</h2><p>使用 php://phar需要 php的版本大于等于 5.3.0。 把要读取的文件，例如 phpinfo.txt压缩成 zip文件，为 phpinfo.zip。 使用相对路径或者绝对路径读取都可以：<br><img src="/2019/03/09/php文件包含漏洞的学习/6.png" alt=""></p>
+<h2 id="zip"><a href="#zip" class="headerlink" title="zip://"></a>zip://</h2><p>zip://和 phar://功能类似，区别就是要使用绝对路径来读取，并且 zip文件后面要加 %23再跟文件：<br><img src="/2019/03/09/php文件包含漏洞的学习/7.png" alt=""></p>
+<h2 id="data"><a href="#data" class="headerlink" title="data://"></a>data://</h2><p>使用 data://要求 php版本大于等于 5.2.0。 php.ini的配置文件开启相应的功能：<br><img src="/2019/03/09/php文件包含漏洞的学习/8.png" alt=""><br>使用方式：<br><img src="/2019/03/09/php文件包含漏洞的学习/9.png" alt=""></p>
+<h2 id="包含日志文件"><a href="#包含日志文件" class="headerlink" title="包含日志文件"></a>包含日志文件</h2><p>使用时需要知道日志文件的目录，且日志文件可读。 访问的请求一般都会被记录在服务器的 access.log日志文件中。 可以先请求：<br><img src="/2019/03/09/php文件包含漏洞的学习/10.png" alt=""><br>然后进行利用:<br><img src="/2019/03/09/php文件包含漏洞的学习/11.png" alt=""></p>
+<h1 id="绕过"><a href="#绕过" class="headerlink" title="绕过"></a>绕过</h1><h2 id="指定前缀"><a href="#指定前缀" class="headerlink" title="指定前缀"></a>指定前缀</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"></span><br><span class="line">  $file = $_GET[&apos;file&apos;];</span><br><span class="line">  include &apos;/var/www/html/&apos;.$file;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到这里强行拼接了 /var/www/html/作为前缀。</p>
+<h3 id="目录遍历"><a href="#目录遍历" class="headerlink" title="目录遍历"></a>目录遍历</h3><p>可以通过 ../来进行目录遍历，从而绕过前缀的限制。</p>
+<h3 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h3><p>服务器可能会把../过滤掉，可以通过一些不同的编码来进行绕过。<br><img src="/2019/03/09/php文件包含漏洞的学习/12.png" alt=""></p>
+<h2 id="指定后缀"><a href="#指定后缀" class="headerlink" title="指定后缀"></a>指定后缀</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line"> </span><br><span class="line"> $file = $_GET[&apos;file&apos;];</span><br><span class="line"> include $file.&apos;php&apos;;</span><br><span class="line"></span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+<p>这里强行指定了 .php作为文件的结尾。</p>
+<h3 id="问号绕过"><a href="#问号绕过" class="headerlink" title="问号绕过"></a>问号绕过</h3><p><img src="/2019/03/09/php文件包含漏洞的学习/13.png" alt=""></p>
+<h2 id="00截断"><a href="#00截断" class="headerlink" title="%00截断"></a>%00截断</h2><p>可以通过 %00截断的方式读取 /etc/passwd。<br><img src="/2019/03/09/php文件包含漏洞的学习/14.png" alt=""></p>
+<h2 id="路径长度截断"><a href="#路径长度截断" class="headerlink" title="路径长度截断"></a>路径长度截断</h2><p>Linux下需要文件名长于 4096，而 Windows需要长于 256。<br><img src="/2019/03/09/php文件包含漏洞的学习/15.png" alt=""></p>
+<p>参考链接：<a href="https://mp.weixin.qq.com/s/iFBoTziyQRDKzFfBd-88uA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/iFBoTziyQRDKzFfBd-88uA</a></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件包含函数"><span class="toc-number">2.</span> <span class="toc-text">文件包含函数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#函数说明"><span class="toc-number">2.1.</span> <span class="toc-text">函数说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">2.2.</span> <span class="toc-text">实例</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件包含分类"><span class="toc-number">3.</span> <span class="toc-text">文件包含分类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LFI"><span class="toc-number">3.1.</span> <span class="toc-text">LFI</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RFI"><span class="toc-number">3.2.</span> <span class="toc-text">RFI</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#php伪协议"><span class="toc-number">4.</span> <span class="toc-text">php伪协议</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#php-filter"><span class="toc-number">4.1.</span> <span class="toc-text">php://filter</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php-input"><span class="toc-number">4.2.</span> <span class="toc-text">php://input</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#phar"><span class="toc-number">4.3.</span> <span class="toc-text">phar</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#zip"><span class="toc-number">4.4.</span> <span class="toc-text">zip://</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#data"><span class="toc-number">4.5.</span> <span class="toc-text">data://</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#包含日志文件"><span class="toc-number">4.6.</span> <span class="toc-text">包含日志文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#绕过"><span class="toc-number">5.</span> <span class="toc-text">绕过</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#指定前缀"><span class="toc-number">5.1.</span> <span class="toc-text">指定前缀</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#目录遍历"><span class="toc-number">5.1.1.</span> <span class="toc-text">目录遍历</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编码"><span class="toc-number">5.1.2.</span> <span class="toc-text">编码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#指定后缀"><span class="toc-number">5.2.</span> <span class="toc-text">指定后缀</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#问号绕过"><span class="toc-number">5.2.1.</span> <span class="toc-text">问号绕过</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#00截断"><span class="toc-number">5.3.</span> <span class="toc-text">%00截断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#路径长度截断"><span class="toc-number">5.4.</span> <span class="toc-text">路径长度截断</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/09/php文件包含漏洞的学习/";
+  var disqus_url = "http://yoursite.com/2019/03/09/php文件包含漏洞的学习/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
