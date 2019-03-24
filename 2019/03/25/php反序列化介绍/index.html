@@ -10,7 +10,7 @@
     <link rel="icon" href="/favicon.ico">
   
     
-  <title>php反序列化介绍 | The clown is laughing at you</title>
+  <title>PHP反序列化初涉 | The clown is laughing at you</title>
   <link rel="stylesheet" href="/style.css">
   <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -56,13 +56,13 @@
   <div class="content">
     <article>
         <section class="content markdown-body">
-          <h1>php反序列化介绍</h1>
+          <h1>PHP反序列化初涉</h1>
           <div class="post-meta">
             <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/25</time>
             
             
           </div>
-          <p>了解一下</p>
+          <p>简单讲解什么是反序列化</p>
 <h1 id="什么是反序列化"><a href="#什么是反序列化" class="headerlink" title="什么是反序列化"></a>什么是反序列化</h1><p>序列化说通俗点就是把一个对象变成可以传输的字符串。<br>和序列化有关的函数有：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">serialize() <span class="comment">//序列化</span></span><br><span class="line"></span><br><span class="line">unserialize() <span class="comment">//反序列化</span></span><br><span class="line"></span><br><span class="line">json_encode() <span class="comment">//序列化</span></span><br><span class="line"></span><br><span class="line">json_decode() <span class="comment">////反序列化</span></span><br></pre></td></tr></table></figure></p>
 <p>使用json来讲一个例子。</p>
 <p>虽然序列化Json和我们讲PHP反序列化的漏洞没有什么关系。但是在理解序列化这个概念和之后的内容会有所帮助</p>
