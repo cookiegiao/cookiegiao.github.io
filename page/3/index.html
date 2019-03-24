@@ -56,6 +56,28 @@
   <div class="posts-list">
     
       <section>
+        <a href="/2019/02/27/PHP中-PHP-SELE/">
+          <h3 class="post-head">
+            PHP中的$_SERVER(PHP_SELF)
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>复习PHP表单时，在教程中看到这个问题，然后了解一下。</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/27</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
         <a href="/2019/02/27/HTTP之COOKIE及SESSION/">
           <h3 class="post-head">
             HTTP之COOKIE及SESSION
@@ -243,28 +265,6 @@
             
               
                 <h1 id="PHP的数据类型："><a href="#PHP的数据类型：" class="headerlink" title="PHP的数据类型："></a>PHP的数据类型：</h1><p>String（字符串）, Integer（整型）, Float（浮点型）, Boolean（布尔型）, Array（数组）, Object（对象）, NULL（空值）</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/02/26/php超级全局变量/">
-          <h3 class="post-head">
-            php超级全局变量
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <h1 id="PHP-GLOBALS"><a href="#PHP-GLOBALS" class="headerlink" title="PHP $GLOBALS"></a>PHP $GLOBALS</h1><p>$GLOBALS 是PHP的一个超级全局变量组，在一个PHP脚本的全部作用域中都可以访问。<br>$GLOBALS 是一个包含了全部变量的全局组合数组。<br><strong>变量的名字就是数组的键。所以在调用的时候为$GLOBALS[‘var’],而不是$GLOBALS[“$var”]，””存在解析的作用.</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1=<span class="string">'www.phpernote.com'</span>;</span><br><span class="line">$var2=<span class="string">'www.google.cn'</span>;</span><br><span class="line">test();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $var1=<span class="string">'taobao'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">global</span> $var1;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $GLOBALS[<span class="string">'var2'</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
               
           
         </div>
