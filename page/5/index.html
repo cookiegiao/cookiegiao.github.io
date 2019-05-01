@@ -56,9 +56,9 @@
   <div class="posts-list">
     
       <section>
-        <a href="/2019/01/28/巩固sql注入/">
+        <a href="/2019/02/26/php超级全局变量/">
           <h3 class="post-head">
-            巩固sql注入
+            php超级全局变量
           </h3>
         </a>
         
@@ -66,21 +66,21 @@
           
             
               
-                <p><strong>0x01 认证绕过</strong><br>sqlilab 1<br>整个注入的流程：<br>数据库名–&gt;数据表名–&gt;字段名–&gt;数据名</p>
+                <h1 id="PHP-GLOBALS"><a href="#PHP-GLOBALS" class="headerlink" title="PHP $GLOBALS"></a>PHP $GLOBALS</h1><p>$GLOBALS 是PHP的一个超级全局变量组，在一个PHP脚本的全部作用域中都可以访问。<br>$GLOBALS 是一个包含了全部变量的全局组合数组。<br><strong>变量的名字就是数组的键。所以在调用的时候为$GLOBALS[‘var’],而不是$GLOBALS[“$var”]，””存在解析的作用.</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1=<span class="string">'www.phpernote.com'</span>;</span><br><span class="line">$var2=<span class="string">'www.google.cn'</span>;</span><br><span class="line">test();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $var1=<span class="string">'taobao'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">global</span> $var1;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $GLOBALS[<span class="string">'var2'</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
               
           
         </div>
         <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/28</time>
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
           
           
         </div>
       </section>
     
       <section>
-        <a href="/2019/01/25/sql基础语法的二次学习/">
+        <a href="/2019/02/26/php变量/">
           <h3 class="post-head">
-            巩固sql基础语法
+            php变量
           </h3>
         </a>
         
@@ -88,21 +88,21 @@
           
             
               
-                <p>这两天是这么计划的，借着实验室给我们留的实验环境，今天早上复习一下sql的基础语法，下午再把之前做过的sqlilab再看一下，最后学习使用sqlmap</p>
+                <h1 id="PHP变量"><a href="#PHP变量" class="headerlink" title="PHP变量"></a>PHP变量</h1><h2 id="PHP-是一门弱类型语言"><a href="#PHP-是一门弱类型语言" class="headerlink" title="PHP 是一门弱类型语言"></a>PHP 是一门弱类型语言</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$txt = <span class="string">"hello world!"</span>;</span><br><span class="line">$x = <span class="number">5</span>;</span><br><span class="line">$y = <span class="number">10.5</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
               
           
         </div>
         <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/25</time>
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
           
           
         </div>
       </section>
     
       <section>
-        <a href="/2019/01/25/学习记录-关于XSS/">
+        <a href="/2019/02/26/php包含/">
           <h3 class="post-head">
-            学习记录--关于XSS攻击
+            php包含
           </h3>
         </a>
         
@@ -110,21 +110,21 @@
           
             
               
-                <p>关于XSS的学习，昨天花了一天的时候看了很多关于XSS的文章，自我感觉已经略知一二，今天把自己的学习心得，包括一些定义和原理，我将会用DVWA上的靶场以及自己通过Express搭建的平台来演示XSS的一些基本的操作，希望在往后的学习过程中能了解更多，这里放上一个知乎博主的文章，关于他发现百度网盘上有一个XSS漏洞，现在已经修复了，但是还是蛮有意思的,<a href="https://zhuanlan.zhihu.com/p/24249045" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24249045</a>.</p>
+                <h1 id="PHP-include-和-require-语句"><a href="#PHP-include-和-require-语句" class="headerlink" title="PHP include 和 require 语句"></a>PHP include 和 require 语句</h1><p>在 PHP 中，您可以在服务器执行 PHP 文件之前在该文件中插入一个文件的内容。</p>
               
           
         </div>
         <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/25</time>
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
           
           
         </div>
       </section>
     
       <section>
-        <a href="/2019/01/23/小游戏-通过arp欺骗嗅探图片/">
+        <a href="/2019/02/24/数据库的备份与还原/">
           <h3 class="post-head">
-            小游戏--通过arp欺骗嗅探图片
+            数据库的备份与还原
           </h3>
         </a>
         
@@ -132,21 +132,38 @@
           
             
               
-                <p>参考：<a href="https://www.freebuf.com/articles/web/160511.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/160511.html</a><br>一个简单的小游戏，恶作剧一下。<br>通过arp欺骗嗅探的内网其他用户的图片浏览情况，大致的过程：<br>（1）开启Linux的root权限，不开启的话，被攻击的对象会断网<br>（2）开启路由转发功能<br>（3）扫描内网中机器<br>（4）通过arp欺骗，截取攻击目标的信息<br>（5）通过driftnet来嗅探</p>
+                <p>#<strong>数据库的备份</strong><br>使用mysqldump命令将数据库中的数据备份成一个文本文件。表的结构和表中的数据将存储在生成的文本文件中。</p>
               
           
         </div>
         <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/23</time>
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/24</time>
           
           
         </div>
       </section>
     
       <section>
-        <a href="/2019/01/22/build-my-blog/">
+        <a href="/2019/02/21/interesting/">
           <h3 class="post-head">
-            build my blog
+            interesting
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/21</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/02/18/几道实验吧的web题/">
+          <h3 class="post-head">
+            几道实验吧的web题
           </h3>
         </a>
         
@@ -154,12 +171,100 @@
           
             
               
-                <p>  搭建博客使用hexo+github，这里我会将我搭这个博客的过程写出来，不是什么新奇的东西，但是在linux中搭博客不同与windows的是，全程使用命令行，好玩的同时，也学会了linux的基本语法。<br>    Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页,而github用于创建一个远程库，我们可以将本地的博客文件上传至github库中，这样子在这里就会使用到SSH协议，生成SSH公钥和密钥，用于保证本地和远程库的连接。</p>
+                <p>做了几道实验吧的web题，在这里分享一下</p>
               
           
         </div>
         <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/22</time>
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/18</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/02/12/PHPMywind储存XSS漏洞/">
+          <h3 class="post-head">
+            PHPMywind储存XSS漏洞
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>来自i春秋的PHPMywind储存XSS漏洞</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/12</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/02/12/文件判断函数的安全隐患/">
+          <h3 class="post-head">
+            文件判断函数的安全隐患
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>来自i春秋的实验–文件判断函数的安全隐患问题</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/12</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/02/08/BUGKU-WEB/">
+          <h3 class="post-head">
+            BUGKU-WEB
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>最近很难受，过年了，家里要帮忙的事情特别多，想学东西，都没时间，23333，所以只能做BUGku的web题压压惊<br>突然觉得自己进步了，没有像之前那么懵逼，虽然有一些不是很会，原因在于有些知识还没学习。<br>在所学范围内，我把我通过自己思考做出的题目中，感觉有点意思的写出来</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/08</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/01/31/mysql注入常见load-file路径/">
+          <h3 class="post-head">
+            mysql注入常见load_file路径
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>WINDOWS下:<br>c:/boot.ini //查看系统版本</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/31</time>
           
           
         </div>
@@ -214,6 +319,10 @@
       <a href="/page/4/">Prev</a>
     </div>
     
+    
+    <div class="page-next">
+      <a href="/page/6/">Next</a>
+    </div>
     
   </div>
 </div>
