@@ -56,28 +56,6 @@
   <div class="posts-list">
     
       <section>
-        <a href="/2019/02/26/php超级全局变量/">
-          <h3 class="post-head">
-            php超级全局变量
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <h1 id="PHP-GLOBALS"><a href="#PHP-GLOBALS" class="headerlink" title="PHP $GLOBALS"></a>PHP $GLOBALS</h1><p>$GLOBALS 是PHP的一个超级全局变量组，在一个PHP脚本的全部作用域中都可以访问。<br>$GLOBALS 是一个包含了全部变量的全局组合数组。<br><strong>变量的名字就是数组的键。所以在调用的时候为$GLOBALS[‘var’],而不是$GLOBALS[“$var”]，””存在解析的作用.</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1=<span class="string">'www.phpernote.com'</span>;</span><br><span class="line">$var2=<span class="string">'www.google.cn'</span>;</span><br><span class="line">test();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $var1=<span class="string">'taobao'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">global</span> $var1;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $GLOBALS[<span class="string">'var2'</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
-          
-          
-        </div>
-      </section>
-    
-      <section>
         <a href="/2019/02/26/php变量/">
           <h3 class="post-head">
             php变量
@@ -183,28 +161,6 @@
       </section>
     
       <section>
-        <a href="/2019/02/12/PHPMywind储存XSS漏洞/">
-          <h3 class="post-head">
-            PHPMywind储存XSS漏洞
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>来自i春秋的PHPMywind储存XSS漏洞</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/12</time>
-          
-          
-        </div>
-      </section>
-    
-      <section>
         <a href="/2019/02/12/文件判断函数的安全隐患/">
           <h3 class="post-head">
             文件判断函数的安全隐患
@@ -216,6 +172,28 @@
             
               
                 <p>来自i春秋的实验–文件判断函数的安全隐患问题</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/12</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/02/12/PHPMywind储存XSS漏洞/">
+          <h3 class="post-head">
+            PHPMywind储存XSS漏洞
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p>来自i春秋的PHPMywind储存XSS漏洞</p>
               
           
         </div>
@@ -265,6 +243,28 @@
         </div>
         <div class="post-meta">
           <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/31</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
+        <a href="/2019/01/28/巩固sql注入/">
+          <h3 class="post-head">
+            巩固sql注入
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <p><strong>0x01 认证绕过</strong><br>sqlilab 1<br>整个注入的流程：<br>数据库名–&gt;数据表名–&gt;字段名–&gt;数据名</p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/28</time>
           
           
         </div>
