@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>RFI与SMB | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>RFI与SMB</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/06/07</time>
+            
+            
+          </div>
+          <p>远程文件包含漏洞在allow_url_fopen以及allow_url_include为off的情况下，我们该怎么办</p>
+<h1 id="0x01-测试过程"><a href="#0x01-测试过程" class="headerlink" title="0x01 测试过程"></a>0x01 测试过程</h1><p>测试代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $temp = $_GET[<span class="string">'file'</span>];</span><br><span class="line">  <span class="keyword">include</span>($temp);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里样的代码在无任何防护的情况下，满足<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">allow_url_fopen=On</span><br><span class="line">allow_url_include=On</span><br></pre></td></tr></table></figure></p>
+<p>可执行远程文件包含漏洞<br>我们在IP为192.168.43.60的主机上编写web shell，正常情况下，如下图<br><img src="/2019/06/07/RFI与SMB/1.png" alt=""></p>
+<p>当我们off掉，程序报错，情况如下：<br><img src="/2019/06/07/RFI与SMB/2.png" alt=""></p>
+<h1 id="解决策略"><a href="#解决策略" class="headerlink" title="解决策略"></a>解决策略</h1><p>使用匿名读取访问权限配置SAMBA服务器（Linux计算机）<br>使用下面提到的命令安装SAMBA服务器：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install samba</span><br></pre></td></tr></table></figure></p>
+<p>创建SMB共享目录（在我的情况下为/ var / www / html / pub /）<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /<span class="keyword">var</span>/www/html/pub/</span><br></pre></td></tr></table></figure></p>
+<p>配置新创建的SMB共享目录的权限：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="number">0555</span> /<span class="keyword">var</span>/www/html/pub/</span><br><span class="line">chown -R nobody:nogroup /<span class="keyword">var</span>/www/html/pub/</span><br></pre></td></tr></table></figure></p>
+<p>运行以下提到的命令以删除SAMBA服务器配置文件的默认内容<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> &gt; /etc/samba/smb.conf</span><br></pre></td></tr></table></figure></p>
+<p>将下面提到的内容放在’/etc/samba/smb.conf’文件中<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[<span class="keyword">global</span>]</span><br><span class="line">workgroup = WORKGROUP</span><br><span class="line">server string = Samba Server %v</span><br><span class="line">netbios name = indishell-lab</span><br><span class="line">security = user</span><br><span class="line">map to guest = bad user</span><br><span class="line">name resolve order = bcast host</span><br><span class="line">dns proxy = no</span><br><span class="line">bind interfaces only = yes</span><br><span class="line"></span><br><span class="line">[ica]</span><br><span class="line">path = /<span class="keyword">var</span>/www/html/pub</span><br><span class="line">writable = no</span><br><span class="line">guest ok = yes</span><br><span class="line">guest only = yes</span><br><span class="line">read only = yes</span><br><span class="line">directory mode = <span class="number">0555</span></span><br><span class="line">force user = nobody</span><br></pre></td></tr></table></figure></p>
+<p>重新启动SAMBA服务器以应用配置文件/etc/samba/smb.conf中的spcified新配置<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\\<span class="number">192.168</span><span class="number">.0</span><span class="number">.3</span>\</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/06/07/RFI与SMB/3.png" alt=""><br>因为smb服务可用于文件共享，通过这个思路绕过RFI限制。<br>在pub文件夹下编写web shell<br><img src="/2019/06/07/RFI与SMB/4.png" alt=""></p>
+<p>测试一下：<br><img src="/2019/06/07/RFI与SMB/5.png" alt=""><br>成功</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-测试过程"><span class="toc-number">1.</span> <span class="toc-text">0x01 测试过程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#解决策略"><span class="toc-number">2.</span> <span class="toc-text">解决策略</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/06/07/RFI与SMB/";
+  var disqus_url = "http://yoursite.com/2019/06/07/RFI与SMB/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

