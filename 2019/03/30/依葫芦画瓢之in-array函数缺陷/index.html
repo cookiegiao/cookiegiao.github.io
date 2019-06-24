@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>依葫芦画瓢之in-array函数缺陷 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>依葫芦画瓢之in-array函数缺陷</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/30</time>
+            
+            
+          </div>
+          <p>了解函数in_array()的缺陷，并且规避该缺陷</p>
+<h1 id="函数in-array-介绍"><a href="#函数in-array-介绍" class="headerlink" title="函数in_array()介绍"></a>函数in_array()介绍</h1><p>in_array() 函数搜索数组中是否存在指定的值。</p>
+<p>注释：如果 search 参数是字符串且 type 参数被设置为 TRUE，则搜索区分大小写。</p>
+<p>语法：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">in_array(search,<span class="keyword">array</span>,type)</span><br></pre></td></tr></table></figure></p>
+<p>参数：<br>search    必需。规定要在数组搜索的值。</p>
+<p>array     必需。规定要搜索的数组。</p>
+<p>type      可选。如果设置该参数为 true，则检查搜索的数据与数组的值的类型是否相同。</p>
+<p><strong>说明：如果第三个参数设置为 true，函数只有在元素存在于数组中且数据类型与给定值相同时才返回 true。</strong></p>
+<h1 id="问题所在"><a href="#问题所在" class="headerlink" title="问题所在"></a>问题所在</h1><p>代码一如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">//判断某定制产品是否在数组中</span></span><br><span class="line">	$search = <span class="string">'68226:dscsdsdgwsdggocs'</span>; <span class="comment">//某定制产品</span></span><br><span class="line">	$data = <span class="keyword">array</span>(</span><br><span class="line">		<span class="number">39578</span>,<span class="number">68226</span>,<span class="number">48257</span></span><br><span class="line">	);</span><br><span class="line">	<span class="keyword">if</span>(in_array($search,$data))&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'you are right'</span>;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'you are wrong'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">you are right</span><br></pre></td></tr></table></figure></p>
+<p>代码二如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">//判断某定制产品是否在数组中</span></span><br><span class="line">	$search = <span class="string">'68226:dscsdsdgwsdggocs'</span>; <span class="comment">//某定制产品</span></span><br><span class="line">	$data = <span class="keyword">array</span>(</span><br><span class="line">		<span class="number">39578</span>,<span class="number">68226</span>,<span class="number">48257</span></span><br><span class="line">	);</span><br><span class="line">	<span class="keyword">if</span>(in_array($search,$data,<span class="keyword">true</span>))&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'you are right'</span>;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">'you are wrong'</span>;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">you are wrong</span><br></pre></td></tr></table></figure></p>
+<p>分析问题：<br>代码中的关键在于in_array()函数是否有设置type参数。如果没有，将会进行强制类型匹配，那么这时候就很容易出现问题。</p>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Challenge</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> UPLOAD_DIRECTORY = <span class="string">'./solutions/'</span>;</span><br><span class="line">  <span class="keyword">private</span> $file;</span><br><span class="line">  <span class="keyword">private</span> $whitelist;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;file = $file;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;whitelist = range(<span class="number">1</span>, <span class="number">24</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (in_array(<span class="keyword">$this</span>-&gt;file[<span class="string">'name'</span>], <span class="keyword">$this</span>-&gt;whitelist)) &#123;</span><br><span class="line">      move_uploaded_file(</span><br><span class="line">        <span class="keyword">$this</span>-&gt;file[<span class="string">'tmp_name'</span>],</span><br><span class="line">        <span class="keyword">self</span>::UPLOAD_DIRECTORY . <span class="keyword">$this</span>-&gt;file[<span class="string">'name'</span>]</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$challenge = <span class="keyword">new</span> Challenge($_FILES[<span class="string">'solution'</span>]);</span><br></pre></td></tr></table></figure>
+<p>这里是一段上传文件的代码。</p>
+<p>函数range(): 根据范围创建数组，包含指定的元素.</p>
+<p>然后关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (in_array(<span class="keyword">$this</span>-&gt;file[<span class="string">'name'</span>], <span class="keyword">$this</span>-&gt;whitelist))</span><br></pre></td></tr></table></figure></p>
+<p>这里未对参数type进行设置，所以造成任意文件上传漏洞.如果我们上传7shell.php,就会被强制转换成7.</p>
+<p>那么就能绕过in_array()</p>
+<p>然后这里有一道CTF的题，分享一下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//index.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span> <span class="string">'config.php'</span>;</span><br><span class="line">$conn = <span class="keyword">new</span> mysqli($servername, $username, $password, $dbname);</span><br><span class="line"><span class="keyword">if</span> ($conn-&gt;connect_error) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"连接失败: "</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$sql = <span class="string">"SELECT COUNT(*) FROM users"</span>;</span><br><span class="line">$whitelist = <span class="keyword">array</span>();</span><br><span class="line">$result = $conn-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($result-&gt;num_rows &gt; <span class="number">0</span>)&#123;</span><br><span class="line">    $row = $result-&gt;fetch_assoc();</span><br><span class="line">    $whitelist = range(<span class="number">1</span>, $row[<span class="string">'COUNT(*)'</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$id = stop_hack($_GET[<span class="string">'id'</span>]);</span><br><span class="line">$sql = <span class="string">"SELECT * FROM users WHERE id=$id"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!in_array($id, $whitelist)) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"id"</span>. $id.<span class="string">"is not in whitelist."</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$result = $conn-&gt;query($sql);</span><br><span class="line"><span class="keyword">if</span>($result-&gt;num_rows &gt; <span class="number">0</span>)&#123;</span><br><span class="line">    $row = $result-&gt;fetch_assoc();</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;center&gt;&lt;table border='1'&gt;"</span>;</span><br><span class="line">    <span class="keyword">foreach</span> ($row <span class="keyword">as</span> $key =&gt; $value) &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;tr&gt;&lt;td&gt;&lt;center&gt;$key&lt;/center&gt;&lt;/td&gt;&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;td&gt;&lt;center&gt;$value&lt;/center&gt;&lt;/td&gt;&lt;/tr&gt;&lt;br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;/table&gt;&lt;/center&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">die</span>($conn-&gt;error);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//config.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$servername = <span class="string">"localhost"</span>;</span><br><span class="line">$username = <span class="string">"root"</span>;</span><br><span class="line">$password = <span class="string">"root"</span>;</span><br><span class="line">$dbname = <span class="string">"day1"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stop_hack</span><span class="params">($value)</span></span>&#123;</span><br><span class="line">	$pattern = <span class="string">"insert|delete|or|concat|concat_ws|group_concat|join|floor|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dumpfile|sub|hex|file_put_contents|fwrite|curl|system|eval"</span>;</span><br><span class="line">	$back_list = explode(<span class="string">"|"</span>,$pattern);</span><br><span class="line">	<span class="keyword">foreach</span>($back_list <span class="keyword">as</span> $hack)&#123;</span><br><span class="line">		<span class="keyword">if</span>(preg_match(<span class="string">"/$hack/i"</span>, $value))</span><br><span class="line">			<span class="keyword">die</span>(<span class="string">"$hack detected!"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>代码中in_array()函数没有设置参数true，有缺陷，可进行强制类型转换，所以这里的id存在注入点，使用了sqlmap后无果，想到报错注入，还是无果，因为concat()被过滤了，见config.php。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$id = stop_hack($_GET[<span class="string">'id'</span>]);</span><br><span class="line">$sql = <span class="string">"SELECT * FROM users WHERE id=$id"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (!in_array($id, $whitelist)) &#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"id"</span>.$id.<span class="string">"is not in whitelist."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后我们这里使用make_set()来代替concat(),payload如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 and extractvalue(1,make_set(3,&apos;~&apos;,(select flag from flag)))</span><br></pre></td></tr></table></figure></p>
+<p>爆出flag<br><img src="/2019/03/30/依葫芦画瓢之in-array函数缺陷/依葫芦画瓢之in-array函数缺陷/1.png" alt=""></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#函数in-array-介绍"><span class="toc-number">1.</span> <span class="toc-text">函数in_array()介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#问题所在"><span class="toc-number">2.</span> <span class="toc-text">问题所在</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#例子"><span class="toc-number">3.</span> <span class="toc-text">例子</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/30/依葫芦画瓢之in-array函数缺陷/";
+  var disqus_url = "http://yoursite.com/2019/03/30/依葫芦画瓢之in-array函数缺陷/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
