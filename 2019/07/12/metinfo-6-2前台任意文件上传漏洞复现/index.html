@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>metinfo&lt;=6.2前台任意文件上传漏洞复现 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>metinfo&lt;=6.2前台任意文件上传漏洞复现</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/12</time>
+            
+            
+          </div>
+          <h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><h2 id="准备阶段"><a href="#准备阶段" class="headerlink" title="准备阶段"></a>准备阶段</h2><p>metinfo&lt;=6.2<br>php&lt;5.4（我用5.3）+mysql<br>windows10</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p>参考学长的文章，虽然要自己POC，但是文章写得很清楚了，基本就是把POC全部给出来了。<br><a href="https://xz.aliyun.com/t/5603#toc-0" target="_blank" rel="noopener">某info &lt;= 6.2.0前台任意文件上传漏洞</a><br><a href="http://www.yulegeyu.com/2019/06/18/Metinfo6-Arbitrary-File-Upload-Via-Iconv-Truncate/" target="_blank" rel="noopener">Metinfo6 Arbitrary File Upload Via Iconv Truncate</a></p>
+<h1 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h1><p>iconv在windows下编码转换存在截断问题，构造合适的文件路径和文件名，对其进行恶意文件上传。</p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><h2 id="1"><a href="#1" class="headerlink" title="(1)"></a>(1)</h2><p>函数 douploadfile()<br>定位：/app/system/include/module/uploadify.class.php::65行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">doupfile</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $_M;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set_upfile();</span><br><span class="line">	$info[<span class="string">'savepath'</span>] = $_M[<span class="string">'form'</span>][<span class="string">'savepath'</span>];</span><br><span class="line">	$info[<span class="string">'format'</span>] = $_M[<span class="string">'form'</span>][<span class="string">'format'</span>];</span><br><span class="line">	$info[<span class="string">'maxsize'</span>] = $_M[<span class="string">'form'</span>][<span class="string">'maxsize'</span>];</span><br><span class="line">	$info[<span class="string">'is_rename'</span>] = $_M[<span class="string">'form'</span>][<span class="string">'is_rename'</span>];</span><br><span class="line">	$info[<span class="string">'is_overwrite'</span>] = $_M[<span class="string">'form'</span>][<span class="string">'is_overwrite'</span>];</span><br><span class="line">	<span class="keyword">$this</span>-&gt;set_upload($info);</span><br><span class="line">	$back = <span class="keyword">$this</span>-&gt;upload($_M[<span class="string">'form'</span>][<span class="string">'formname'</span>]);</span><br><span class="line">	<span class="keyword">if</span>($_M[<span class="string">'form'</span>][<span class="string">'type'</span>]==<span class="number">1</span>)&#123;</span><br><span class="line">		<span class="keyword">if</span>($back[<span class="string">'error'</span>])&#123;</span><br><span class="line">			$back[<span class="string">'error'</span>] = $back[<span class="string">'errorcode'</span>];</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$backs[<span class="string">'path'</span>] = $back[<span class="string">'path'</span>];</span><br><span class="line"></span><br><span class="line">			$backs[<span class="string">'append'</span>] = <span class="string">'false'</span>;</span><br><span class="line">			$back = $backs;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    $back[<span class="string">'filesize'</span>] =  round(filesize($back[<span class="string">'path'</span>])/<span class="number">1024</span>,<span class="number">2</span>);</span><br><span class="line">	<span class="keyword">echo</span> jsonencode($back);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先先调用了<strong>set_upfile()</strong>函数,设置上传文件的模式，就是先设定上传文件的信息、<br>定位：/app/system/include/module/upfile.class.php::67行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 设置上传文件模式</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">set_upfile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $_M;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;set(<span class="string">'savepath'</span>, <span class="string">'file'</span>);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;set(<span class="string">'format'</span>, $_M[<span class="string">'config'</span>][<span class="string">'met_file_format'</span>]);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;set(<span class="string">'maxsize'</span>, min($_M[<span class="string">'config'</span>][<span class="string">'met_file_maxsize'</span>]*<span class="number">1048576</span>, <span class="number">1073741824</span>));</span><br><span class="line">	<span class="keyword">$this</span>-&gt;set(<span class="string">'is_rename'</span>, $_M[<span class="string">'config'</span>][<span class="string">'met_img_rename'</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接着调用<strong>set_upload()</strong>函数，参数来自于$info<br>定位：/app/system/include/module/uploadify.class.php::28行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">set_upload</span><span class="params">($info)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $_M;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set(<span class="string">'savepath'</span>, $info[<span class="string">'savepath'</span>]);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set(<span class="string">'format'</span>, $info[<span class="string">'format'</span>]);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set(<span class="string">'maxsize'</span>, $info[<span class="string">'maxsize'</span>]);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set(<span class="string">'is_rename'</span>, $info[<span class="string">'is_rename'</span>]);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;upfile-&gt;set(<span class="string">'is_overwrite'</span>, $info[<span class="string">'is_overwrite'</span>]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到这两个函数均对<strong>savepath</strong>进行处理，并且要命的是，<strong>set_upload()</strong>中处理的<strong>savepath</strong>来自于<strong>$_M[‘form’][‘savepath’]</strong>,这个数据是用户可控的，这是本次漏洞中的<strong>注入位置</strong>。</p>
+<p>我们跟踪查看一下set函数<br>定位：/app/system/include/module/upfile.class.php::43行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">set</span><span class="params">($name, $value)</span> </span>&#123;</span><br><span class="line">		     ... ...</span><br><span class="line">		<span class="keyword">switch</span> ($name) &#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="string">'savepath'</span>:</span><br><span class="line">				<span class="keyword">$this</span>-&gt;savepath = path_standard(PATH_WEB.<span class="string">'upload/'</span>.$value);</span><br><span class="line">             ... ...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以看到最终savepath将会为<strong>‘webserver/upload/file/‘</strong>的形式指定文件存放的位置。</p>
+<p>接着调用函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$back = <span class="keyword">$this</span>-&gt;upload($_M[<span class="string">'form'</span>][<span class="string">'formname'</span>]);</span><br></pre></td></tr></table></figure></p>
+<h2 id="2"><a href="#2" class="headerlink" title="(2)"></a>(2)</h2><p>跟踪查看<br>定位：/app/system/include/module/upfile.class.php::90行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload</span><span class="params">($form = <span class="string">''</span>)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $_M;</span><br><span class="line">		<span class="keyword">if</span>($form)&#123;</span><br><span class="line">			<span class="keyword">foreach</span>($_FILES <span class="keyword">as</span> $key =&gt; $val)&#123;</span><br><span class="line">				<span class="keyword">if</span>($form == $key)&#123;</span><br><span class="line">					$filear = $_FILES[$key];</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(!$filear)&#123;</span><br><span class="line">			<span class="keyword">foreach</span>($_FILES <span class="keyword">as</span> $key =&gt; $val)&#123;</span><br><span class="line">				$filear = $_FILES[$key];</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//是否能正常上传</span></span><br><span class="line">		</span><br><span class="line">        <span class="comment">//空间超容 有些虚拟主机不支持此函数</span></span><br><span class="line">       </span><br><span class="line">        <span class="comment">//目录不可写</span></span><br><span class="line">       </span><br><span class="line">        <span class="comment">//文件大小是否正确&#123;&#125;</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">//文件后缀是否为合法后缀</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;getext($filear[<span class="string">"name"</span>]); <span class="comment">//获取允许的后缀</span></span><br><span class="line">		<span class="keyword">if</span> (strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'php'</span>||strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'aspx'</span>||strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'asp'</span>||strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'jsp'</span>||strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'js'</span>||strtolower(<span class="keyword">$this</span>-&gt;ext)==<span class="string">'asa'</span>) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error(<span class="keyword">$this</span>-&gt;ext.<span class="string">" &#123;$_M['word']['upfileTip3']&#125;"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//$_M['config']['met_file_format']:</span></span><br><span class="line">		<span class="comment">//rar|zip|sql|doc|pdf|jpg|xls|png|gif|mp3|jpeg|bmp|swf|flv|ico</span></span><br><span class="line">		<span class="keyword">if</span> ($_M[<span class="string">'config'</span>][<span class="string">'met_file_format'</span>]) &#123;</span><br><span class="line">			<span class="keyword">if</span>($_M[<span class="string">'config'</span>][<span class="string">'met_file_format'</span>] != <span class="string">""</span> &amp;&amp; !in_array(strtolower(<span class="keyword">$this</span>-&gt;ext), explode(<span class="string">'|'</span>,strtolower($_M[<span class="string">'config'</span>][<span class="string">'met_file_format'</span>]))) &amp;&amp; $filear)&#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error(<span class="keyword">$this</span>-&gt;ext.<span class="string">" &#123;$_M['word']['upfileTip3']&#125;"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error(<span class="keyword">$this</span>-&gt;ext.<span class="string">" &#123;$_M['word']['upfileTip3']&#125;"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;format) &#123;</span><br><span class="line">			<span class="keyword">if</span> (<span class="keyword">$this</span>-&gt;format != <span class="string">""</span> &amp;&amp; !in_array(strtolower(<span class="keyword">$this</span>-&gt;ext), explode(<span class="string">'|'</span>,strtolower(<span class="keyword">$this</span>-&gt;format))) &amp;&amp; $filear) &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error(<span class="keyword">$this</span>-&gt;ext.<span class="string">" &#123;$_M['word']['upfileTip3']&#125;"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//文件名重命名</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;set_savename($filear[<span class="string">"name"</span>], <span class="keyword">$this</span>-&gt;is_rename);</span><br><span class="line">		<span class="comment">//新建保存文件</span></span><br><span class="line">		<span class="keyword">if</span>(stripos(<span class="keyword">$this</span>-&gt;savepath, PATH_WEB.<span class="string">'upload/'</span>) !== <span class="number">0</span>)&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error($_M[<span class="string">'word'</span>][<span class="string">'upfileFail2'</span>]);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span>(strstr(<span class="keyword">$this</span>-&gt;savepath, <span class="string">'./'</span>))&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error($_M[<span class="string">'word'</span>][<span class="string">'upfileTip3'</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!makedir(<span class="keyword">$this</span>-&gt;savepath)) &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error($_M[<span class="string">'word'</span>][<span class="string">'upfileFail2'</span>]);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//复制文件</span></span><br><span class="line">		$upfileok=<span class="number">0</span>;</span><br><span class="line">		$file_tmp=$filear[<span class="string">"tmp_name"</span>];</span><br><span class="line">		$file_name=<span class="keyword">$this</span>-&gt;savepath.<span class="keyword">$this</span>-&gt;savename;</span><br><span class="line">		<span class="keyword">if</span> (stristr(PHP_OS,<span class="string">"WIN"</span>)) &#123;</span><br><span class="line">			$file_name = @iconv(<span class="string">"utf-8"</span>,<span class="string">"GBK"</span>,$file_name);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (function_exists(<span class="string">"move_uploaded_file"</span>)) &#123;</span><br><span class="line">			<span class="keyword">if</span> (move_uploaded_file($file_tmp, $file_name)) &#123;</span><br><span class="line">				$upfileok=<span class="number">1</span>;</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (copy($file_tmp, $file_name)) &#123;</span><br><span class="line">				$upfileok=<span class="number">1</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">elseif</span> (copy($file_tmp, $file_name)) &#123;</span><br><span class="line">			$upfileok=<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (!$upfileok) &#123;</span><br><span class="line">			<span class="keyword">if</span> (file_put_contents(<span class="keyword">$this</span>-&gt;savepath.<span class="string">'test.txt'</span>,<span class="string">'metinfo'</span>)) &#123;</span><br><span class="line">				$_M[<span class="string">'word'</span>][<span class="string">'upfileOver4'</span>]=$_M[<span class="string">'word'</span>][<span class="string">'upfileOver5'</span>];</span><br><span class="line">			&#125;</span><br><span class="line">			unlink(<span class="keyword">$this</span>-&gt;savepath.<span class="string">'test.txt'</span>);</span><br><span class="line">			$errors = <span class="keyword">array</span>(<span class="number">0</span> =&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver4'</span>], <span class="number">1</span> =&gt;$_M[<span class="string">'word'</span>][<span class="string">'upfileOver'</span>], <span class="number">2</span> =&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver1'</span>], <span class="number">3</span> =&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver2'</span>], <span class="number">4</span> =&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver3'</span>], <span class="number">6</span>=&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver5'</span>], <span class="number">7</span>=&gt; $_M[<span class="string">'word'</span>][<span class="string">'upfileOver5'</span>]);</span><br><span class="line">			$filear[<span class="string">'error'</span>]=$filear[<span class="string">'error'</span>]?$filear[<span class="string">'error'</span>]:<span class="number">0</span>;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;error($errors[$filear[<span class="string">'error'</span>]]);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span>(stripos($filear[<span class="string">'tmp_name'</span>], PATH_WEB) === <span class="keyword">false</span>)&#123;</span><br><span class="line">				@unlink($filear[<span class="string">'tmp_name'</span>]); <span class="comment">//Delete temporary files</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		load::plugin(<span class="string">'doqiniu_upload'</span>,<span class="number">0</span>,<span class="keyword">array</span>(<span class="string">'savename'</span>=&gt;str_replace(PATH_WEB, <span class="string">''</span>, <span class="keyword">$this</span>-&gt;savepath).<span class="keyword">$this</span>-&gt;savename,<span class="string">'localfile'</span>=&gt;$file_name));</span><br><span class="line">		$back = <span class="string">'../'</span>.str_replace(PATH_WEB, <span class="string">''</span>, <span class="keyword">$this</span>-&gt;savepath).<span class="keyword">$this</span>-&gt;savename;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;sucess($back);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个函数对之前设置的参数进行检验过滤处理等等……<br><img src="/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/1.png" alt=""><br>相当严格的过滤，所以我们能上传的文件类型只能是白名单中的。</p>
+<p>查看文件重命名操作<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;set_savename($filear[<span class="string">"name"</span>], <span class="keyword">$this</span>-&gt;is_rename);</span><br></pre></td></tr></table></figure></p>
+<p>跟进查看函数set_savename()<br>定位：/app/system/include/module/upfile.class.php::354行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">set_savename</span><span class="params">($filename, $is_rename)</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">if</span> ($is_rename) &#123;</span><br><span class="line">	 	... ...</span><br><span class="line">	 &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          $name_verification = explode(<span class="string">'.'</span>,$filename);</span><br><span class="line">	      $verification_mun = count($name_verification);</span><br><span class="line">		  <span class="keyword">if</span>($verification_mun&gt;<span class="number">2</span>)&#123;</span><br><span class="line">			$verification_mun1 = $verification_mun<span class="number">-1</span>;</span><br><span class="line">			$name_verification1 = $name_verification[<span class="number">0</span>];</span><br><span class="line">			<span class="keyword">for</span>($i=<span class="number">0</span>;$i&lt;$verification_mun1;$i++)&#123;</span><br><span class="line">				$name_verification1 .= <span class="string">'_'</span>.$name_verification[$i];</span><br><span class="line">			&#125;</span><br><span class="line">			$name_verification1 .= <span class="string">'.'</span>.$name_verification[$verification_mun1];</span><br><span class="line">			$filename = $name_verification1;</span><br><span class="line">	     &#125;</span><br><span class="line">    $filename = str_replace(<span class="keyword">array</span>(<span class="string">":"</span>, <span class="string">"*"</span>, <span class="string">"?"</span>, <span class="string">"|"</span>, <span class="string">"/"</span> , <span class="string">"\\"</span> , <span class="string">"\""</span> , <span class="string">"&lt;"</span> , <span class="string">"&gt;"</span> , <span class="string">"——"</span> , <span class="string">" "</span> ),<span class="string">'_'</span>,$filename);</span><br><span class="line">    ... ... </span><br><span class="line">    ... ...</span><br></pre></td></tr></table></figure></p>
+<p>是否对文件名进行重命名操作，而这个操作的参数也是来自于用户输入<strong>$_M[‘form’]</strong><br>如果我们试图写入shell.php.jpg文件名，之后文件名会被改成shell_shell_php.jpg</p>
+<p>查看新建保存文件功能，这里对文件路径进行验证，要以upload开头，并且不能有<strong>‘./‘</strong><br><strong>tip:CTF中，如果想绕过’./‘的过滤，在 windows 下可以使用’..\’来进行路径穿越</strong><br><img src="/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/2.png" alt=""></p>
+<p>查看函数makedir()<br><img src="/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/3.png" alt=""><br>将会创建一个dir</p>
+<p>接着漏洞引发点<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//复制文件</span></span><br><span class="line">		$upfileok=<span class="number">0</span>;</span><br><span class="line">		$file_tmp=$filear[<span class="string">"tmp_name"</span>];</span><br><span class="line">		$file_name=<span class="keyword">$this</span>-&gt;savepath.<span class="keyword">$this</span>-&gt;savename;</span><br><span class="line">		<span class="keyword">if</span> (stristr(PHP_OS,<span class="string">"WIN"</span>)) &#123;</span><br><span class="line">			$file_name = @iconv(<span class="string">"utf-8"</span>,<span class="string">"GBK"</span>,$file_name);</span><br><span class="line">		&#125;</span><br><span class="line">		...</span><br><span class="line">		...</span><br></pre></td></tr></table></figure></p>
+<p>复制文件处<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$file_name=<span class="keyword">$this</span>-&gt;savepath.<span class="keyword">$this</span>-&gt;savename;</span><br></pre></td></tr></table></figure></p>
+<p>文件名由<strong>savepath</strong>和<strong>savename</strong>拼接而成<br>然后如果是windows系统就会通过<strong>iconv()</strong>函数转码，这个函数在win下，php版本小于5.4时，我使用5.3.将会出现截断，<br>比如shell.php%80xxxxxx,%80以后的内容会由于转码的问题，而被截断。<br>关于这个函数参考文章：<a href="https://www.cnblogs.com/milantgh/p/3602141.html?utm_source=tuicool" target="_blank" rel="noopener">PHP iconv函数字符串转码导致截断问题</a></p>
+<p>然后后续函数中会将文件内容存入filename，这时候的filename,可以是我们指定的文件形式。由此写入文件</p>
+<h1 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h1><p><img src="/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/4.png" alt=""></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>学习到了iconv()函数，然后代码的理解以及逻辑结构，函数之间的关联的理解能力有待提高，要了解参数传入处<br>比如<strong>$_M[‘form’]</strong>，要会溯源，然后发现在common.inc.php有定义<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取GET,POST,COOKIE，存放在$_M['form']，系统表单提交变量数组</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">  */</span></span><br></pre></td></tr></table></figure></p>
+<p>所以还是要多学，多向身边的同学学习</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言："><span class="toc-number">1.</span> <span class="toc-text">前言：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#准备阶段"><span class="toc-number">1.1.</span> <span class="toc-text">准备阶段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">1.2.</span> <span class="toc-text">参考文章</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞成因"><span class="toc-number">2.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1"><span class="toc-number">3.1.</span> <span class="toc-text">(1)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2"><span class="toc-number">3.2.</span> <span class="toc-text">(2)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#POC"><span class="toc-number">4.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/";
+  var disqus_url = "http://yoursite.com/2019/07/12/metinfo-6-2前台任意文件上传漏洞复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
