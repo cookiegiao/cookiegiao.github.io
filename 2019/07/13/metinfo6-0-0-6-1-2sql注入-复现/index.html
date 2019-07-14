@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>metinfo6.0.0-6.1.2sql注入[复现] | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>metinfo6.0.0-6.1.2sql注入[复现]</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/13</time>
+            
+            
+          </div>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>ubuntu 19<br>php5.6+mysql<br>phpstorm+burpsuit</p>
+<h2 id="写在前面-菜的明明白白"><a href="#写在前面-菜的明明白白" class="headerlink" title="写在前面,菜的明明白白"></a>写在前面,菜的明明白白</h2><p>复现这个漏洞，对cms的路由有了进一步的了解。意识到debug的重要性，函数之间的流转，使用debug能较好的了解。断点测试，能很好的了解参数的值，学长说代码问题都能够使用debug解决，所以学会熟练使用debug.然后编程能力有待提高，编写这次爆破的脚本很简单，但是我写的又慢，又烂……</p>
+<h1 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h1><p>对用户提交的数据没有进行严格的过滤，导致的sql注入</p>
+<h1 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h1><p>这个漏洞，目前我所了解到的入口有3个<br>其一是利用admin/index.php文件调用带do方法触发sql漏洞<br>其二是利用message(在线留言)<br>其三是利用feedback(在线反馈)<br>漏洞点都是一样的，一点差别而已</p>
+<p>先放一个POC，演示在线留言处触发漏洞<br><img src="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/1.png" alt=""><br><img src="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/2.png" alt=""><br>这里在id处存在bool盲注，并且时间盲注也是可以的。</p>
+<h1 id="分析漏洞成因"><a href="#分析漏洞成因" class="headerlink" title="分析漏洞成因"></a>分析漏洞成因</h1><p>根据POC看到/message/index.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">define(<span class="string">'M_NAME'</span>, <span class="string">'message'</span>);</span><br><span class="line">define(<span class="string">'M_MODULE'</span>, <span class="string">'web'</span>);</span><br><span class="line">define(<span class="string">'M_CLASS'</span>, <span class="string">'message'</span>);</span><br><span class="line">define(<span class="string">'M_ACTION'</span>, <span class="string">'domessage'</span>);</span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'../app/system/entrance.php'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>这里定义了module为web,meessage类，调用方法domessage，个人感觉这些信息比较有用，在后续寻找路由的时候有很大的作用，当然这是我这个菜鸟的想法。</p>
+<p>看到../app/system/entrance.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">load::module();</span><br></pre></td></tr></table></figure></p>
+<p>跟踪../app/system/include/class/load.class.php::funtion module()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">self</span>::_load_class($path, $modulename, $action);</span><br></pre></td></tr></table></figure></p>
+<p>然后跟踪到../app/system/include/class/load.class.php::function load_class()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(method_exists($newclass, $action))&#123;</span><br><span class="line">	 call_user_func(<span class="keyword">array</span>($newclass, $action));</span><br></pre></td></tr></table></figure></p>
+<p>这一路下来，这个路由就很清楚了，然后根据之前index.php定义的值，看到message.class.php<br>看到函数domessage()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">global</span> $_M;</span><br><span class="line"><span class="keyword">if</span>($_M[<span class="string">'form'</span>][<span class="string">'action'</span>] == <span class="string">'add'</span>)&#123;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;check_field();</span><br><span class="line">	<span class="keyword">$this</span>-&gt;add($_M[<span class="string">'form'</span>]);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>调用add()函数，跟踪看看函数体。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">($info)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $_M;</span><br><span class="line">		<span class="keyword">if</span>(!$_M[form][id])&#123;</span><br><span class="line">           $message=DB::get_one(<span class="string">"select * from &#123;$_M[table][column]&#125; where module= 7 and lang ='&#123;$_M[form][lang]&#125;'"</span>);</span><br><span class="line">           $_M[form][id]=$message[id];</span><br><span class="line">		&#125;</span><br><span class="line">		$met_fd_ok=DB::get_one(<span class="string">"select * from &#123;$_M[table][config]&#125; where lang ='&#123;$_M[form][lang]&#125;' and  name= 'met_fd_ok' and columnid = &#123;$_M[form][id]&#125;"</span>);</span><br><span class="line">        $_M[config][met_fd_ok]= $met_fd_ok[value];</span><br><span class="line">		<span class="keyword">if</span>(!$_M[config][met_fd_ok])okinfo(<span class="string">'javascript:history.back();'</span>,<span class="string">"&#123;$_M[word][Feedback5]&#125;"</span>);<span class="comment">//反馈已关闭</span></span><br><span class="line">		<span class="keyword">if</span>($_M[config][met_memberlogin_code])&#123;</span><br><span class="line">			<span class="keyword">if</span>(!load::sys_class(<span class="string">'pin'</span>, <span class="string">'new'</span>)-&gt;check_pin($_M[<span class="string">'form'</span>][<span class="string">'code'</span>]))&#123;</span><br><span class="line"></span><br><span class="line">			 			okinfo(<span class="number">-1</span>, $_M[<span class="string">'word'</span>][<span class="string">'membercode'</span>]);<span class="comment">//验证码错误</span></span><br><span class="line">			&#125;</span><br><span class="line">	    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>关键代码在于<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$met_fd_ok=DB::get_one(<span class="string">"select * from &#123;$_M[table][config]&#125; where lang ='&#123;$_M[form][lang]&#125;' and  name= 'met_fd_ok' and columnid = &#123;$_M[form][id]&#125;"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>我们可以查看数据库验证一下<br><img src="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/3.png" alt=""></p>
+<p>所以问题就出在这儿，然后我们在看看过滤情况，我们回过头去看发现message类继承了web类，web类继承了common类<br>common类为一级基类，参考文章<a href="http://www.dengtar.com/2375.html" target="_blank" rel="noopener">metinfo-一级基类</a></p>
+<p>common类中获取变量<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 获取GET,POST,COOKIE，存放在$_M['form']，系统表单提交变量数组</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">load_form</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $_M;</span><br><span class="line">	$_M[<span class="string">'form'</span>] =<span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">isset</span>($_REQUEST[<span class="string">'GLOBALS'</span>]) &amp;&amp; <span class="keyword">exit</span>(<span class="string">'Access Error'</span>);</span><br><span class="line">	<span class="keyword">foreach</span>($_COOKIE <span class="keyword">as</span> $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;<span class="number">0</span>&#125; != <span class="string">'_'</span> &amp;&amp; $_M[<span class="string">'form'</span>][$_key] = daddslashes($_value);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">foreach</span>($_POST <span class="keyword">as</span> $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;<span class="number">0</span>&#125; != <span class="string">'_'</span> &amp;&amp; $_M[<span class="string">'form'</span>][$_key] = daddslashes($_value);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">foreach</span>($_GET <span class="keyword">as</span> $_key =&gt; $_value) &#123;</span><br><span class="line">		$_key&#123;<span class="number">0</span>&#125; != <span class="string">'_'</span> &amp;&amp; $_M[<span class="string">'form'</span>][$_key] = daddslashes($_value);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后我们跟踪至函数common.func.php::daddslashes()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">daddslashes</span><span class="params">($string, $force = <span class="number">0</span>)</span> </span>&#123;</span><br><span class="line">	!defined(<span class="string">'MAGIC_QUOTES_GPC'</span>) &amp;&amp; define(<span class="string">'MAGIC_QUOTES_GPC'</span>, get_magic_quotes_gpc());<span class="comment">//是否开启get_magic_quotes_gpc()</span></span><br><span class="line">	<span class="keyword">if</span>(!MAGIC_QUOTES_GPC || $force) &#123;</span><br><span class="line">		<span class="keyword">if</span>(is_array($string)) &#123;</span><br><span class="line">			<span class="keyword">foreach</span>($string <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">				$string[$key] = daddslashes($val, $force);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">if</span>(!defined(<span class="string">'IN_ADMIN'</span>))&#123;</span><br><span class="line">				$string = trim(addslashes(sqlinsert($string)));</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				$string = trim(addslashes($string));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>common类将会对输入的内容进行addslashes()处理，然后看到web.class.php::load_form()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 重写common类的load_form方法，前台对提交的GET，POST，COOKIE进行安全的过滤处理</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">function</span> <span class="title">load_form</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $_M;</span><br><span class="line">	<span class="keyword">parent</span>::load_form();</span><br><span class="line">	<span class="keyword">foreach</span> ($_M[<span class="string">'form'</span>] <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">		$_M[<span class="string">'form'</span>][$key] = sqlinsert($val);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ($_M[<span class="string">'form'</span>][<span class="string">'id'</span>]!=<span class="string">''</span> &amp;&amp; !is_numeric($_M[<span class="string">'form'</span>][<span class="string">'id'</span>])) &#123;</span><br><span class="line">		$_M[<span class="string">'form'</span>][<span class="string">'id'</span>] = <span class="string">''</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ($_M[<span class="string">'form'</span>][<span class="string">'class1'</span>]!=<span class="string">''</span> &amp;&amp; !is_numeric($_M[<span class="string">'form'</span>][<span class="string">'class1'</span>])) &#123;</span><br><span class="line">		$_M[<span class="string">'form'</span>][<span class="string">'class1'</span>] = <span class="string">''</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ($_M[<span class="string">'form'</span>][<span class="string">'class2'</span>]!=<span class="string">''</span> &amp;&amp; !is_numeric($_M[<span class="string">'form'</span>][<span class="string">'class2'</span>])) &#123;</span><br><span class="line">		$_M[<span class="string">'form'</span>][<span class="string">'class2'</span>] = <span class="string">''</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> ($_M[<span class="string">'form'</span>][<span class="string">'class3'</span>]!=<span class="string">''</span> &amp;&amp; !is_numeric($_M[<span class="string">'form'</span>][<span class="string">'class3'</span>])) &#123;</span><br><span class="line">		$_M[<span class="string">'form'</span>][<span class="string">'class3'</span>] = <span class="string">''</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>对common来的参数进行重写操作，进行两步验证，其一是sqlinsert()，其二是is_numberc()，非数字就做置空操作。均是针对sql注入的。看向common.func.php::sqlinsert()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sqlinsert</span><span class="params">($string)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(is_array($string))&#123;</span><br><span class="line">		<span class="keyword">foreach</span>($string <span class="keyword">as</span> $key =&gt; $val) &#123;</span><br><span class="line">			$string[$key] = sqlinsert($val);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$string_old = $string;</span><br><span class="line">		$string = str_ireplace(<span class="string">"\\"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"\""</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"'"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"*"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"%5C"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"%22"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"%27"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"%2A"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"~"</span>,<span class="string">"/"</span>,$string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"select"</span>, <span class="string">"\sel\ect"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"insert"</span>, <span class="string">"\ins\ert"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"update"</span>, <span class="string">"\up\date"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"delete"</span>, <span class="string">"\de\lete"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"union"</span>, <span class="string">"\un\ion"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"into"</span>, <span class="string">"\in\to"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"load_file"</span>, <span class="string">"\load\_\file"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"outfile"</span>, <span class="string">"\out\file"</span>, $string);</span><br><span class="line">		$string = str_ireplace(<span class="string">"sleep"</span>, <span class="string">"\sle\ep"</span>, $string);</span><br><span class="line">		$string = strip_tags($string);</span><br><span class="line">		<span class="keyword">if</span>($string_old!=$string)&#123;</span><br><span class="line">			$string=<span class="string">''</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		$string = trim($string);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因为sleep()被过滤了，几乎sql注入的关键词都被过滤了，然后可以选择使用布尔盲注，时间盲注的话，可以使用benchmark()，所以我们绕过其中第一个过滤，is_number()的绕过<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">message</span> <span class="keyword">extends</span> <span class="title">web</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $_M;</span><br><span class="line">		<span class="keyword">parent</span>::__construct();</span><br><span class="line">		<span class="keyword">$this</span>-&gt;upfile = load::sys_class(<span class="string">'upfile'</span>, <span class="string">'new'</span>);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们输入的payload在<code>parent::__construct();</code>后被置空，而经过<code>$this-&gt;upfile = load::sys_class(&#39;upfile&#39;, &#39;new&#39;);</code>后，我们的payload又被重新填入，所以这样就绕过该函数，成功注入。</p>
+<p>这里解释一下为什么返回验证码错误，为我们判断依据。看向函数domessage()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">global</span> $_M;</span><br><span class="line">		<span class="keyword">if</span>($_M[<span class="string">'form'</span>][<span class="string">'action'</span>] == <span class="string">'add'</span>)&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;check_field();</span><br><span class="line">			<span class="keyword">$this</span>-&gt;add($_M[<span class="string">'form'</span>]);</span><br><span class="line"></span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟进check_field()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">foreach</span> (array_keys($para) <span class="keyword">as</span> $val) &#123;</span><br><span class="line">          <span class="keyword">if</span>($para[$val][<span class="string">'wr_ok'</span>]==<span class="number">1</span> &amp;&amp; !in_array($val,$paraarr))&#123;</span><br><span class="line">              $info=<span class="string">"【&#123;$para[$val]['name']&#125;】"</span>.$_M[word][noempty];</span><br><span class="line">              okinfo(<span class="string">'javascript:history.back();'</span>,$info);</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure></p>
+<p>所以我们只要正确填充个参数就能过check_field()函数，进入add()函数后<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">$met_fd_ok=DB::get_one(<span class="string">"select * from &#123;$_M[table][config]&#125; where lang ='&#123;$_M[form][lang]&#125;' and  name= 'met_fd_ok' and columnid = &#123;$_M[form][id]&#125;"</span>);</span><br><span class="line">        $_M[config][met_fd_ok]= $met_fd_ok[value];</span><br><span class="line">		<span class="keyword">if</span>(!$_M[config][met_fd_ok])okinfo(<span class="string">'javascript:history.back();'</span>,<span class="string">"&#123;$_M[word][Feedback5]&#125;"</span>);</span><br><span class="line">		<span class="comment">/*</span></span><br><span class="line"><span class="comment">            先进行sql查询，获取返回值，当我们的语句正确，且注入符合逻辑时，$met_fd_ok[value]不为空</span></span><br><span class="line"><span class="comment">            说明sql查询有效</span></span><br><span class="line"><span class="comment">		*/</span></span><br><span class="line">		<span class="keyword">if</span>($_M[config][met_memberlogin_code])&#123;</span><br><span class="line">			<span class="keyword">if</span>(!load::sys_class(<span class="string">'pin'</span>, <span class="string">'new'</span>)-&gt;check_pin($_M[<span class="string">'form'</span>][<span class="string">'code'</span>]))&#123;</span><br><span class="line"></span><br><span class="line">			 			okinfo(<span class="number">-1</span>, $_M[<span class="string">'word'</span>][<span class="string">'membercode'</span>]);</span><br><span class="line">			&#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	    <span class="comment">/*</span></span><br><span class="line"><span class="comment">	        这里进行验证码验证</span></span><br><span class="line"><span class="comment">	    */</span></span><br></pre></td></tr></table></figure></p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面-菜的明明白白"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面,菜的明明白白</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞成因"><span class="toc-number">2.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#POC"><span class="toc-number">3.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析漏洞成因"><span class="toc-number">4.</span> <span class="toc-text">分析漏洞成因</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/";
+  var disqus_url = "http://yoursite.com/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
