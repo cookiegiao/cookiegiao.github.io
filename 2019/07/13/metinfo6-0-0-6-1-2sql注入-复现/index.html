@@ -64,6 +64,7 @@
           </div>
           <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>ubuntu 19<br>php5.6+mysql<br>phpstorm+burpsuit</p>
 <h2 id="写在前面-菜的明明白白"><a href="#写在前面-菜的明明白白" class="headerlink" title="写在前面,菜的明明白白"></a>写在前面,菜的明明白白</h2><p>复现这个漏洞，对cms的路由有了进一步的了解。意识到debug的重要性，函数之间的流转，使用debug能较好的了解。断点测试，能很好的了解参数的值，学长说代码问题都能够使用debug解决，所以学会熟练使用debug.然后编程能力有待提高，编写这次爆破的脚本很简单，但是我写的又慢，又烂……</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><p><a href="https://bbs.ichunqiu.com/forum.php?mod=viewthread&amp;tid=46687" target="_blank" rel="noopener">Metinfo 6.1.2 SQL注入</a><br><a href="https://blog.csdn.net/caiqiiqi/article/details/88716000" target="_blank" rel="noopener">MetInfo-6.1.2前台SQL注入</a><br><a href="https://mochazz.github.io/2018/11/09/Metinfo6.0.0-6.1.2%E5%89%8D%E5%8F%B0%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E7%94%9F%E5%91%BD%E7%BA%BF/" target="_blank" rel="noopener">Metinfo6.0.0-6.1.2前台注入漏洞生命线</a></p>
 <h1 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h1><p>对用户提交的数据没有进行严格的过滤，导致的sql注入</p>
 <h1 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h1><p>这个漏洞，目前我所了解到的入口有3个<br>其一是利用admin/index.php文件调用带do方法触发sql漏洞<br>其二是利用message(在线留言)<br>其三是利用feedback(在线反馈)<br>漏洞点都是一样的，一点差别而已</p>
 <p>先放一个POC，演示在线留言处触发漏洞<br><img src="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/1.png" alt=""><br><img src="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/2.png" alt=""><br>这里在id处存在bool盲注，并且时间盲注也是可以的。</p>
@@ -111,7 +112,7 @@
     <div class="toc-container">
         <h1>目录</h1>
         <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面-菜的明明白白"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面,菜的明明白白</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞成因"><span class="toc-number">2.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#POC"><span class="toc-number">3.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析漏洞成因"><span class="toc-number">4.</span> <span class="toc-text">分析漏洞成因</span></a></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面-菜的明明白白"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面,菜的明明白白</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考文章"><span class="toc-number">1.2.</span> <span class="toc-text">参考文章</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞成因"><span class="toc-number">2.</span> <span class="toc-text">漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#POC"><span class="toc-number">3.</span> <span class="toc-text">POC</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析漏洞成因"><span class="toc-number">4.</span> <span class="toc-text">分析漏洞成因</span></a></li></ol>
         </div>
     </div>
     

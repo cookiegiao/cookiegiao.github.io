@@ -56,6 +56,28 @@
   <div class="posts-list">
     
       <section>
+        <a href="/2019/02/26/php超级全局变量/">
+          <h3 class="post-head">
+            php超级全局变量
+          </h3>
+        </a>
+        
+        <div class="post-content">
+          
+            
+              
+                <h1 id="PHP-GLOBALS"><a href="#PHP-GLOBALS" class="headerlink" title="PHP $GLOBALS"></a>PHP $GLOBALS</h1><p>$GLOBALS 是PHP的一个超级全局变量组，在一个PHP脚本的全部作用域中都可以访问。<br>$GLOBALS 是一个包含了全部变量的全局组合数组。<br><strong>变量的名字就是数组的键。所以在调用的时候为$GLOBALS[‘var’],而不是$GLOBALS[“$var”]，””存在解析的作用.</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$var1=<span class="string">'www.phpernote.com'</span>;</span><br><span class="line">$var2=<span class="string">'www.google.cn'</span>;</span><br><span class="line">test();</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $var1=<span class="string">'taobao'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">global</span> $var1;</span><br><span class="line">    <span class="keyword">echo</span> $var1,<span class="string">'&lt;br /&gt;'</span>;</span><br><span class="line">    <span class="keyword">echo</span> $GLOBALS[<span class="string">'var2'</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+              
+          
+        </div>
+        <div class="post-meta">
+          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
+          
+          
+        </div>
+      </section>
+    
+      <section>
         <a href="/2019/02/26/php变量/">
           <h3 class="post-head">
             php变量
@@ -238,28 +260,6 @@
             
               
                 <p>这两天是这么计划的，借着实验室给我们留的实验环境，今天早上复习一下sql的基础语法，下午再把之前做过的sqlilab再看一下，最后学习使用sqlmap</p>
-              
-          
-        </div>
-        <div class="post-meta">
-          <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/01/25</time>
-          
-          
-        </div>
-      </section>
-    
-      <section>
-        <a href="/2019/01/25/学习记录-关于XSS/">
-          <h3 class="post-head">
-            学习记录--关于XSS攻击
-          </h3>
-        </a>
-        
-        <div class="post-content">
-          
-            
-              
-                <p>关于XSS的学习，昨天花了一天的时候看了很多关于XSS的文章，自我感觉已经略知一二，今天把自己的学习心得，包括一些定义和原理，我将会用DVWA上的靶场以及自己通过Express搭建的平台来演示XSS的一些基本的操作，希望在往后的学习过程中能了解更多，这里放上一个知乎博主的文章，关于他发现百度网盘上有一个XSS漏洞，现在已经修复了，但是还是蛮有意思的,<a href="https://zhuanlan.zhihu.com/p/24249045" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/24249045</a>.</p>
               
           
         </div>
