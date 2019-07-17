@@ -107,6 +107,9 @@
 <p>跟进后，发现这个函数是可以产生缓存文件的，而这个缓存文件调用了pc_tag()，可包含所以最终payload为<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?m=link&amp;c=index&amp;a=register&amp;siteid=<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="/2019/07/16/phpcmsv9文件包含漏洞-复现/5.png" alt=""></p>
 <h2 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h2><p>再一次感谢<a href="https://www.freebuf.com/author/wnltc0" target="_blank" rel="noopener">wnltc0师傅</a>，不厌其烦地和我解释我不懂的地方<br><img src="/2019/07/16/phpcmsv9文件包含漏洞-复现/6.png" alt=""></p>
+<p>代码审计思路(转的….)<br>方案一：先对核心类库进行审计，如果找到漏洞，那么在网站中可能会存在多处相同的漏洞，就算找不到漏洞，那对核心类库中的方法也多少了解，后面对具体应用功能审计时也会轻松一些</p>
+<p>方案二：直接审计功能点，优点：针对性更强；缺点：某个功能点可能调用了多个核心类库中的方法，由于对核心类库不了解，跟读时可能会比较累，需要跟的东西可能会比较多</p>
+<p>//无论哪种方案，没耐心是不行滴；如果你审计时正好心烦躁的很，那你可以在安装好应用后，随便点点，开着bp，抓抓改改，发现觉得可能存在问题的点再跟代码，这种方式(有点偏黑盒)能发现一些比较明显的问题，想深入挖掘，建议参考前面两种方案</p>
 
         </section>
     </article>
