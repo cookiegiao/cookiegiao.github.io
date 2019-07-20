@@ -1,68 +1,375 @@
 <!DOCTYPE html>
-<html lang=>
-  <head><meta name="generator" content="Hexo 3.9.0">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="">
-  <meta name="keywords" content="root">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="curl：在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。 介绍curl的常见参数其语法格式：1$ curl [option] [url] 常见参数：12345678910111213141516-A/--user-agent &amp;lt;string&amp;gt;">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-curl">
+<meta property="og:url" content="http://yoursite.com/2019/04/25/linux-curl/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="curl：在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。 介绍curl的常见参数其语法格式：1$ curl [option] [url] 常见参数：12345678910111213141516-A/--user-agent &amp;lt;string&amp;gt;">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-04-25T11:43:13.669Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux-curl">
+<meta name="twitter:description" content="curl：在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。 介绍curl的常见参数其语法格式：1$ curl [option] [url] 常见参数：12345678910111213141516-A/--user-agent &amp;lt;string&amp;gt;">
+
+
+
+
+
   
-    <link rel="icon" href="/favicon.ico">
   
-    
+  <link rel="canonical" href="http://yoursite.com/2019/04/25/linux-curl/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
   <title>linux-curl | The clown is laughing at you</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body>
-  <header>
-  <div class="header-container">
-    <a class='logo' href="/">
-      <span>The clown is laughing at you</span>
-    </a>
-    <ul class="right-header">
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
       
-        <li class="nav-item">
+        
+        
+        
           
-            <a href="/" class="item-link">首页</a>
-          
-        </li>
+          <li class="menu-item menu-item-home">
+
+    
+    
       
-        <li class="nav-item">
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
           
-            <a href="/about" class="item-link">关于</a>
-          
-        </li>
+          <li class="menu-item menu-item-archives">
+
+    
+    
       
-        <li class="nav-item">
-          
-            <a href="/archives" class="item-link">归档</a>
-          
-        </li>
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
       
-        <li class="nav-item">
-          
-            <a href="/tags" class="item-link">标签</a>
-          
-        </li>
       
     </ul>
-  </div>
-</header>
+  
 
-  <main id='post'>
-  <div class="content">
-    <article>
-        <section class="content markdown-body">
-          <h1>linux-curl</h1>
-          <div class='post-meta'>
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/04/25</time>
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/25/linux-curl/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">linux-curl
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-04-25 19:42:32 / Geändert am: 19:43:13" itemprop="dateCreated datePublished" datetime="2019-04-25T19:42:32+08:00">2019-04-25</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
             
             
-          </div>
-          <p>curl：<br>在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。</p>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>curl：<br>在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。</p>
 <h1 id="介绍curl的常见参数"><a href="#介绍curl的常见参数" class="headerlink" title="介绍curl的常见参数"></a>介绍curl的常见参数</h1><p>其语法格式：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl [option] [url]</span><br></pre></td></tr></table></figure></p>
 <p>常见参数：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">-A/--user-agent &lt;string&gt;              设置用户代理发送给服务器</span><br><span class="line">-b/--cookie &lt;name=string/file&gt;    cookie字符串或文件读取位置</span><br><span class="line">-c/--cookie-jar &lt;file&gt;                    操作结束后把cookie写入到这个文件中</span><br><span class="line">-C/--<span class="keyword">continue</span>-at &lt;offset&gt;            断点续转</span><br><span class="line">-D/--dump-header &lt;file&gt;              把header信息写入到该文件中</span><br><span class="line">-e/--referer                                  来源网址</span><br><span class="line">-f/--fail                                          连接失败时不显示http错误</span><br><span class="line">-o/--output                                  把输出写到该文件中</span><br><span class="line">-O/--remote-name                      把输出写到该文件中，保留远程文件的文件名</span><br><span class="line">-r/--range &lt;range&gt;                      检索来自HTTP/<span class="number">1.1</span>或FTP服务器字节范围</span><br><span class="line">-s/--silent                                    静音模式。不输出任何东西</span><br><span class="line">-T/--upload-file &lt;file&gt;                  上传文件</span><br><span class="line">-u/--user &lt;user[:password]&gt;      设置服务器的用户和密码</span><br><span class="line">-w/--write-out [format]                什么输出完成后</span><br><span class="line">-x/--proxy &lt;host[:port]&gt;              在给定的端口上使用HTTP代理</span><br><span class="line">-<span class="comment">#/--progress-bar                        进度条显示当前的传送状态</span></span><br></pre></td></tr></table></figure></p>
 <h1 id="curl常见用法"><a href="#curl常见用法" class="headerlink" title="curl常见用法"></a>curl常见用法</h1><h2 id="0x01-基本使用"><a href="#0x01-基本使用" class="headerlink" title="0x01 基本使用"></a>0x01 基本使用</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://www.baidu.com</span><br></pre></td></tr></table></figure>
@@ -111,164 +418,344 @@
 <h1 id="其余参数"><a href="#其余参数" class="headerlink" title="其余参数"></a>其余参数</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">-a/--append                        上传文件时，附加到目标文件</span><br><span class="line">--anyauth                            可以使用“任何”身份验证方法</span><br><span class="line">--basic                                使用HTTP基本验证</span><br><span class="line">-B/--use-ascii                      使用ASCII文本传输</span><br><span class="line">-d/--data &lt;data&gt;                  HTTP POST方式传送数据</span><br><span class="line">--data-ascii &lt;data&gt;            以ascii的方式post数据</span><br><span class="line">--data-binary &lt;data&gt;          以二进制的方式post数据</span><br><span class="line">--negotiate                          使用HTTP身份验证</span><br><span class="line">--digest                        使用数字身份验证</span><br><span class="line">--disable-eprt                  禁止使用EPRT或LPRT</span><br><span class="line">--disable-epsv                  禁止使用EPSV</span><br><span class="line">--egd-file &lt;file&gt;              为随机数据(SSL)设置EGD socket路径</span><br><span class="line">--tcp-nodelay                  使用TCP_NODELAY选项</span><br><span class="line">-E/--cert &lt;cert[:passwd]&gt;      客户端证书文件和密码 (SSL)</span><br><span class="line">--cert-type &lt;type&gt;              证书文件类型 (DER/PEM/ENG) (SSL)</span><br><span class="line">--key &lt;key&gt;                    私钥文件名 (SSL)</span><br><span class="line">--key-type &lt;type&gt;              私钥文件类型 (DER/PEM/ENG) (SSL)</span><br><span class="line">--<span class="keyword">pass</span>  &lt;<span class="keyword">pass</span>&gt;                  私钥密码 (SSL)</span><br><span class="line">--engine &lt;eng&gt;                  加密引擎使用 (SSL). <span class="string">"--engine list"</span> <span class="keyword">for</span> list</span><br><span class="line">--cacert &lt;file&gt;                CA证书 (SSL)</span><br><span class="line">--capath &lt;directory&gt;            CA目   (made using c_rehash) to verify peer against (SSL)</span><br><span class="line">--ciphers &lt;list&gt;                SSL密码</span><br><span class="line">--compressed                    要求返回是压缩的形势 (using deflate <span class="keyword">or</span> gzip)</span><br><span class="line">--connect-timeout &lt;seconds&gt;    设置最大请求时间</span><br><span class="line">--create-dirs                  建立本地目录的目录层次结构</span><br><span class="line">--crlf                          上传是把LF转变成CRLF</span><br><span class="line">--ftp-create-dirs              如果远程目录不存在，创建远程目录</span><br><span class="line">--ftp-method [multicwd/nocwd/singlecwd]    控制CWD的使用</span><br><span class="line">--ftp-pasv                      使用 PASV/EPSV 代替端口</span><br><span class="line">--ftp-skip-pasv-ip              使用PASV的时候,忽略该IP地址</span><br><span class="line">--ftp-ssl                      尝试用 SSL/TLS 来进行ftp数据传输</span><br><span class="line">--ftp-ssl-reqd                  要求用 SSL/TLS 来进行ftp数据传输</span><br><span class="line">-F/--form &lt;name=content&gt;        模拟http表单提交数据</span><br><span class="line">-form-string &lt;name=string&gt;      模拟http表单提交数据</span><br><span class="line">-g/--globoff                    禁用网址序列和范围使用&#123;&#125;和[]</span><br><span class="line">-G/--get                        以get的方式来发送数据</span><br><span class="line">-h/--help                      帮助</span><br><span class="line">-H/--header &lt;line&gt;              自定义头信息传递给服务器</span><br><span class="line">--ignore-content-length        忽略的HTTP头信息的长度</span><br><span class="line">-i/--include                    输出时包括protocol头信息</span><br><span class="line">-I/--head                      只显示文档信息</span><br><span class="line">-j/--junk-session-cookies      读取文件时忽略session cookie</span><br><span class="line">--interface &lt;interface&gt;        使用指定网络接口/地址</span><br><span class="line">--krb4 &lt;level&gt;                  使用指定安全级别的krb4</span><br><span class="line">-k/--insecure                  允许不使用证书到SSL站点</span><br><span class="line">-K/--config                    指定的配置文件读取</span><br><span class="line">-l/--list-only                  列出ftp目录下的文件名称</span><br><span class="line">--limit-rate &lt;rate&gt;            设置传输速度</span><br><span class="line">--local-port&lt;NUM&gt;              强制使用本地端口号</span><br><span class="line">-m/--max-time &lt;seconds&gt;        设置最大传输时间</span><br><span class="line">--max-redirs &lt;num&gt;              设置最大读取的目录数</span><br><span class="line">--max-filesize &lt;bytes&gt;          设置最大下载的文件总量</span><br><span class="line">-M/--manual                    显示全手动</span><br><span class="line">-n/--netrc                      从netrc文件中读取用户名和密码</span><br><span class="line">--netrc-optional                使用 .netrc 或者 URL来覆盖-n</span><br><span class="line">--ntlm                          使用 HTTP NTLM 身份验证</span><br><span class="line">-N/--no-buffer                  禁用缓冲输出</span><br><span class="line">-p/--proxytunnel                使用HTTP代理</span><br><span class="line">--proxy-anyauth                选择任一代理身份验证方法</span><br><span class="line">--proxy-basic                  在代理上使用基本身份验证</span><br><span class="line">--proxy-digest                  在代理上使用数字身份验证</span><br><span class="line">--proxy-ntlm                    在代理上使用ntlm身份验证</span><br><span class="line">-P/--ftp-port &lt;address&gt;        使用端口地址，而不是使用PASV</span><br><span class="line">-Q/--quote &lt;cmd&gt;                文件传输前，发送命令到服务器</span><br><span class="line">--range-file                    读取（SSL）的随机文件</span><br><span class="line">-R/--remote-time                在本地生成文件时，保留远程文件时间</span><br><span class="line">--retry &lt;num&gt;                  传输出现问题时，重试的次数</span><br><span class="line">--retry-delay &lt;seconds&gt;        传输出现问题时，设置重试间隔时间</span><br><span class="line">--retry-max-time &lt;seconds&gt;      传输出现问题时，设置最大重试时间</span><br><span class="line">-S/--show-error                显示错误</span><br><span class="line">--socks4 &lt;host[:port]&gt;          用socks4代理给定主机和端口</span><br><span class="line">--socks5 &lt;host[:port]&gt;          用socks5代理给定主机和端口</span><br><span class="line">-t/--telnet-option &lt;OPT=val&gt;    Telnet选项设置</span><br><span class="line">--trace &lt;file&gt;                  对指定文件进行debug</span><br><span class="line">--trace-ascii &lt;file&gt;            Like --跟踪但没有hex输出</span><br><span class="line">--trace-time                    跟踪/详细输出时，添加时间戳</span><br><span class="line">--url &lt;URL&gt;                    Spet URL to work <span class="keyword">with</span></span><br><span class="line">-U/--proxy-user &lt;user[:password]&gt;  设置代理用户名和密码</span><br><span class="line">-V/--version                    显示版本信息</span><br><span class="line">-X/--request &lt;command&gt;          指定什么命令</span><br><span class="line">-y/--speed-time                放弃限速所要的时间。默认为<span class="number">30</span></span><br><span class="line">-Y/--speed-limit                停止传输速度的限制，速度时间<span class="string">'秒</span></span><br><span class="line"><span class="string">-z/--time-cond                  传送时间设置</span></span><br><span class="line"><span class="string">-0/--http1.0                    使用HTTP 1.0</span></span><br><span class="line"><span class="string">-1/--tlsv1                      使用TLSv1（SSL）</span></span><br><span class="line"><span class="string">-2/--sslv2                      使用SSLv2的（SSL）</span></span><br><span class="line"><span class="string">-3/--sslv3                      使用的SSLv3（SSL）</span></span><br><span class="line"><span class="string">--3p-quote                      like -Q for the source URL for 3rd party transfer</span></span><br><span class="line"><span class="string">--3p-url                        使用url，进行第三方传送</span></span><br><span class="line"><span class="string">--3p-user                      使用用户名和密码，进行第三方传送</span></span><br><span class="line"><span class="string">-4/--ipv4                      使用IP4</span></span><br><span class="line"><span class="string">-6/--ipv6                      使用IP6</span></span><br></pre></td></tr></table></figure>
 <p>参考文章：<br><a href="https://www.cnblogs.com/duhuo/p/5695256.html" target="_blank" rel="noopener">https://www.cnblogs.com/duhuo/p/5695256.html</a><br><a href="http://www.linuxdiyf.com/linux/2800.html" target="_blank" rel="noopener">http://www.linuxdiyf.com/linux/2800.html</a></p>
 
-        </section>
-    </article>
-    
-        <!-- disqus 评论框 start -->
-        <div class="comment">
-            <div id="disqus_thread" class="disqus-thread">
-              <i>Loading comments box needs to over the wall</i>
-            </div>
-        </div>
-        <!-- disqus 评论框 end -->
-    
-    
-        <!-- livere 评论框 start -->
-        <div class="comment">
-            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
-        </div>
-        <!-- livere 评论框 end -->
-        
-  </div>
-  <aside>
-    
-    <div class="toc-container">
-        <h1>目录</h1>
-        <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#介绍curl的常见参数"><span class="toc-number">1.</span> <span class="toc-text">介绍curl的常见参数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#curl常见用法"><span class="toc-number">2.</span> <span class="toc-text">curl常见用法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-基本使用"><span class="toc-number">2.1.</span> <span class="toc-text">0x01 基本使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-保存访问的网页"><span class="toc-number">2.2.</span> <span class="toc-text">0x02 保存访问的网页</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-使用linux重定向功能保存"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 使用linux重定向功能保存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-可以使用curl的内置option-o-小写-保存网页"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 可以使用curl的内置option:-o(小写)保存网页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-可以使用curl的内置option-O-大写-保存网页中的文件"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 可以使用curl的内置option:-O(大写)保存网页中的文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-测试网页返回值"><span class="toc-number">2.3.</span> <span class="toc-text">0x03 测试网页返回值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-指定proxy服务器以及其端口"><span class="toc-number">2.4.</span> <span class="toc-text">0x04 指定proxy服务器以及其端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x05-cookie"><span class="toc-number">2.5.</span> <span class="toc-text">0x05 cookie</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-保存http的response里面的cookie信息"><span class="toc-number">2.5.1.</span> <span class="toc-text">5.1 保存http的response里面的cookie信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-保存http的response里面的header信息"><span class="toc-number">2.5.2.</span> <span class="toc-text">5.2 保存http的response里面的header信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-使用cookie"><span class="toc-number">2.5.3.</span> <span class="toc-text">5.3 使用cookie</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x06-模范浏览器"><span class="toc-number">2.6.</span> <span class="toc-text">0x06 模范浏览器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x07-伪造refer-盗链"><span class="toc-number">2.7.</span> <span class="toc-text">0x07 伪造refer(盗链)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x08-下载文件"><span class="toc-number">2.8.</span> <span class="toc-text">0x08 下载文件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-利用curl下载文件。"><span class="toc-number">2.8.1.</span> <span class="toc-text">8.1 利用curl下载文件。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-循环下载"><span class="toc-number">2.8.2.</span> <span class="toc-text">8.2 循环下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-3-下载重命名"><span class="toc-number">2.8.3.</span> <span class="toc-text">8.3 下载重命名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-4-分块下载"><span class="toc-number">2.8.4.</span> <span class="toc-text">8.4 分块下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-5-通过ftp下载文件"><span class="toc-number">2.8.5.</span> <span class="toc-text">8.5 通过ftp下载文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x09-断点续传"><span class="toc-number">2.9.</span> <span class="toc-text">0x09 断点续传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0A-上传文件"><span class="toc-number">2.10.</span> <span class="toc-text">0x0A 上传文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x0B-显示抓取错误"><span class="toc-number">2.11.</span> <span class="toc-text">0x0B 显示抓取错误</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其余参数"><span class="toc-number">3.</span> <span class="toc-text">其余参数</span></a></li></ol>
-        </div>
-    </div>
-    
-  </aside>
-</main>
-
-<!-- disqus 公共JS代码 -->
-<script type="text/javascript">
-  /* * * CONFIGURATION VARIABLES * * */
-  var disqus_shortname = "your_disqus_shortname";
-  var disqus_identifier = "http://yoursite.com/2019/04/25/linux-curl/";
-  var disqus_url = "http://yoursite.com/2019/04/25/linux-curl/";
-
-  isAgent(getDisqus)
-
-  // determine user agent in China
-  function isAgent(cb) {
-    var url = '//graph.facebook.com/feed?callback=h';
-    var xhr = new XMLHttpRequest();
-    var called = false;
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-      called = true;
-      cb(true);
-      }
-    };
-    xhr.send();
-    // timeout 1s, this facebook API is very fast.
-    setTimeout(function() {
-      if (!called) {
-      xhr.abort();
-      cb(false)
-      }
-    }, 1000);
-  }
-
-  function getDisqus(isAgent) {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
-    dsq.async = true
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
-  }
-</script>
-<!-- disqus 公共JS代码 end -->
-
-
-<script type="text/javascript">
-  (function(d, s) {
-      var j, e = d.getElementsByTagName(s)[0];
-
-      if (typeof LivereTower === 'function') { return; }
-
-      j = d.createElement(s);
-      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-      j.async = true;
-
-      e.parentNode.insertBefore(j, e);
-  })(document, 'script');
-</script>
-
-
-  <footer>
-  <div class="copyright">
-    <div>
-      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
-    </div>
-    <div>
-      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
-    </div>
-  </div>
-</footer>
-
-
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script src="/lib/in-view.min.js"></script>
-<script src="/lib/lodash.min.js"></script>
-<script>
-  var isDown = true
-  var oldY = 0
-  inView.offset(50)
-
-  document.body.addEventListener('touchstart', function(){});
-  
-  window.addEventListener('scroll', _.throttle(e => {
-    var currentY = window.scrollY
-    if((oldY - currentY) < 0) {
-      isDown = true
-    } else {
-      isDown = false
-    }
-    oldY = currentY
-  }, 250))
-
-  $("article img").each(function() {
-      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
-      $(this).wrapAll(strA);
-  });
-
-  $('.toc-link').each(function() {
-      var href = $(this).attr("href");
       
-      inView(href).on('exit', () => {
-        if (isDown) {
-          handleActive(href)
-        }
-      })
+    </div>
 
-      inView(href).on('enter', () => {
-        if (!isDown) {
-          handleActive(href)
-        }
-      })
+    
 
-      this.onclick = function(e) {
-        var pos = $(href).offset().top - 10;
-        $("html,body").animate({scrollTop: pos}, 300);
-        setTimeout(() => {
-          handleActive(href)
-        }, 350)
-        return false
-      }
-  })
+    
+      
+    
 
-  function handleActive(href) {
-    document.querySelectorAll('.toc-link').forEach(elm => {
-      elm.classList.remove('active')
-    })
-    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/25/JustSoso-web/" rel="next" title="JustSoso-web">
+                <i class="fa fa-chevron-left"></i> JustSoso-web
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/06/07/xml实体攻击小记/" rel="prev" title="xml实体注入攻击小记[转载]">
+                xml实体注入攻击小记[转载] <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍curl的常见参数"><span class="nav-number">1.</span> <span class="nav-text">介绍curl的常见参数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#curl常见用法"><span class="nav-number">2.</span> <span class="nav-text">curl常见用法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-基本使用"><span class="nav-number">2.1.</span> <span class="nav-text">0x01 基本使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-保存访问的网页"><span class="nav-number">2.2.</span> <span class="nav-text">0x02 保存访问的网页</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-使用linux重定向功能保存"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 使用linux重定向功能保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-可以使用curl的内置option-o-小写-保存网页"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 可以使用curl的内置option:-o(小写)保存网页</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-可以使用curl的内置option-O-大写-保存网页中的文件"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.3 可以使用curl的内置option:-O(大写)保存网页中的文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x03-测试网页返回值"><span class="nav-number">2.3.</span> <span class="nav-text">0x03 测试网页返回值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x04-指定proxy服务器以及其端口"><span class="nav-number">2.4.</span> <span class="nav-text">0x04 指定proxy服务器以及其端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x05-cookie"><span class="nav-number">2.5.</span> <span class="nav-text">0x05 cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-保存http的response里面的cookie信息"><span class="nav-number">2.5.1.</span> <span class="nav-text">5.1 保存http的response里面的cookie信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-保存http的response里面的header信息"><span class="nav-number">2.5.2.</span> <span class="nav-text">5.2 保存http的response里面的header信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-使用cookie"><span class="nav-number">2.5.3.</span> <span class="nav-text">5.3 使用cookie</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x06-模范浏览器"><span class="nav-number">2.6.</span> <span class="nav-text">0x06 模范浏览器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x07-伪造refer-盗链"><span class="nav-number">2.7.</span> <span class="nav-text">0x07 伪造refer(盗链)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x08-下载文件"><span class="nav-number">2.8.</span> <span class="nav-text">0x08 下载文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-利用curl下载文件。"><span class="nav-number">2.8.1.</span> <span class="nav-text">8.1 利用curl下载文件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-循环下载"><span class="nav-number">2.8.2.</span> <span class="nav-text">8.2 循环下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-3-下载重命名"><span class="nav-number">2.8.3.</span> <span class="nav-text">8.3 下载重命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-分块下载"><span class="nav-number">2.8.4.</span> <span class="nav-text">8.4 分块下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-通过ftp下载文件"><span class="nav-number">2.8.5.</span> <span class="nav-text">8.5 通过ftp下载文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x09-断点续传"><span class="nav-number">2.9.</span> <span class="nav-text">0x09 断点续传</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0A-上传文件"><span class="nav-number">2.10.</span> <span class="nav-text">0x0A 上传文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x0B-显示抓取错误"><span class="nav-number">2.11.</span> <span class="nav-text">0x0B 显示抓取错误</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其余参数"><span class="nav-number">3.</span> <span class="nav-text">其余参数</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
   }
 </script>
-<script src="/lib/jquery.fancybox.min.js"></script>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>

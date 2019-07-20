@@ -1,68 +1,396 @@
 <!DOCTYPE html>
-<html lang=>
-  <head><meta name="generator" content="Hexo 3.9.0">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="">
-  <meta name="keywords" content="root">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="数组能够在单个变量中存储多个值1234&amp;lt;?php$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);echo &quot;I like &quot;.$fruit[0].&quot; &quot;.$fruit[1].&quot; &quot;.$fruit[2];?&amp;gt;  PHP数组在PHP中创建数组在PHP中，array()函数用于创建数组 PHP数值数组这里有两种创建数值数组的方法： 自动分配 ID 键（ID 键">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php数组">
+<meta property="og:url" content="http://yoursite.com/2019/02/26/php数组/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="数组能够在单个变量中存储多个值1234&amp;lt;?php$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);echo &quot;I like &quot;.$fruit[0].&quot; &quot;.$fruit[1].&quot; &quot;.$fruit[2];?&amp;gt;  PHP数组在PHP中创建数组在PHP中，array()函数用于创建数组 PHP数值数组这里有两种创建数值数组的方法： 自动分配 ID 键（ID 键">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/9.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/10.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/02/26/php数组/8.png">
+<meta property="og:updated_time" content="2019-02-27T09:54:46.980Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php数组">
+<meta name="twitter:description" content="数组能够在单个变量中存储多个值1234&amp;lt;?php$fruit=array(&quot;banana&quot;,&quot;apple&quot;,&quot;orange&quot;);echo &quot;I like &quot;.$fruit[0].&quot; &quot;.$fruit[1].&quot; &quot;.$fruit[2];?&amp;gt;  PHP数组在PHP中创建数组在PHP中，array()函数用于创建数组 PHP数值数组这里有两种创建数值数组的方法： 自动分配 ID 键（ID 键">
+<meta name="twitter:image" content="http://yoursite.com/2019/02/26/php数组/1.png">
+
+
+
+
+
   
-    <link rel="icon" href="/favicon.ico">
   
-    
+  <link rel="canonical" href="http://yoursite.com/2019/02/26/php数组/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
   <title>php数组 | The clown is laughing at you</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body>
-  <header>
-  <div class="header-container">
-    <a class='logo' href="/">
-      <span>The clown is laughing at you</span>
-    </a>
-    <ul class="right-header">
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
       
-        <li class="nav-item">
+        
+        
+        
           
-            <a href="/" class="item-link">首页</a>
-          
-        </li>
+          <li class="menu-item menu-item-home">
+
+    
+    
       
-        <li class="nav-item">
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
           
-            <a href="/about" class="item-link">关于</a>
-          
-        </li>
+          <li class="menu-item menu-item-archives">
+
+    
+    
       
-        <li class="nav-item">
-          
-            <a href="/archives" class="item-link">归档</a>
-          
-        </li>
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
       
-        <li class="nav-item">
-          
-            <a href="/tags" class="item-link">标签</a>
-          
-        </li>
       
     </ul>
-  </div>
-</header>
+  
 
-  <main id='post'>
-  <div class="content">
-    <article>
-        <section class="content markdown-body">
-          <h1>php数组</h1>
-          <div class='post-meta'>
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/26</time>
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/26/php数组/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">php数组
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-02-26 21:45:19" itemprop="dateCreated datePublished" datetime="2019-02-26T21:45:19+08:00">2019-02-26</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-02-27 17:54:46" itemprop="dateModified" datetime="2019-02-27T17:54:46+08:00">2019-02-27</time>
+              </span>
+            
+          
+
+          
+
+          
             
             
-          </div>
-          <p>数组能够在单个变量中存储多个值<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$fruit=<span class="keyword">array</span>(<span class="string">"banana"</span>,<span class="string">"apple"</span>,<span class="string">"orange"</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"I like "</span>.$fruit[<span class="number">0</span>].<span class="string">" "</span>.$fruit[<span class="number">1</span>].<span class="string">" "</span>.$fruit[<span class="number">2</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>数组能够在单个变量中存储多个值<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$fruit=<span class="keyword">array</span>(<span class="string">"banana"</span>,<span class="string">"apple"</span>,<span class="string">"orange"</span>);</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"I like "</span>.$fruit[<span class="number">0</span>].<span class="string">" "</span>.$fruit[<span class="number">1</span>].<span class="string">" "</span>.$fruit[<span class="number">2</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="/2019/02/26/php数组/1.png" alt="1"></p>
 <h1 id="PHP数组"><a href="#PHP数组" class="headerlink" title="PHP数组"></a>PHP数组</h1><h2 id="在PHP中创建数组"><a href="#在PHP中创建数组" class="headerlink" title="在PHP中创建数组"></a>在PHP中创建数组</h2><p>在PHP中，array()函数用于创建数组</p>
 <h2 id="PHP数值数组"><a href="#PHP数值数组" class="headerlink" title="PHP数值数组"></a>PHP数值数组</h2><p>这里有两种创建数值数组的方法：</p>
@@ -98,164 +426,344 @@
 <p><img src="/2019/02/26/php数组/8.png" alt="8"></p>
 <h2 id="krsort-根据数组的值，对数组进行降序排列"><a href="#krsort-根据数组的值，对数组进行降序排列" class="headerlink" title="krsort() - 根据数组的值，对数组进行降序排列"></a>krsort() - 根据数组的值，对数组进行降序排列</h2><p>同上</p>
 
-        </section>
-    </article>
-    
-        <!-- disqus 评论框 start -->
-        <div class="comment">
-            <div id="disqus_thread" class="disqus-thread">
-              <i>Loading comments box needs to over the wall</i>
-            </div>
-        </div>
-        <!-- disqus 评论框 end -->
-    
-    
-        <!-- livere 评论框 start -->
-        <div class="comment">
-            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
-        </div>
-        <!-- livere 评论框 end -->
-        
-  </div>
-  <aside>
-    
-    <div class="toc-container">
-        <h1>目录</h1>
-        <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP数组"><span class="toc-number">1.</span> <span class="toc-text">PHP数组</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#在PHP中创建数组"><span class="toc-number">1.1.</span> <span class="toc-text">在PHP中创建数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP数值数组"><span class="toc-number">1.2.</span> <span class="toc-text">PHP数值数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#获取数组的长度-count-函数"><span class="toc-number">1.3.</span> <span class="toc-text">获取数组的长度 -count()函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#遍历数组数值"><span class="toc-number">1.4.</span> <span class="toc-text">遍历数组数值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#PHP关联数组"><span class="toc-number">1.5.</span> <span class="toc-text">PHP关联数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#遍历关联数组"><span class="toc-number">1.6.</span> <span class="toc-text">遍历关联数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#多维数组"><span class="toc-number">1.7.</span> <span class="toc-text">多维数组</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP数组排序"><span class="toc-number">2.</span> <span class="toc-text">PHP数组排序</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sort-对数组进行升序排序"><span class="toc-number">2.1.</span> <span class="toc-text">sort() -对数组进行升序排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#resort-对数组进行降序排序"><span class="toc-number">2.2.</span> <span class="toc-text">resort() -对数组进行降序排序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#asort-根据数组的值，对数组进行升序排列"><span class="toc-number">2.3.</span> <span class="toc-text">asort() - 根据数组的值，对数组进行升序排列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#arsort-根据数组的值，对数组进行降序排列"><span class="toc-number">2.4.</span> <span class="toc-text">arsort() - 根据数组的值，对数组进行降序排列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ksort-根据数组的值，对数组进行升序排列"><span class="toc-number">2.5.</span> <span class="toc-text">ksort() - 根据数组的值，对数组进行升序排列</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#krsort-根据数组的值，对数组进行降序排列"><span class="toc-number">2.6.</span> <span class="toc-text">krsort() - 根据数组的值，对数组进行降序排列</span></a></li></ol></li></ol>
-        </div>
-    </div>
-    
-  </aside>
-</main>
-
-<!-- disqus 公共JS代码 -->
-<script type="text/javascript">
-  /* * * CONFIGURATION VARIABLES * * */
-  var disqus_shortname = "your_disqus_shortname";
-  var disqus_identifier = "http://yoursite.com/2019/02/26/php数组/";
-  var disqus_url = "http://yoursite.com/2019/02/26/php数组/";
-
-  isAgent(getDisqus)
-
-  // determine user agent in China
-  function isAgent(cb) {
-    var url = '//graph.facebook.com/feed?callback=h';
-    var xhr = new XMLHttpRequest();
-    var called = false;
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-      called = true;
-      cb(true);
-      }
-    };
-    xhr.send();
-    // timeout 1s, this facebook API is very fast.
-    setTimeout(function() {
-      if (!called) {
-      xhr.abort();
-      cb(false)
-      }
-    }, 1000);
-  }
-
-  function getDisqus(isAgent) {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
-    dsq.async = true
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
-  }
-</script>
-<!-- disqus 公共JS代码 end -->
-
-
-<script type="text/javascript">
-  (function(d, s) {
-      var j, e = d.getElementsByTagName(s)[0];
-
-      if (typeof LivereTower === 'function') { return; }
-
-      j = d.createElement(s);
-      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-      j.async = true;
-
-      e.parentNode.insertBefore(j, e);
-  })(document, 'script');
-</script>
-
-
-  <footer>
-  <div class="copyright">
-    <div>
-      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
-    </div>
-    <div>
-      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
-    </div>
-  </div>
-</footer>
-
-
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script src="/lib/in-view.min.js"></script>
-<script src="/lib/lodash.min.js"></script>
-<script>
-  var isDown = true
-  var oldY = 0
-  inView.offset(50)
-
-  document.body.addEventListener('touchstart', function(){});
-  
-  window.addEventListener('scroll', _.throttle(e => {
-    var currentY = window.scrollY
-    if((oldY - currentY) < 0) {
-      isDown = true
-    } else {
-      isDown = false
-    }
-    oldY = currentY
-  }, 250))
-
-  $("article img").each(function() {
-      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
-      $(this).wrapAll(strA);
-  });
-
-  $('.toc-link').each(function() {
-      var href = $(this).attr("href");
       
-      inView(href).on('exit', () => {
-        if (isDown) {
-          handleActive(href)
-        }
-      })
+    </div>
 
-      inView(href).on('enter', () => {
-        if (!isDown) {
-          handleActive(href)
-        }
-      })
+    
 
-      this.onclick = function(e) {
-        var pos = $(href).offset().top - 10;
-        $("html,body").animate({scrollTop: pos}, 300);
-        setTimeout(() => {
-          handleActive(href)
-        }, 350)
-        return false
-      }
-  })
+    
+      
+    
 
-  function handleActive(href) {
-    document.querySelectorAll('.toc-link').forEach(elm => {
-      elm.classList.remove('active')
-    })
-    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/26/php魔术常量/" rel="next" title="php魔术常量">
+                <i class="fa fa-chevron-left"></i> php魔术常量
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/02/26/php循环/" rel="prev" title="php循环">
+                php循环 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP数组"><span class="nav-number">1.</span> <span class="nav-text">PHP数组</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在PHP中创建数组"><span class="nav-number">1.1.</span> <span class="nav-text">在PHP中创建数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP数值数组"><span class="nav-number">1.2.</span> <span class="nav-text">PHP数值数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#获取数组的长度-count-函数"><span class="nav-number">1.3.</span> <span class="nav-text">获取数组的长度 -count()函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遍历数组数值"><span class="nav-number">1.4.</span> <span class="nav-text">遍历数组数值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP关联数组"><span class="nav-number">1.5.</span> <span class="nav-text">PHP关联数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#遍历关联数组"><span class="nav-number">1.6.</span> <span class="nav-text">遍历关联数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多维数组"><span class="nav-number">1.7.</span> <span class="nav-text">多维数组</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PHP数组排序"><span class="nav-number">2.</span> <span class="nav-text">PHP数组排序</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sort-对数组进行升序排序"><span class="nav-number">2.1.</span> <span class="nav-text">sort() -对数组进行升序排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#resort-对数组进行降序排序"><span class="nav-number">2.2.</span> <span class="nav-text">resort() -对数组进行降序排序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#asort-根据数组的值，对数组进行升序排列"><span class="nav-number">2.3.</span> <span class="nav-text">asort() - 根据数组的值，对数组进行升序排列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#arsort-根据数组的值，对数组进行降序排列"><span class="nav-number">2.4.</span> <span class="nav-text">arsort() - 根据数组的值，对数组进行降序排列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ksort-根据数组的值，对数组进行升序排列"><span class="nav-number">2.5.</span> <span class="nav-text">ksort() - 根据数组的值，对数组进行升序排列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#krsort-根据数组的值，对数组进行降序排列"><span class="nav-number">2.6.</span> <span class="nav-text">krsort() - 根据数组的值，对数组进行降序排列</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
   }
 </script>
-<script src="/lib/jquery.fancybox.min.js"></script>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>

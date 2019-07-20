@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="前言下午逛别人的博客的时候，看到别人在博客里右下角出现了血小板天啊，又能动又能跳，超级可爱……..我这个宅男顶不住了，就百度看看这是怎么做到的,分享一下 开始变态安装使用live2d技术 首先检查博客主目录下面的  package.json里是否有“hexo-helper-live2d”依赖，有的话可以先卸载使用命令：1npm uninstall hexo-helper-live2d 之后再安装：">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博客中添加看板娘">
+<meta property="og:url" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="前言下午逛别人的博客的时候，看到别人在博客里右下角出现了血小板天啊，又能动又能跳，超级可爱……..我这个宅男顶不住了，就百度看看这是怎么做到的,分享一下 开始变态安装使用live2d技术 首先检查博客主目录下面的  package.json里是否有“hexo-helper-live2d”依赖，有的话可以先卸载使用命令：1npm uninstall hexo-helper-live2d 之后再安装：">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/4.png">
+<meta property="og:updated_time" content="2019-07-20T11:47:15.087Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="博客中添加看板娘">
+<meta name="twitter:description" content="前言下午逛别人的博客的时候，看到别人在博客里右下角出现了血小板天啊，又能动又能跳，超级可爱……..我这个宅男顶不住了，就百度看看这是怎么做到的,分享一下 开始变态安装使用live2d技术 首先检查博客主目录下面的  package.json里是否有“hexo-helper-live2d”依赖，有的话可以先卸载使用命令：1npm uninstall hexo-helper-live2d 之后再安装：">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>博客中添加看板娘 | The clown is laughing at you</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">博客中添加看板娘
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-20 16:27:33 / Geändert am: 19:47:15" itemprop="dateCreated datePublished" datetime="2019-07-20T16:27:33+08:00">2019-07-20</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>下午逛别人的博客的时候，看到别人在博客里右下角出现了血小板<br><img src="/2019/07/20/博客中填加live2d卡通人物/1.png" alt=""><br>天啊，又能动又能跳，超级可爱……..我这个宅男顶不住了，就百度看看这是怎么做到的,分享一下</p>
+<h1 id="开始变态"><a href="#开始变态" class="headerlink" title="开始变态"></a>开始变态</h1><p>安装使用live2d技术</p>
+<p>首先检查博客主目录下面的  package.json里是否有<strong>“hexo-helper-live2d”</strong>依赖，有的话可以先卸载<br>使用命令：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm uninstall hexo-helper-live2d</span><br></pre></td></tr></table></figure></p>
+<p>之后再安装：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-helper-live2d</span><br></pre></td></tr></table></figure></p>
+<p>查看package.json，看看是否有hexo-helper-live2d…的字段，有的话就成功了。</p>
+<p>然后去下载模块，模块我上传到我的网盘，需要的人自行下载….<a href="https://pan.baidu.com/s/1o8zr97DZAk3PFmYC9kq2Nw" target="_blank" rel="noopener">都懂</a><br>提取码是：<strong>U2FsdGVkX18Jq/wMkBOLrKdH5xCooGVRY1AZayh9sLM=</strong>(giao)<br><img src="/2019/07/20/博客中填加live2d卡通人物/2.png" alt=""></p>
+<p>然后把这些文件复制到blogs\node_modules文件夹下，配置博客站点配置文件<strong>_config.yml</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">live2d:</span><br><span class="line">  enable: <span class="keyword">true</span></span><br><span class="line">  pluginModelPath: assets/</span><br><span class="line">  model:</span><br><span class="line">    <span class="keyword">use</span>: <span class="title">live2d</span>-<span class="title">widget</span>-<span class="title">model</span>-<span class="title">haruto</span>  #模板目录，在<span class="title">node_modules</span>里</span><br><span class="line">  <span class="title">display</span>:</span><br><span class="line">    <span class="title">position</span>: <span class="title">right</span></span><br><span class="line">    <span class="title">width</span>: 150 </span><br><span class="line">    <span class="title">height</span>: 300</span><br><span class="line">  <span class="title">mobile</span>:</span><br><span class="line">    <span class="title">show</span>: <span class="title">false</span>  #是否在手机进行显示</span><br></pre></td></tr></table></figure></p>
+<p>写到文件里，然后hexo clean 一下<br>hexo s 查看就有了…..</p>
+<h1 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h1><p><img src="/2019/07/20/博客中填加live2d卡通人物/4.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/19/phpcmsv9文件上传漏洞-复现/" rel="next" title="phpcmsv9文件上传漏洞[复现]">
+                <i class="fa fa-chevron-left"></i> phpcmsv9文件上传漏洞[复现]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/20/Solider/" rel="prev" title="Solider">
+                Solider <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#开始变态"><span class="nav-number">2.</span> <span class="nav-text">开始变态</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#效果"><span class="nav-number">3.</span> <span class="nav-text">效果</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

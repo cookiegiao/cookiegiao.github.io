@@ -1,68 +1,391 @@
 <!DOCTYPE html>
-<html lang=>
-  <head><meta name="generator" content="Hexo 3.9.0">
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="description" content="">
-  <meta name="keywords" content="root">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="0x01前言0x01.1菜的明明白白这两天一直在复现metinfo这个cms,然后看了师傅Ashe的一个帖子，感觉自己又在此学到了一点东西，就对这个cms的路由有了更多理解。的在此记录一下。 0x01.2准备metinfo6.0.0php5.5+mysqlubuntu 19 0x02漏洞分析Metinfo6.0.0后台sql注入就如之前的分析一样，每一个模块，比如message处，或者feedba">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在复现中学到的路由利用">
+<meta property="og:url" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="0x01前言0x01.1菜的明明白白这两天一直在复现metinfo这个cms,然后看了师傅Ashe的一个帖子，感觉自己又在此学到了一点东西，就对这个cms的路由有了更多理解。的在此记录一下。 0x01.2准备metinfo6.0.0php5.5+mysqlubuntu 19 0x02漏洞分析Metinfo6.0.0后台sql注入就如之前的分析一样，每一个模块，比如message处，或者feedba">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/5.png">
+<meta property="og:updated_time" content="2019-07-15T02:41:12.997Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在复现中学到的路由利用">
+<meta name="twitter:description" content="0x01前言0x01.1菜的明明白白这两天一直在复现metinfo这个cms,然后看了师傅Ashe的一个帖子，感觉自己又在此学到了一点东西，就对这个cms的路由有了更多理解。的在此记录一下。 0x01.2准备metinfo6.0.0php5.5+mysqlubuntu 19 0x02漏洞分析Metinfo6.0.0后台sql注入就如之前的分析一样，每一个模块，比如message处，或者feedba">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/14/在审计中学到的路由利用/1.png">
+
+
+
+
+
   
-    <link rel="icon" href="/favicon.ico">
   
-    
+  <link rel="canonical" href="http://yoursite.com/2019/07/14/在审计中学到的路由利用/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
   <title>在复现中学到的路由利用 | The clown is laughing at you</title>
-  <link rel="stylesheet" href="/style.css">
-  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
-  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
 </head>
 
-<body>
-  <header>
-  <div class="header-container">
-    <a class='logo' href="/">
-      <span>The clown is laughing at you</span>
-    </a>
-    <ul class="right-header">
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
       
-        <li class="nav-item">
+        
+        
+        
           
-            <a href="/" class="item-link">首页</a>
-          
-        </li>
+          <li class="menu-item menu-item-home">
+
+    
+    
       
-        <li class="nav-item">
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
           
-            <a href="/about" class="item-link">关于</a>
-          
-        </li>
+          <li class="menu-item menu-item-archives">
+
+    
+    
       
-        <li class="nav-item">
-          
-            <a href="/archives" class="item-link">归档</a>
-          
-        </li>
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
       
-        <li class="nav-item">
-          
-            <a href="/tags" class="item-link">标签</a>
-          
-        </li>
       
     </ul>
-  </div>
-</header>
+  
 
-  <main id='post'>
-  <div class="content">
-    <article>
-        <section class="content markdown-body">
-          <h1>在复现中学到的路由利用</h1>
-          <div class='post-meta'>
-            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/14</time>
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/14/在审计中学到的路由利用/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">在复现中学到的路由利用
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-14 15:29:52" itemprop="dateCreated datePublished" datetime="2019-07-14T15:29:52+08:00">2019-07-14</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-07-15 10:41:12" itemprop="dateModified" datetime="2019-07-15T10:41:12+08:00">2019-07-15</time>
+              </span>
+            
+          
+
+          
+
+          
             
             
-          </div>
-          <h1 id="0x01前言"><a href="#0x01前言" class="headerlink" title="0x01前言"></a>0x01前言</h1><h2 id="0x01-1菜的明明白白"><a href="#0x01-1菜的明明白白" class="headerlink" title="0x01.1菜的明明白白"></a>0x01.1菜的明明白白</h2><p>这两天一直在复现metinfo这个cms,然后看了师傅<a href="https://bbs.ichunqiu.com/home.php?mod=space&amp;uid=191566&amp;do=thread&amp;view=me&amp;from=space" target="_blank" rel="noopener">Ashe</a>的一个帖子，感觉自己又在此学到了一点东西，就对这个cms的路由有了更多理解。的在此记录一下。</p>
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="0x01前言"><a href="#0x01前言" class="headerlink" title="0x01前言"></a>0x01前言</h1><h2 id="0x01-1菜的明明白白"><a href="#0x01-1菜的明明白白" class="headerlink" title="0x01.1菜的明明白白"></a>0x01.1菜的明明白白</h2><p>这两天一直在复现metinfo这个cms,然后看了师傅<a href="https://bbs.ichunqiu.com/home.php?mod=space&amp;uid=191566&amp;do=thread&amp;view=me&amp;from=space" target="_blank" rel="noopener">Ashe</a>的一个帖子，感觉自己又在此学到了一点东西，就对这个cms的路由有了更多理解。的在此记录一下。</p>
 <h2 id="0x01-2准备"><a href="#0x01-2准备" class="headerlink" title="0x01.2准备"></a>0x01.2准备</h2><p>metinfo6.0.0<br>php5.5+mysql<br>ubuntu 19</p>
 <h1 id="0x02漏洞分析"><a href="#0x02漏洞分析" class="headerlink" title="0x02漏洞分析"></a>0x02漏洞分析</h1><h2 id="Metinfo6-0-0后台sql注入"><a href="#Metinfo6-0-0后台sql注入" class="headerlink" title="Metinfo6.0.0后台sql注入"></a>Metinfo6.0.0后台sql注入</h2><p>就如之前的分析一样，每一个模块，比如message处，或者feedback处都有一个index.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//message</span></span><br><span class="line">define(<span class="string">'M_NAME'</span>, <span class="string">'message'</span>);</span><br><span class="line">define(<span class="string">'M_MODULE'</span>, <span class="string">'web'</span>);</span><br><span class="line">define(<span class="string">'M_CLASS'</span>, <span class="string">'message'</span>);</span><br><span class="line">define(<span class="string">'M_ACTION'</span>, <span class="string">'domessage'</span>);</span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'../app/system/entrance.php'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//feedback</span></span><br><span class="line">define(<span class="string">'M_NAME'</span>, <span class="string">'feedback'</span>);</span><br><span class="line">define(<span class="string">'M_MODULE'</span>, <span class="string">'web'</span>);</span><br><span class="line">define(<span class="string">'M_CLASS'</span>, <span class="string">'feedback'</span>);</span><br><span class="line">define(<span class="string">'M_ACTION'</span>, <span class="string">'dofeedback'</span>);</span><br><span class="line"><span class="keyword">require_once</span> <span class="string">'../app/system/entrance.php'</span>;</span><br></pre></td></tr></table></figure></p>
 <p>每一个index.php里面都包含了entrance.php，然后有定义需要调用的模块，类，方法。这是被写死了。这个cms的特色就在于此。定义了这些的常量，调用方法就会如下所言<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">path:/app/system/M_NAME/M_MODULE/M_CLASS.class.php     函数 M_ACTION</span><br></pre></td></tr></table></figure></p>
@@ -97,164 +420,344 @@
 <p>接着过了验证，修改某用户名的密码，这里未将用户名与验证码关联，导致我们可以给自己手机发验证码，然后填写其他人的用户名，强行修改密码<br>payload如下：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://../metinfo6.0.0/amdin/index.php?lang=cn&amp;n=user&amp;m=web&amp;c=password&amp;a=dotelvalid&amp;username=目标手机号&amp;password=密码&amp;code=接到的验证码</span><br></pre></td></tr></table></figure></p>
 <h1 id="0x03-写在最后"><a href="#0x03-写在最后" class="headerlink" title="0x03 写在最后"></a>0x03 写在最后</h1><p>太菜了，对于cms的路由结构，以及整体的功能模块之间的联系，不够熟悉，代码编写能力有待提高，对于常见工具，比如phpstorm,sqlmap….的使用还不够熟练，太菜了</p>
 
-        </section>
-    </article>
-    
-        <!-- disqus 评论框 start -->
-        <div class="comment">
-            <div id="disqus_thread" class="disqus-thread">
-              <i>Loading comments box needs to over the wall</i>
-            </div>
-        </div>
-        <!-- disqus 评论框 end -->
-    
-    
-        <!-- livere 评论框 start -->
-        <div class="comment">
-            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
-        </div>
-        <!-- livere 评论框 end -->
-        
-  </div>
-  <aside>
-    
-    <div class="toc-container">
-        <h1>目录</h1>
-        <div class="content">
-            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01前言"><span class="toc-number">1.</span> <span class="toc-text">0x01前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-1菜的明明白白"><span class="toc-number">1.1.</span> <span class="toc-text">0x01.1菜的明明白白</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-2准备"><span class="toc-number">1.2.</span> <span class="toc-text">0x01.2准备</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02漏洞分析"><span class="toc-number">2.</span> <span class="toc-text">0x02漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Metinfo6-0-0后台sql注入"><span class="toc-number">2.1.</span> <span class="toc-text">Metinfo6.0.0后台sql注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-2demo一下，"><span class="toc-number">2.2.</span> <span class="toc-text">0x02.2demo一下，</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-2-1-在线反馈处后台sql注入"><span class="toc-number">2.2.1.</span> <span class="toc-text">0x02.2.1 在线反馈处后台sql注入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#——-分割线———"><span class="toc-number">2.2.1.1.</span> <span class="toc-text">——-分割线———</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-2-2-MetInfo6-0-0后台任意文件读取下载"><span class="toc-number">2.2.2.</span> <span class="toc-text">0x02.2.2 MetInfo6.0.0后台任意文件读取下载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-2-3-6-1-2版本中的一个sql注入"><span class="toc-number">2.2.3.</span> <span class="toc-text">0x02.2.3 6.1.2版本中的一个sql注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-2-4-Metinfo6-0-0任意用户密码修改"><span class="toc-number">2.2.4.</span> <span class="toc-text">0x02.2.4 Metinfo6.0.0任意用户密码修改</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-写在最后"><span class="toc-number">3.</span> <span class="toc-text">0x03 写在最后</span></a></li></ol>
-        </div>
-    </div>
-    
-  </aside>
-</main>
-
-<!-- disqus 公共JS代码 -->
-<script type="text/javascript">
-  /* * * CONFIGURATION VARIABLES * * */
-  var disqus_shortname = "your_disqus_shortname";
-  var disqus_identifier = "http://yoursite.com/2019/07/14/在审计中学到的路由利用/";
-  var disqus_url = "http://yoursite.com/2019/07/14/在审计中学到的路由利用/";
-
-  isAgent(getDisqus)
-
-  // determine user agent in China
-  function isAgent(cb) {
-    var url = '//graph.facebook.com/feed?callback=h';
-    var xhr = new XMLHttpRequest();
-    var called = false;
-    xhr.open('GET', url);
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-      called = true;
-      cb(true);
-      }
-    };
-    xhr.send();
-    // timeout 1s, this facebook API is very fast.
-    setTimeout(function() {
-      if (!called) {
-      xhr.abort();
-      cb(false)
-      }
-    }, 1000);
-  }
-
-  function getDisqus(isAgent) {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
-    dsq.async = true
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
-  }
-</script>
-<!-- disqus 公共JS代码 end -->
-
-
-<script type="text/javascript">
-  (function(d, s) {
-      var j, e = d.getElementsByTagName(s)[0];
-
-      if (typeof LivereTower === 'function') { return; }
-
-      j = d.createElement(s);
-      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
-      j.async = true;
-
-      e.parentNode.insertBefore(j, e);
-  })(document, 'script');
-</script>
-
-
-  <footer>
-  <div class="copyright">
-    <div>
-      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
-    </div>
-    <div>
-      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
-    </div>
-  </div>
-</footer>
-
-
-<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-<script src="/lib/in-view.min.js"></script>
-<script src="/lib/lodash.min.js"></script>
-<script>
-  var isDown = true
-  var oldY = 0
-  inView.offset(50)
-
-  document.body.addEventListener('touchstart', function(){});
-  
-  window.addEventListener('scroll', _.throttle(e => {
-    var currentY = window.scrollY
-    if((oldY - currentY) < 0) {
-      isDown = true
-    } else {
-      isDown = false
-    }
-    oldY = currentY
-  }, 250))
-
-  $("article img").each(function() {
-      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
-      $(this).wrapAll(strA);
-  });
-
-  $('.toc-link').each(function() {
-      var href = $(this).attr("href");
       
-      inView(href).on('exit', () => {
-        if (isDown) {
-          handleActive(href)
-        }
-      })
+    </div>
 
-      inView(href).on('enter', () => {
-        if (!isDown) {
-          handleActive(href)
-        }
-      })
+    
 
-      this.onclick = function(e) {
-        var pos = $(href).offset().top - 10;
-        $("html,body").animate({scrollTop: pos}, 300);
-        setTimeout(() => {
-          handleActive(href)
-        }, 350)
-        return false
-      }
-  })
+    
+      
+    
 
-  function handleActive(href) {
-    document.querySelectorAll('.toc-link').forEach(elm => {
-      elm.classList.remove('active')
-    })
-    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/13/metinfo6-0-0-6-1-2sql注入-复现/" rel="next" title="metinfo6.0.0-6.1.2sql注入[复现]">
+                <i class="fa fa-chevron-left"></i> metinfo6.0.0-6.1.2sql注入[复现]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/16/phpcmsv9文件包含漏洞-复现/" rel="prev" title="phpcmsv9文件包含漏洞[复现]">
+                phpcmsv9文件包含漏洞[复现] <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01前言"><span class="nav-number">1.</span> <span class="nav-text">0x01前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-1菜的明明白白"><span class="nav-number">1.1.</span> <span class="nav-text">0x01.1菜的明明白白</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x01-2准备"><span class="nav-number">1.2.</span> <span class="nav-text">0x01.2准备</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">0x02漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Metinfo6-0-0后台sql注入"><span class="nav-number">2.1.</span> <span class="nav-text">Metinfo6.0.0后台sql注入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#0x02-2demo一下，"><span class="nav-number">2.2.</span> <span class="nav-text">0x02.2demo一下，</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-2-1-在线反馈处后台sql注入"><span class="nav-number">2.2.1.</span> <span class="nav-text">0x02.2.1 在线反馈处后台sql注入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#——-分割线———"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">——-分割线———</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-2-2-MetInfo6-0-0后台任意文件读取下载"><span class="nav-number">2.2.2.</span> <span class="nav-text">0x02.2.2 MetInfo6.0.0后台任意文件读取下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-2-3-6-1-2版本中的一个sql注入"><span class="nav-number">2.2.3.</span> <span class="nav-text">0x02.2.3 6.1.2版本中的一个sql注入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#0x02-2-4-Metinfo6-0-0任意用户密码修改"><span class="nav-number">2.2.4.</span> <span class="nav-text">0x02.2.4 Metinfo6.0.0任意用户密码修改</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x03-写在最后"><span class="nav-number">3.</span> <span class="nav-text">0x03 写在最后</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
   }
 </script>
-<script src="/lib/jquery.fancybox.min.js"></script>
 
 
-<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
