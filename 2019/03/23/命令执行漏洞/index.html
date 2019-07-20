@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>命令执行漏洞及其修复策略</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>命令执行漏洞及其修复策略</h1><h2 class="headline">Mar 23, 2019 9:19·1.3k words
-·5 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞原理"><span class="toc-text">漏洞原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#产生原因"><span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#演示："><span class="toc-text">演示：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dvwa的command-injection"><span class="toc-text">dvwa的command-injection</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-low"><span class="toc-text">command-injection-low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-medium"><span class="toc-text">command-injection-medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-high"><span class="toc-text">command-injection-high</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#命令执行利用及绕过姿势"><span class="toc-text">命令执行利用及绕过姿势　</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#命令执行漏洞修复"><span class="toc-text">命令执行漏洞修复</span></a></li></ol></div><section id="post-body"><p>慢就是快，少就是多<br>万事皆是代码所起</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>命令执行漏洞及其修复策略 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>命令执行漏洞及其修复策略</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/23</time>
+            
+            
+          </div>
+          <p>慢就是快，少就是多<br>万事皆是代码所起</p>
 <h1 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h1><p>在操作系统中，”&amp;、|、||”都可以作为命令连接符使用，用户通过浏览器提交执行命令，由于服务器端没有针对执行函数做过滤，导致在没有指定绝对路径的情况下就执行命令。然后我们通过这些命令连接符批量执行多条命令。<br>在命令执行中，常用的命令连接符号有四个：&amp;&amp; &amp; || | ;</p>
 <p>‘&amp;&amp;’:前一个指令执行成功，后面的指令才继续执行，就像进行与操作一样<br>‘||’:前一个命令执行失败，后面的才继续执行，类似于或操作<br>‘&amp;’：直接连接多个命令<br>‘|’：管道符，将前一个命令的输出作为下一个命令的输入<br>‘;’：直接连接多个命令</p>
 <h1 id="产生原因"><a href="#产生原因" class="headerlink" title="产生原因"></a>产生原因</h1><p>应用有时需要调用一些执行系统命令的函数<br>如PHP中的system、exec、shell_exec、passthru、popen、proc_popen等，当用户能控制这些函数中的参数时，就可以将恶意系统命令拼接到正常命令中，从而造成命令执行攻击，这就是命令执行漏洞。<br>下面将一一介绍这些函数<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">system (string $command [, int &amp;$return_var ] ):本函数执行 command 参数所指定的命令， 并且输出执行结果。</span><br><span class="line"></span><br><span class="line">exec(<span class="keyword">exec</span> ( string $command [, array &amp;$output [, int &amp;$return_var ]] )):本函数执行 command 参数所指定的命令， 并且输出执行结果。</span><br><span class="line"></span><br><span class="line">shell_exec ( string $cmd )：shell_exec — Execute command via shell <span class="keyword">and</span> <span class="keyword">return</span> the complete output <span class="keyword">as</span> a string</span><br><span class="line"></span><br><span class="line">passthru()：只调用命令，把命令的运行结果原样地直接输出到标准输出设备上。作用同上</span><br><span class="line"></span><br><span class="line">popen()：使用 command 参数打开进程文件指针。如果出错，该函数返回 FALSE。</span><br><span class="line"></span><br><span class="line">proc_()：执行一个命令，并且打开用来输入/输出的文件指针</span><br></pre></td></tr></table></figure></p>
@@ -21,4 +84,165 @@
 <h1 id="命令执行漏洞修复"><a href="#命令执行漏洞修复" class="headerlink" title="命令执行漏洞修复"></a>命令执行漏洞修复</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123; </span><br><span class="line">    <span class="comment">// Check Anti-CSRF token </span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ]; </span><br><span class="line">    $target = stripslashes( $target ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Split the IP into 4 octects </span></span><br><span class="line">    $octet = explode( <span class="string">"."</span>, $target ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check IF each octet is an integer </span></span><br><span class="line">    <span class="keyword">if</span>( ( is_numeric( $octet[<span class="number">0</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">1</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">2</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">3</span>] ) ) &amp;&amp; ( sizeof( $octet ) == <span class="number">4</span> ) ) &#123; </span><br><span class="line">        <span class="comment">// If all 4 octets are int's put the IP back together. </span></span><br><span class="line">        $target = $octet[<span class="number">0</span>] . <span class="string">'.'</span> . $octet[<span class="number">1</span>] . <span class="string">'.'</span> . $octet[<span class="number">2</span>] . <span class="string">'.'</span> . $octet[<span class="number">3</span>]; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Determine OS and execute the ping command. </span></span><br><span class="line">        <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123; </span><br><span class="line">            <span class="comment">// Windows </span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  '</span> . $target ); </span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">else</span> &#123; </span><br><span class="line">            <span class="comment">// *nix </span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target ); </span><br><span class="line">        &#125; </span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the end user </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">else</span> &#123; </span><br><span class="line">        <span class="comment">// Ops. Let the user name theres a mistake </span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;ERROR: You have entered an invalid IP.&lt;/pre&gt;'</span>; </span><br><span class="line">    &#125; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token </span></span><br><span class="line">generateSessionToken(); </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>这里放上dvwa-impossible的代码，学习一下：<br>这里的两个机制，主要是ANti-CSRF机制，以及使用explode()，还有is_numeric()函数进行IP地址的检查</p>
 <p>参考文章：<a href="https://www.cnblogs.com/drkang/p/8688481.html" target="_blank" rel="noopener">https://www.cnblogs.com/drkang/p/8688481.html</a></p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/03/25/php反序列化介绍/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/03/23/sql盲注-二分法完成/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞原理"><span class="toc-number">1.</span> <span class="toc-text">漏洞原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#产生原因"><span class="toc-number">2.</span> <span class="toc-text">产生原因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#演示："><span class="toc-number">3.</span> <span class="toc-text">演示：</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#dvwa的command-injection"><span class="toc-number">4.</span> <span class="toc-text">dvwa的command-injection</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-low"><span class="toc-number">4.1.</span> <span class="toc-text">command-injection-low</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-medium"><span class="toc-number">4.2.</span> <span class="toc-text">command-injection-medium</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#command-injection-high"><span class="toc-number">4.3.</span> <span class="toc-text">command-injection-high</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#命令执行利用及绕过姿势"><span class="toc-number">5.</span> <span class="toc-text">命令执行利用及绕过姿势　</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#命令执行漏洞修复"><span class="toc-number">6.</span> <span class="toc-text">命令执行漏洞修复</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/23/命令执行漏洞/";
+  var disqus_url = "http://yoursite.com/2019/03/23/命令执行漏洞/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

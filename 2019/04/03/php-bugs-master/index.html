@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>php bugs-master(1)</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>php bugs-master(1)</h1><h2 class="headline">Apr 03, 2019 10:43·1.4k words
-·6 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-extract变量覆盖"><span class="toc-text">0x01 extract变量覆盖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-绕过过滤的空白字符"><span class="toc-text">0x02 绕过过滤的空白字符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-ereg-正则绕过"><span class="toc-text">0x03 ereg()正则绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-strcmp-绕过"><span class="toc-text">0x04 strcmp()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-sha-绕过"><span class="toc-text">0x05 sha()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-session-验证绕过"><span class="toc-text">0x06 session()验证绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-md5-密码比较绕过"><span class="toc-text">0x07 md5()密码比较绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x08"><span class="toc-text">0x08</span></a></li></ol></div><section id="post-body"><p>CTF整理的代码审计题，针对一些函数的缺陷</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>php bugs-master(1) | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>php bugs-master(1)</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/04/03</time>
+            
+            
+          </div>
+          <p>CTF整理的代码审计题，针对一些函数的缺陷</p>
 <h1 id="0x01-extract变量覆盖"><a href="#0x01-extract变量覆盖" class="headerlink" title="0x01 extract变量覆盖"></a>0x01 extract变量覆盖</h1><p>源代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">$flag=<span class="string">'xxx'</span>; </span><br><span class="line">extract($_GET);</span><br><span class="line"> <span class="keyword">if</span>(<span class="keyword">isset</span>($shiyan))</span><br><span class="line"> &#123; </span><br><span class="line">    $content=trim(file_get_contents($flag));</span><br><span class="line">    <span class="keyword">if</span>($shiyan==$content)</span><br><span class="line">    &#123; </span><br><span class="line">        <span class="keyword">echo</span><span class="string">'ctf&#123;xxx&#125;'</span>; </span><br><span class="line">    &#125;</span><br><span class="line">   <span class="keyword">else</span></span><br><span class="line">   &#123; </span><br><span class="line">    <span class="keyword">echo</span><span class="string">'Oh.no'</span>;</span><br><span class="line">   &#125; </span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>extract()函数会引起变量覆盖漏洞，该函数可将数组中的变量引入符号表，<br>附上payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?shiyan=&amp;flag=<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
 <p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">extract($_GET);</span><br><span class="line">$content=trim(file_get_contents($flag));</span><br></pre></td></tr></table></figure></p>
@@ -25,4 +88,165 @@
 <p>这里有一个问题就是，当你输入一个url,时，php将会对url进行一次解码<br>比如<br><img src="/2019/04/03/php-bugs-master/1.png" alt=""></p>
 <p>然后urldecode()会对此进行二次解码，<br>所以我们构造payload如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=id=%<span class="number">2568</span>ackerDJ</span><br></pre></td></tr></table></figure></p>
 <p>其中%25=&gt;%,第一次解码后为%68ackerDJ,然后urldecode()再次解码为hackerDJ，符合代码逻辑，返回flag.</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/04/05/php-bug-master-2/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/04/02/sql注入奇巧淫技/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-extract变量覆盖"><span class="toc-number">1.</span> <span class="toc-text">0x01 extract变量覆盖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-绕过过滤的空白字符"><span class="toc-number">2.</span> <span class="toc-text">0x02 绕过过滤的空白字符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x03-ereg-正则绕过"><span class="toc-number">3.</span> <span class="toc-text">0x03 ereg()正则绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x04-strcmp-绕过"><span class="toc-number">4.</span> <span class="toc-text">0x04 strcmp()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x05-sha-绕过"><span class="toc-number">5.</span> <span class="toc-text">0x05 sha()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x06-session-验证绕过"><span class="toc-number">6.</span> <span class="toc-text">0x06 session()验证绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x07-md5-密码比较绕过"><span class="toc-number">7.</span> <span class="toc-text">0x07 md5()密码比较绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x08"><span class="toc-number">8.</span> <span class="toc-text">0x08</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/04/03/php-bugs-master/";
+  var disqus_url = "http://yoursite.com/2019/04/03/php-bugs-master/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

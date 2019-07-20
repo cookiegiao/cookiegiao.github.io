@@ -1,9 +1,233 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>依葫芦画瓢之escapeshellarg()与escapeshellcmd()</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>依葫芦画瓢之escapeshellarg()与escapeshellcmd()</h1><h2 class="headline">Jul 08, 2019 11:18·371 words
-·1 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-demo"><span class="toc-text">0x01 demo</span></a></li></ol></div><section id="post-body"><p>前言：escapeshellarg()与escapeshellcmd()在共同使用的情况下将会出现引号逃逸的情况</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>依葫芦画瓢之escapeshellarg()与escapeshellcmd() | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>依葫芦画瓢之escapeshellarg()与escapeshellcmd()</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/08</time>
+            
+            
+          </div>
+          <p>前言：escapeshellarg()与escapeshellcmd()在共同使用的情况下将会出现引号逃逸的情况</p>
 <h1 id="0x01-demo"><a href="#0x01-demo" class="headerlink" title="0x01 demo"></a>0x01 demo</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mailer</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">sanitize</span><span class="params">($email)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!filter_var($email, FILTER_VALIDATE_EMAIL)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> escapeshellarg($email);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">($data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'to'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'to'</span>] = <span class="string">'none@ripstech.com'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      $data[<span class="string">'to'</span>] = <span class="keyword">$this</span>-&gt;sanitize($data[<span class="string">'to'</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'from'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'from'</span>] = <span class="string">'none@ripstech.com'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      $data[<span class="string">'from'</span>] = <span class="keyword">$this</span>-&gt;sanitize($data[<span class="string">'from'</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'subject'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'subject'</span>] = <span class="string">'No Subject'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'message'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'message'</span>] = <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mail($data[<span class="string">'to'</span>], $data[<span class="string">'subject'</span>], $data[<span class="string">'message'</span>],</span><br><span class="line">      <span class="string">''</span>, <span class="string">"-f"</span> . $data[<span class="string">'from'</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$mailer = <span class="keyword">new</span> Mailer();</span><br><span class="line">$mailer-&gt;send($_POST);</span><br></pre></td></tr></table></figure>
 <p>创建一个新的对象$mailer,然后调用send()方法。<br><strong>其中mail()函数使用不当，将存在一定的安全隐患</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"> $to = <span class="string">'Alice@example.com'</span>;</span><br><span class="line"> $subject = <span class="string">'hello Alice'</span>;</span><br><span class="line"> $message =<span class="string">'&lt;?php phpinfo(); ?&gt;'</span>;</span><br><span class="line"> $headers = <span class="string">"CC: somebodyelse@example.com"</span>;</span><br><span class="line"> $options = <span class="string">'-OQueueDirectory=/tmp -X /var/www/html/rce.php'</span>;</span><br><span class="line"> mail($to,$subject,$message,$headers,$options);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/1.png" alt=""><br><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/2.png" alt=""><br>然后就会有以下的结果<br><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/3.png" alt=""></p>
 <p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">sanitize</span><span class="params">($email)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (!filter_var($email, FILTER_VALIDATE_EMAIL)) &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
 <p>filter_var()函数使用特定的过滤器过滤一个变量。<br>关于filter_var()中FILTER_VALIDATE_EMAIL这个选项作用，参考<a href="https://stackoverflow.com/questions/19220158/php-filter-validate-email-does-not-work-correctly" target="_blank" rel="noopener">点这里</a><br>其中“none of the special characters in this local part are allowed outside quotation marks” ，表示所有的特殊符号必须放在双引号中。 </p>
 <p>filter_var()存在问题：<br>(1)我们在引号中嵌套转义空格仍然能够通过检测。<br>(2)由于底层正则表达式的原因，我们通过重叠单引号和双引号，欺骗filter_val()使其认为我们仍然在双引号中，这样我们就可以绕过检测。</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/07/11/xxxdisk前台Getshell-复现/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/07/07/bluecms尝试审计/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#0x01-demo"><span class="toc-number">1.</span> <span class="toc-text">0x01 demo</span></a></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/";
+  var disqus_url = "http://yoursite.com/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

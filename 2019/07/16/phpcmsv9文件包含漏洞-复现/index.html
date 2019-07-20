@@ -1,5 +1,68 @@
-<!DOCTYPE html><html><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><meta name="viewport" content="width=device-width, initial-scale=1"><title>phpcmsv9文件包含漏洞[复现]</title><link rel="shortcut icon" href="/images/avatar.png"><link rel="stylesheet" href="/css/style.min.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css"><script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script></head><body><nav class="main-nav"><a href="/">Home</a><a href="/archives">Archives</a></nav><div class="profile"><section id="wrapper"><header id="header"><a href="/about"><img class="2x" id="avatar" src="/images/avatar.png"></a><h1>The clown is laughing at you</h1><h2></h2></header></section></div><section class="post" id="wrapper"><article><header><h1>phpcmsv9文件包含漏洞[复现]</h1><h2 class="headline">Jul 16, 2019 7:53·3.4k words
-·17 minutes read<span class="tags"></span></h2></header><div id="toc"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面"><span class="toc-text">写在前面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞产生"><span class="toc-text">漏洞产生</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码分析"><span class="toc-text">代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#路由分析"><span class="toc-text">路由分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞触发"><span class="toc-text">漏洞触发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#POC-0x01"><span class="toc-text">POC 0x01</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POC-0x02"><span class="toc-text">POC 0x02</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在后面"><span class="toc-text">写在后面</span></a></li></ol></li></ol></div><section id="post-body"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>php 5.6<br>mysql 5.0<br>ubuntu 19<br>phpcmsv9.6(我下载的版本UTF8)</p>
+<!DOCTYPE html>
+<html lang=>
+  <head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="keywords" content="root">
+  
+    <link rel="icon" href="/favicon.ico">
+  
+    
+  <title>phpcmsv9文件包含漏洞[复现] | The clown is laughing at you</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/lib/jquery.fancybox.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+  <div class="header-container">
+    <a class='logo' href="/">
+      <span>The clown is laughing at you</span>
+    </a>
+    <ul class="right-header">
+      
+        <li class="nav-item">
+          
+            <a href="/" class="item-link">首页</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/about" class="item-link">关于</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/archives" class="item-link">归档</a>
+          
+        </li>
+      
+        <li class="nav-item">
+          
+            <a href="/tags" class="item-link">标签</a>
+          
+        </li>
+      
+    </ul>
+  </div>
+</header>
+
+  <main id='post'>
+  <div class="content">
+    <article>
+        <section class="content markdown-body">
+          <h1>phpcmsv9文件包含漏洞[复现]</h1>
+          <div class='post-meta'>
+            <i class="fa fa-calendar" aria-hidden="true"></i> <time>2019/07/16</time>
+            
+            
+          </div>
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>php 5.6<br>mysql 5.0<br>ubuntu 19<br>phpcmsv9.6(我下载的版本UTF8)</p>
 <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢<a href="https://www.freebuf.com/author/wnltc0" target="_blank" rel="noopener">wnltc0师傅</a>,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就寻找另外一个触发点，结果失败了…….之后再琢磨一下。<br><img src="/2019/07/16/phpcmsv9文件包含漏洞-复现/1.png" alt=""></p>
 <h1 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h1><p>代码本身存在bug，并且未对用户输入的内容进行过滤，使得用户可以上传恶意php文件，用户可以通过文件包含漏洞读取该恶意文件。</p>
 <h1 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h1><p>这次分析，分两部分完成，第一个是分析整个cms的路由，第二分析漏洞触发点</p>
@@ -47,4 +110,165 @@
 <p>代码审计思路(转的….)<br>方案一：先对核心类库进行审计，如果找到漏洞，那么在网站中可能会存在多处相同的漏洞，就算找不到漏洞，那对核心类库中的方法也多少了解，后面对具体应用功能审计时也会轻松一些</p>
 <p>方案二：直接审计功能点，优点：针对性更强；缺点：某个功能点可能调用了多个核心类库中的方法，由于对核心类库不了解，跟读时可能会比较累，需要跟的东西可能会比较多</p>
 <p>//无论哪种方案，没耐心是不行滴；如果你审计时正好心烦躁的很，那你可以在安装好应用后，随便点点，开着bp，抓抓改改，发现觉得可能存在问题的点再跟代码，这种方式(有点偏黑盒)能发现一些比较明显的问题，想深入挖掘，建议参考前面两种方案</p>
-</section><nav id="post-nav"><span class="prev"><a href="/2019/07/18/phpcmsv9sql注入漏洞-复现/"><span class="arrow">←</span>Newer Posts</a></span><span class="next"><a href="/2019/07/14/在审计中学到的路由利用/">Older Posts<span class="arrow">→</span></a></span></nav></article></section><footer id="footer"><div id="social"><a class="symbol" href="https://github.com/fuzhouxxdong"><i class="fa fa-github"></i></a></div><p class="small">© Copyright 2018 &nbsp;<i class="fa fa-heart" aria-hidden="true">&nbsp;Dxx</i></p><p class="small">Powered by &nbsp;<a href="https://hexo.io/">Hexo &nbsp;</a>Theme By &nbsp;<a href="https://github.com/fuzhouxxdong/hexo-theme-dxx">Dxx</a></p></footer><script>hljs.initHighlightingOnLoad();</script></body></html>
+
+        </section>
+    </article>
+    
+        <!-- disqus 评论框 start -->
+        <div class="comment">
+            <div id="disqus_thread" class="disqus-thread">
+              <i>Loading comments box needs to over the wall</i>
+            </div>
+        </div>
+        <!-- disqus 评论框 end -->
+    
+    
+        <!-- livere 评论框 start -->
+        <div class="comment">
+            <div id="lv-container" data-id="city" data-uid="your_livere_uid"></div>
+        </div>
+        <!-- livere 评论框 end -->
+        
+  </div>
+  <aside>
+    
+    <div class="toc-container">
+        <h1>目录</h1>
+        <div class="content">
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#写在前面"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#漏洞产生"><span class="toc-number">2.</span> <span class="toc-text">漏洞产生</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码分析"><span class="toc-number">3.</span> <span class="toc-text">代码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#路由分析"><span class="toc-number">3.1.</span> <span class="toc-text">路由分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞触发"><span class="toc-number">3.2.</span> <span class="toc-text">漏洞触发</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#POC-0x01"><span class="toc-number">3.2.1.</span> <span class="toc-text">POC 0x01</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#POC-0x02"><span class="toc-number">3.2.2.</span> <span class="toc-text">POC 0x02</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#写在后面"><span class="toc-number">3.3.</span> <span class="toc-text">写在后面</span></a></li></ol></li></ol>
+        </div>
+    </div>
+    
+  </aside>
+</main>
+
+<!-- disqus 公共JS代码 -->
+<script type="text/javascript">
+  /* * * CONFIGURATION VARIABLES * * */
+  var disqus_shortname = "your_disqus_shortname";
+  var disqus_identifier = "http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/";
+  var disqus_url = "http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/";
+
+  isAgent(getDisqus)
+
+  // determine user agent in China
+  function isAgent(cb) {
+    var url = '//graph.facebook.com/feed?callback=h';
+    var xhr = new XMLHttpRequest();
+    var called = false;
+    xhr.open('GET', url);
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+      called = true;
+      cb(true);
+      }
+    };
+    xhr.send();
+    // timeout 1s, this facebook API is very fast.
+    setTimeout(function() {
+      if (!called) {
+      xhr.abort();
+      cb(false)
+      }
+    }, 1000);
+  }
+
+  function getDisqus(isAgent) {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; 
+    dsq.async = true
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq)
+  }
+</script>
+<!-- disqus 公共JS代码 end -->
+
+
+<script type="text/javascript">
+  (function(d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+
+      if (typeof LivereTower === 'function') { return; }
+
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+
+      e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <footer>
+  <div class="copyright">
+    <div>
+      &copy; 2019 | Powered by <a href="https://hexo.io" target="_blank">Hexo</a>&nbsp
+    </div>
+    <div>
+      Theme by <a href="https://github.com/lewis-geek/hexo-theme-Aath" target="_blank">Aath</a>
+    </div>
+  </div>
+</footer>
+
+
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="/lib/in-view.min.js"></script>
+<script src="/lib/lodash.min.js"></script>
+<script>
+  var isDown = true
+  var oldY = 0
+  inView.offset(50)
+
+  document.body.addEventListener('touchstart', function(){});
+  
+  window.addEventListener('scroll', _.throttle(e => {
+    var currentY = window.scrollY
+    if((oldY - currentY) < 0) {
+      isDown = true
+    } else {
+      isDown = false
+    }
+    oldY = currentY
+  }, 250))
+
+  $("article img").each(function() {
+      var strA = "<a data-fancybox='gallery' href='" + this.src + "'></a>";
+      $(this).wrapAll(strA);
+  });
+
+  $('.toc-link').each(function() {
+      var href = $(this).attr("href");
+      
+      inView(href).on('exit', () => {
+        if (isDown) {
+          handleActive(href)
+        }
+      })
+
+      inView(href).on('enter', () => {
+        if (!isDown) {
+          handleActive(href)
+        }
+      })
+
+      this.onclick = function(e) {
+        var pos = $(href).offset().top - 10;
+        $("html,body").animate({scrollTop: pos}, 300);
+        setTimeout(() => {
+          handleActive(href)
+        }, 350)
+        return false
+      }
+  })
+
+  function handleActive(href) {
+    document.querySelectorAll('.toc-link').forEach(elm => {
+      elm.classList.remove('active')
+    })
+    document.querySelector(".toc [href='"+ href +"']").classList.add('active')
+  }
+</script>
+<script src="/lib/jquery.fancybox.min.js"></script>
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"live2d-xuexiaoban"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
