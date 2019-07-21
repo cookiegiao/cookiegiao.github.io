@@ -93,13 +93,13 @@
   };
 </script>
 
-  <meta name="description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就寻找">
+  <meta name="description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6.0(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就">
 <meta name="keywords" content="root">
 <meta property="og:type" content="article">
 <meta property="og:title" content="phpcmsv9文件包含漏洞[复现]">
 <meta property="og:url" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/index.html">
 <meta property="og:site_name" content="The clown is laughing at you">
-<meta property="og:description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就寻找">
+<meta property="og:description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6.0(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/2.png">
@@ -107,10 +107,10 @@
 <meta property="og:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/4.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/5.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/6.png">
-<meta property="og:updated_time" content="2019-07-19T03:01:30.153Z">
+<meta property="og:updated_time" content="2019-07-20T11:52:51.349Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="phpcmsv9文件包含漏洞[复现]">
-<meta name="twitter:description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就寻找">
+<meta name="twitter:description" content="前言php 5.6mysql 5.0ubuntu 19phpcmsv9.6.0(我下载的版本UTF8) 写在前面又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢wnltc0师傅,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就">
 <meta name="twitter:image" content="http://yoursite.com/2019/07/16/phpcmsv9文件包含漏洞-复现/1.png">
 
 
@@ -347,7 +347,7 @@
                 
                   <span class="post-meta-item-text">Bearbeitet am</span>
                 
-                <time title="Geändert am: 2019-07-19 11:01:30" itemprop="dateModified" datetime="2019-07-19T11:01:30+08:00">2019-07-19</time>
+                <time title="Geändert am: 2019-07-20 19:52:51" itemprop="dateModified" datetime="2019-07-20T19:52:51+08:00">2019-07-20</time>
               </span>
             
           
@@ -386,7 +386,7 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>php 5.6<br>mysql 5.0<br>ubuntu 19<br>phpcmsv9.6(我下载的版本UTF8)</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>php 5.6<br>mysql 5.0<br>ubuntu 19<br>phpcmsv9.6.0(我下载的版本UTF8)</p>
 <h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>又是一整感觉，自己菜的明明白白，对函数的理解不够使深刻，然后分析函数的能力太差了，我自己都看不下去了。然后感谢<a href="https://www.freebuf.com/author/wnltc0" target="_blank" rel="noopener">wnltc0师傅</a>,十分耐心地和我讲解我不懂的点。然后这次花了挺长时间的，然后因为最后的POC靠自己整的，就成功了一半，因为，我下载的源码里有缺失，或者是我太笨了，看懵了，然后我就寻找另外一个触发点，结果失败了…….之后再琢磨一下。<br><img src="/2019/07/16/phpcmsv9文件包含漏洞-复现/1.png" alt=""></p>
 <h1 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h1><p>代码本身存在bug，并且未对用户输入的内容进行过滤，使得用户可以上传恶意php文件，用户可以通过文件包含漏洞读取该恶意文件。</p>
 <h1 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h1><p>这次分析，分两部分完成，第一个是分析整个cms的路由，第二分析漏洞触发点</p>
