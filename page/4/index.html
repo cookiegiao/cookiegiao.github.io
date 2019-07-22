@@ -279,6 +279,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/23/javaScript初涉/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/23/javaScript初涉/" class="post-title-link" itemprop="url">javaScript基础</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-03-23 14:05:04 / Geändert am: 14:28:49" itemprop="dateCreated datePublished" datetime="2019-03-23T14:05:04+08:00">2019-03-23</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>每次记一点</p>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><p>javaScript的数据类型有：字符串、数字、布尔、数组、对象、Null、Undefined</p>
+<p>JavaScript 拥有动态类型。这意味着相同的变量可用作不同的类型：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x                <span class="comment">// x 为 undefined</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="number">6</span>;           <span class="comment">// x 为数字</span></span><br><span class="line"><span class="keyword">var</span> x = <span class="string">"Bill"</span>;      <span class="comment">// x 为字符串</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="JavaScript-数字"><a href="#JavaScript-数字" class="headerlink" title="JavaScript 数字"></a>JavaScript 数字</h2><p>js只有一种数字类型。数字可以带小数点，也可以不带<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x1=<span class="number">34.00</span>;      <span class="comment">//使用小数点来写</span></span><br><span class="line"><span class="keyword">var</span> x2=<span class="number">34</span>;         <span class="comment">//不使用小数点来写</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="JavaScript-数组"><a href="#JavaScript-数组" class="headerlink" title="JavaScript 数组"></a>JavaScript 数组</h2><p>下面的代码创建名为 cars 的数组：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cars=<span class="keyword">new</span> <span class="keyword">Array</span>();</span><br><span class="line">cars[<span class="number">0</span>]=<span class="string">"Audi"</span>;</span><br><span class="line">cars[<span class="number">1</span>]=<span class="string">"BMW"</span>;</span><br><span class="line">cars[<span class="number">2</span>]=<span class="string">"Volvo"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>或者<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cars=[<span class="string">"Audi"</span>,<span class="string">"BMW"</span>,<span class="string">"Volvo"</span>];</span><br></pre></td></tr></table></figure></p>
+<h2 id="JavaScript-对象"><a href="#JavaScript-对象" class="headerlink" title="JavaScript 对象"></a>JavaScript 对象</h2><p>对象由花括号分隔。在括号内部，对象的属性以名称和值对的形式 (name : value) 来定义。属性由逗号分隔：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> person=&#123;firstname:<span class="string">"Bill"</span>, lastname:<span class="string">"Gates"</span>, id:<span class="number">5566</span>&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子中的对象(person)有三个属性：firstname,lastname以及id.<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line"><span class="keyword">var</span> person=&#123;</span><br><span class="line">firstname : <span class="string">"Bill"</span>,</span><br><span class="line">lastname  : <span class="string">"Gates"</span>,</span><br><span class="line">id        :  <span class="number">5566</span></span><br><span class="line">&#125;;</span><br><span class="line">document.write(person.lastname + <span class="string">"&lt;br /&gt;"</span>);</span><br><span class="line">document.write(person[<span class="string">"lastname"</span>] + <span class="string">"&lt;br /&gt;"</span>);</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Gates</span><br><span class="line">Gates</span><br></pre></td></tr></table></figure></p>
+<h2 id="声明变量类型"><a href="#声明变量类型" class="headerlink" title="声明变量类型"></a>声明变量类型</h2><p>当您声明新变量时，可以使用关键词 “new” 来声明其类型：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> carname=<span class="keyword">new</span> String;</span><br><span class="line"><span class="keyword">var</span> x=      <span class="keyword">new</span> Number;</span><br><span class="line"><span class="keyword">var</span> y=      <span class="keyword">new</span> Boolean;</span><br><span class="line"><span class="keyword">var</span> cars=   <span class="keyword">new</span> <span class="keyword">Array</span>;</span><br><span class="line"><span class="keyword">var</span> person= <span class="keyword">new</span> Object;</span><br></pre></td></tr></table></figure></p>
+<p>JavaScript 变量均为对象。当您声明一个变量时，就创建了一个新的对象。</p>
+<h1 id="JavaScript-HTML-DOM"><a href="#JavaScript-HTML-DOM" class="headerlink" title="JavaScript HTML DOM"></a>JavaScript HTML DOM</h1><p>通过 HTML DOM，可访问 JavaScript HTML 文档的所有元素。</p>
+<p>当网页被加载时，浏览器会创建页面的文档对象模型（Document Object Model）。</p>
+<p>HTML DOM 模型被构造为对象的树。<br><img src="/2019/03/23/javaScript初涉/1.png" alt=""><br>通过可编程的对象模型，JavaScript 获得了足够的能力来创建动态的 HTML。</p>
+<p>JavaScript 能够改变页面中的所有 HTML 元素<br>JavaScript 能够改变页面中的所有 HTML 属性<br>JavaScript 能够改变页面中的所有 CSS 样式<br>JavaScript 能够对页面中的所有事件做出反应</p>
+<h2 id="JavaScript-HTML-DOM-–改变HTML"><a href="#JavaScript-HTML-DOM-–改变HTML" class="headerlink" title="JavaScript HTML DOM –改变HTML"></a>JavaScript HTML DOM –改变HTML</h2><h3 id="改变HTML元素的内容"><a href="#改变HTML元素的内容" class="headerlink" title="改变HTML元素的内容"></a>改变HTML元素的内容</h3><p>语法：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(id).innerHTML=<span class="keyword">new</span> HTML</span><br></pre></td></tr></table></figure></p>
+<p>实例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;p id=<span class="string">"p1"</span>&gt;Hello World!&lt;/p&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">document.getElementById(<span class="string">"p1"</span>).innerHTML=<span class="string">"New text!"</span>;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<h2 id="改变HTML元素的属性"><a href="#改变HTML元素的属性" class="headerlink" title="改变HTML元素的属性"></a>改变HTML元素的属性</h2><p>语法：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">document.getElementById(id).attribute=<span class="keyword">new</span> value</span><br></pre></td></tr></table></figure></p>
+<p>实例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;img id=<span class="string">"image"</span> src=<span class="string">"smiley.gif"</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">document.getElementById(<span class="string">"image"</span>).src=<span class="string">"landscape.jpg"</span>;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="使用javaScript-进行CSRF的post型攻击"><a href="#使用javaScript-进行CSRF的post型攻击" class="headerlink" title="使用javaScript 进行CSRF的post型攻击"></a>使用javaScript 进行CSRF的post型攻击</h1><p>这里使用pikachu漏洞平台的CSRF-POST演示<br>创建一个表单，代码如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">	&lt;title&gt;</span><br><span class="line">		post data</span><br><span class="line">	&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">	&lt;form id=<span class="string">"myform"</span> method=<span class="string">"post"</span> action=<span class="string">"http://192.168.43.40/pikachu/vul/csrf/csrfpost/csrf_post_edit.php"</span>&gt;</span><br><span class="line"></span><br><span class="line">		&lt;input type=<span class="string">"hidden"</span> name=<span class="string">"sex"</span> value=<span class="string">"22222"</span>&gt;</span><br><span class="line">		&lt;input type=<span class="string">"hidden"</span> name=<span class="string">"phonenum"</span> value=<span class="string">"22222"</span>&gt;</span><br><span class="line">	    &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"add"</span> value=<span class="string">"22222"</span>&gt;</span><br><span class="line">	    &lt;input type=<span class="string">"hidden"</span> name=<span class="string">"email"</span> value=<span class="string">"22222"</span>&gt;</span><br><span class="line">	&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">	&lt;script&gt;</span><br><span class="line">		<span class="keyword">var</span> myform = document.getElementById(<span class="string">"myform"</span>);</span><br><span class="line">		myform.submit();</span><br><span class="line">	&lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/upload-lab与文件上传漏洞-中/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1856,173 +2025,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/同源策略/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="cookie">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The clown is laughing at you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/03/07/同源策略/" class="post-title-link" itemprop="url">同源策略</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-03-07 09:20:58 / Geändert am: 09:22:08" itemprop="dateCreated datePublished" datetime="2019-03-07T09:20:58+08:00">2019-03-07</time>
-            </span>
-          
-
-          
-            
-
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>感觉同源策略还挺难的，23333……</p>
-<h1 id="URL和URI的区别："><a href="#URL和URI的区别：" class="headerlink" title="URL和URI的区别："></a>URL和URI的区别：</h1><p>参考文章：<a href="https://www.cnblogs.com/chengdabelief/p/6635045.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengdabelief/p/6635045.html</a></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">理解URI和URL的区别，我们引入URN这个概念。</span><br><span class="line"></span><br><span class="line">URI = Universal Resource Identifier 统一资源标志符</span><br><span class="line"></span><br><span class="line">URL = Universal Resource Locator 统一资源定位符</span><br><span class="line"></span><br><span class="line">URN = Universal Resource Name 统一资源名称</span><br></pre></td></tr></table></figure>
-<p>三者的关系如下：<br><img src="/2019/03/07/同源策略/1.png" alt=""></p>
-<p>换句话说：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">URI分为三种，URL or URN or （URL and URI）</span><br><span class="line"></span><br><span class="line">URL代表资源的路径地址，而URI代表资源的名称。</span><br></pre></td></tr></table></figure></p>
-<p>通过URL找到资源的网络位置进行标识，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://example.org/absolute/URI/with/absolute/path/to/resource.txt</span><br><span class="line"></span><br><span class="line">ftp://example.org/resource.txt</span><br></pre></td></tr></table></figure></p>
-<p>通过URI找到资源是通过对名称进行标识，这个名称在某命名空间中，并不代表网络地址，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">urn:issn:1535-3612</span><br></pre></td></tr></table></figure></p>
-<h1 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h1><h2 id="什么是同源策略？"><a href="#什么是同源策略？" class="headerlink" title="什么是同源策略？"></a>什么是同源策略？</h2><p>话说在前面，同源策略是一个模型，并非一个标准，毕竟一个标准在不同的情况下的实现可能是千变万化的。</p>
-<p>web应用的安全模型中是一个重要概念。在这个策略下，web浏览器允许第一个页面的脚本访问第二个页面里的数据，但是也只有在两个页面有相同的源时。源是由URI，主机名，端口号组合而成的。这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</p>
-<p>对于普遍依赖于cookie维护授权用户session的现代浏览器来说，这种机制有特殊意义。客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</p>
-<h2 id="既为同源，何时同源？"><a href="#既为同源，何时同源？" class="headerlink" title="既为同源，何时同源？"></a>既为同源，何时同源？</h2><p>RFC6454中有定义URI源的算法定义。<strong>对于绝对的URIs，源就是{协议，主机，端口}定义的。只有这些值完全一样才认为两个资源是同源的。</strong><br><img src="/2019/03/07/同源策略/3.png" alt=""><br>只要三个元素中有一个不符合，便称为跨域。</p>
-<p>为了举例，下面的表格给出了与URL “<a href="http://www.example.com/dir/page.html&quot;" target="_blank" rel="noopener">http://www.example.com/dir/page.html&quot;</a> 的对比<br><img src="/2019/03/07/同源策略/2.png" alt=""></p>
-<p>由此可见，只要且必须满足{协议，主机，端口}一致的两个值就是同源的。</p>
-<h2 id="安全考量"><a href="#安全考量" class="headerlink" title="安全考量"></a>安全考量</h2><p>现在记住一句话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</span><br><span class="line">客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</span><br></pre></td></tr></table></figure></p>
-<p>然后来看一个例子，关于同源策略所能预防的问题</p>
-<p>假设用户在访问银行网站，并且没有登出。然后他又去了任意的其他网站，刚好这个网站有恶意的js代码，在后台请求银行网站的信息。因为用户目前仍然是银行站点的登陆状态，那么恶意代码就可以在银行站点做任意事情。例如，获取你的最近交易记录，创建一个新的交易等等。因为浏览器可以发送接收银行站点的session cookies，在银行站点域上。访问恶意站点的用户希望他访问的站点没有权限访问银行站点的cookie。当然确实是这样的，js不能直接获取银行站点的session cookie，但是他仍然可以向银行站点发送接收附带银行站点session cookie的请求，本质上就像一个正常用户访问银行站点一样。关于发送的新交易，甚至银行站点的CSRF（跨站请求伪造）防护都无能无力，因为脚本可以轻易的实现正常用户一样的行为。所以如果你需要session或者需要登陆时，所有网站都面临这个问题。</p>
-<p>如果未有同源策略，那么非同源的网站，也就是某些非正规的网站中的恶意代码可能对我们的银行网站进行访问，甚至进行一些操作，如果有同源策略进行防护的话，那么在同源网站和非同源网站便会存在一道墙，非同源网站的恶意代码想要进入就困难了，对于同源的站点就如有一条通道一样。</p>
-<p>简而言之：<strong>浏览器的同源策略，限制了来自不同源的”document”或脚本，对当前“document”读取或设置某些属性。</strong></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2070,7 +2072,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>

