@@ -16,7 +16,17 @@
 
 <html class="theme-next muse use-motion" lang="">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -71,7 +81,7 @@
     scheme: 'Muse',
     version: '7.2.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
     copycode: {"enable":false,"show_result":false,"style":null},
     fancybox: false,
     fastclick: false,
@@ -103,7 +113,10 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/2.png">
-<meta property="og:updated_time" content="2019-07-22T11:06:02.009Z">
+<meta property="og:image" content="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/22/phpcmsv9任意文件读取漏洞/4.png">
+<meta property="og:updated_time" content="2019-07-23T09:50:36.016Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="phpcmsv9任意文件读取漏洞[复现]">
 <meta name="twitter:description" content="前言  phpcmsv9.6.1  ubuntu19  mysql+php5.6 写在前面这个漏洞，除了本身的触发点外，payload的构造方法，和phpcms9.6.0构造payload方法大致一样 漏洞分析漏洞触发的点定位：./phpcms/modules/content/down.php::download()12345678910111213141516171819202122232425">
@@ -290,7 +303,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -328,13 +341,23 @@
                 
               
 
-              <time title="Erstellt: 2019-07-22 16:20:11 / Geändert am: 19:06:02" itemprop="dateCreated datePublished" datetime="2019-07-22T16:20:11+08:00">2019-07-22</time>
+              <time title="Erstellt: 2019-07-22 16:20:11" itemprop="dateCreated datePublished" datetime="2019-07-22T16:20:11+08:00">2019-07-22</time>
             </span>
           
 
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-07-23 17:50:36" itemprop="dateModified" datetime="2019-07-23T17:50:36+08:00">2019-07-23</time>
+              </span>
             
           
 
@@ -381,10 +404,12 @@
 <p>所以我们现在是需要一段通过<code>$pc_auth_key</code>加密的密文，这段密文的获取，我们看到函数init()<br>定位：./phpcms/modules/content/down.php::init() 77行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(strpos($f, <span class="string">'http://'</span>) !== <span class="keyword">FALSE</span> || strpos($f, <span class="string">'ftp://'</span>) !== <span class="keyword">FALSE</span> || strpos($f, <span class="string">'://'</span>) === <span class="keyword">FALSE</span>) &#123;</span><br><span class="line">			$pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line">			$a_k = urlencode(sys_auth(<span class="string">"i=$i&amp;d=$d&amp;s=$s&amp;t="</span>.SYS_TIME.<span class="string">"&amp;ip="</span>.ip().<span class="string">"&amp;m="</span>.$m.<span class="string">"&amp;f=$f&amp;modelid="</span>.$modelid, <span class="string">'ENCODE'</span>, $pc_auth_key));</span><br><span class="line">			$downurl = <span class="string">'?m=content&amp;c=down&amp;a=download&amp;a_k='</span>.$a_k;</span><br></pre></td></tr></table></figure></p>
 <p>这里的$pc_auth_key和我们所需要的一样，并且这里提供密文$a_k，<br>所以我们构造$a_k,然后访问init()方法，就能达到触发漏洞的作用</p>
 <p>分析一下$a_k，如何构造。<br>和之前的sql注入一个道理，我们从/phpcms/modules/attachment/attachments.php::swfupload_json()。这里就不重复说明了<br>这次复现，让我卡了很久的是这个payload的构造，该构造什么样的payload，传入src，才能从cookie得到正确的密文。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">swfupload_json()</span><br><span class="line"> $arr[<span class="string">'src'</span>] = safe_replace(trim($_GET[<span class="string">'src'</span>])); </span><br><span class="line"> ... ...</span><br><span class="line">init()传入</span><br><span class="line"> $a_k = trim($_GET[<span class="string">'a_k'</span>]);</span><br><span class="line"> ... ...</span><br><span class="line"> $a_k = safe_replace($a_k);</span><br><span class="line"> parse_str($a_k);</span><br><span class="line"> ... ...</span><br><span class="line"> $pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).$_SERVER[<span class="string">'HTTP_USER_AGENT'</span>].<span class="string">'down'</span>);</span><br><span class="line"> $a_k = urlencode(sys_auth(<span class="string">"i=$i&amp;d=$d&amp;s=$s&amp;t="</span>.SYS_TIME.<span class="string">"&amp;ip="</span>.ip().<span class="string">"&amp;m="</span>.$m.<span class="string">"&amp;f=$f&amp;modelid="</span>.$modelid, <span class="string">'ENCODE'</span>, $pc_auth_key));</span><br><span class="line"> $downurl = <span class="string">'?m=content&amp;c=down&amp;a=download&amp;a_k='</span>.$a_k; </span><br><span class="line"> ... ...</span><br><span class="line">到download()</span><br><span class="line"> $a_k = safe_replace($a_k);</span><br><span class="line"> parse_str($a_k);</span><br><span class="line"> ... ...</span><br><span class="line"> <span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$f) || strpos($f, <span class="string">":\\"</span>)!==<span class="keyword">FALSE</span> || strpos($f,<span class="string">'..'</span>)!==<span class="keyword">FALSE</span>) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line">		$fileurl = trim($f);</span><br><span class="line"> ... ...</span><br><span class="line"> <span class="keyword">if</span>(preg_match(<span class="string">'/(php|phtml|php3|php4|jsp|dll|asp|cer|asa|shtml|shtm|aspx|asax|cgi|fcgi|pl)(\.|$)/i'</span>,$fileurl) ) showmessage(L(<span class="string">'url_error'</span>));</span><br><span class="line"> ... ...</span><br><span class="line"> $fileurl = str_replace(<span class="keyword">array</span>(<span class="string">'&lt;'</span>,<span class="string">'&gt;'</span>), <span class="string">''</span>,$fileurl);</span><br><span class="line"> file_down($fileurl, $filename);</span><br></pre></td></tr></table></figure></p>
-<p>故而<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s=./phpcms/modules/content/down.ph&amp;f=p%<span class="number">3</span>%<span class="number">25252</span>%<span class="number">2</span>*<span class="number">70</span>C</span><br></pre></td></tr></table></figure></p>
+<p>故而<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s=./phpcms/modules/content/down.ph&amp;f=p%<span class="number">3</span>%%<span class="number">25252</span>%<span class="number">2</span>*<span class="number">70</span>C</span><br></pre></td></tr></table></figure></p>
 <p><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/1.png" alt=""></p>
 <p>参考<a href="https://www.anquanke.com/post/id/86007" target="_blank" rel="noopener">【漏洞分析】PHPCMS V9.6.1 任意文件读取漏洞分析</a></p>
 <p><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/2.png" alt=""></p>
+<p>官方的补丁如下，phpcms9.6.2中<br><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/3.png" alt=""><br>在$fileurl进入file_down()之前，再进行一次正则过滤。</p>
+<h1 id="漏洞分析2-0"><a href="#漏洞分析2-0" class="headerlink" title="漏洞分析2.0"></a>漏洞分析2.0</h1><p>上文提到了phpcms9.6.2中给download()函数打的补丁，但是这个没啥用，在windows仍然是可以绕过的<br><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/3.png" alt=""><br>比较两次会发现，如果我们这次再一次使用上次的payload，像<strong>xxx.php&lt;</strong>，那么’&lt;’被吃掉后，一般情况下是绕不过正则的。<br>可是trim()函数去除空白字符，是存在安全隐患的，<code>在windows下，我们可以通过%81-%99间的字符</code>，%81-%99间的字符是不会被trim()去掉的且在windows中还能正常访问到相应的文件.<br><img src="/2019/07/22/phpcmsv9任意文件读取漏洞/4.png" alt=""><br>所以根据分析，我们此次构造的payload如下<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">src=%<span class="number">26</span>i=<span class="number">1</span>%<span class="number">26</span>m=<span class="number">1</span>%<span class="number">26</span>catid=<span class="number">1</span>%<span class="number">26</span>s=./caches/configs/system.ph%<span class="number">26</span>f=p%<span class="number">253</span>e%<span class="number">2581</span>%<span class="number">26</span>modelid=<span class="number">1</span>%<span class="number">26</span>d=<span class="number">1</span>&amp;aid=<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
 <h1 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h1><p>发现自己真的不行，代码的理解能力有待提高，编程能力有待提高，啥都有待提高……加油吧……</p>
 
       
@@ -429,6 +454,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/23/phpcmsv9前台sql注入-复现/" rel="prev" title="phpcmsv9前台sql注入[复现]">
+                phpcmsv9前台sql注入[复现] <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -487,6 +516,8 @@
 
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
   
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
   <p class="site-author-name" itemprop="name">cookie</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
@@ -498,7 +529,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>
@@ -537,7 +568,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞触发的点"><span class="nav-number">2.1.</span> <span class="nav-text">漏洞触发的点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写在后面"><span class="nav-number">3.</span> <span class="nav-text">写在后面</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞触发的点"><span class="nav-number">2.1.</span> <span class="nav-text">漏洞触发的点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析2-0"><span class="nav-number">3.</span> <span class="nav-text">漏洞分析2.0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写在后面"><span class="nav-number">4.</span> <span class="nav-text">写在后面</span></a></li></ol></div>
             
 
           </div>
@@ -599,6 +630,8 @@
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     

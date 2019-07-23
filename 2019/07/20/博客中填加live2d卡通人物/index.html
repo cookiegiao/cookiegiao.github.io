@@ -16,7 +16,17 @@
 
 <html class="theme-next muse use-motion" lang="">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -71,7 +81,7 @@
     scheme: 'Muse',
     version: '7.2.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
     copycode: {"enable":false,"show_result":false,"style":null},
     fancybox: false,
     fastclick: false,
@@ -104,7 +114,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/1.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/2.png">
 <meta property="og:image" content="http://yoursite.com/2019/07/20/博客中填加live2d卡通人物/4.png">
-<meta property="og:updated_time" content="2019-07-20T11:47:15.087Z">
+<meta property="og:updated_time" content="2019-07-23T09:30:13.675Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="博客中添加看板娘">
 <meta name="twitter:description" content="前言下午逛别人的博客的时候，看到别人在博客里右下角出现了血小板天啊，又能动又能跳，超级可爱……..我这个宅男顶不住了，就百度看看这是怎么做到的,分享一下 开始变态安装使用live2d技术 首先检查博客主目录下面的  package.json里是否有“hexo-helper-live2d”依赖，有的话可以先卸载使用命令：1npm uninstall hexo-helper-live2d 之后再安装：">
@@ -291,7 +301,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -329,13 +339,23 @@
                 
               
 
-              <time title="Erstellt: 2019-07-20 16:27:33 / Geändert am: 19:47:15" itemprop="dateCreated datePublished" datetime="2019-07-20T16:27:33+08:00">2019-07-20</time>
+              <time title="Erstellt: 2019-07-20 16:27:33" itemprop="dateCreated datePublished" datetime="2019-07-20T16:27:33+08:00">2019-07-20</time>
             </span>
           
 
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Bearbeitet am</span>
+                
+                <time title="Geändert am: 2019-07-23 17:30:13" itemprop="dateModified" datetime="2019-07-23T17:30:13+08:00">2019-07-23</time>
+              </span>
             
           
 
@@ -487,6 +507,8 @@
 
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
   
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
   <p class="site-author-name" itemprop="name">cookie</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
@@ -498,7 +520,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>
@@ -599,6 +621,8 @@
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     

