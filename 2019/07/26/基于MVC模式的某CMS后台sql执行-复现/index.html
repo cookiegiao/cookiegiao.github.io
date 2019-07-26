@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <script>
+    (function(){
+        if(''){
+            if (prompt('请输入文章密码') !== ''){
+                alert('密码错误');
+                history.back();
+            }
+        }
+    })();
+</script>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    translation: {
+      copy_button: 'Kopieren',
+      copy_success: 'Kopiert',
+      copy_failure: 'Kopieren fehlgeschlagen'
+    }
+  };
+</script>
+
+  <meta name="description" content="前言ubuntu19mysql + php5.6乐尚商城系统v1.5 写在前面复现这个漏洞之前，我觉得比较重要的是了解MVC的设计模式，因为这个cms基于brophp开发的，是典型的使用mvc设计模式的框架。 MVC设计模式介绍参考文章：MVC架构模式详细说明在未有面对对象设计模式之前，很多开发人员都是把代码糅杂在一块儿，使得后期维护，和二次开发十分困难，于是有了MVC(Models-Views-">
+<meta name="keywords" content="root">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于MVC模式的某CMS后台sql执行[复现]">
+<meta property="og:url" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/index.html">
+<meta property="og:site_name" content="The clown is laughing at you">
+<meta property="og:description" content="前言ubuntu19mysql + php5.6乐尚商城系统v1.5 写在前面复现这个漏洞之前，我觉得比较重要的是了解MVC的设计模式，因为这个cms基于brophp开发的，是典型的使用mvc设计模式的框架。 MVC设计模式介绍参考文章：MVC架构模式详细说明在未有面对对象设计模式之前，很多开发人员都是把代码糅杂在一块儿，使得后期维护，和二次开发十分困难，于是有了MVC(Models-Views-">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/1.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/2.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/3.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/8.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/5.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/6.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/7.png">
+<meta property="og:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/9.png">
+<meta property="og:updated_time" content="2019-07-26T09:38:11.548Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于MVC模式的某CMS后台sql执行[复现]">
+<meta name="twitter:description" content="前言ubuntu19mysql + php5.6乐尚商城系统v1.5 写在前面复现这个漏洞之前，我觉得比较重要的是了解MVC的设计模式，因为这个cms基于brophp开发的，是典型的使用mvc设计模式的框架。 MVC设计模式介绍参考文章：MVC架构模式详细说明在未有面对对象设计模式之前，很多开发人员都是把代码糅杂在一块儿，使得后期维护，和二次开发十分困难，于是有了MVC(Models-Views-">
+<meta name="twitter:image" content="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/1.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>基于MVC模式的某CMS后台sql执行[复现] | The clown is laughing at you</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">The clown is laughing at you</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Navigationsleiste an/ausschalten">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Startseite</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archiv</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="cookie">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/name.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="The clown is laughing at you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">基于MVC模式的某CMS后台sql执行[复现]
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Veröffentlicht am</span>
+              
+
+              
+                
+              
+
+              <time title="Erstellt: 2019-07-26 15:44:52 / Geändert am: 17:38:11" itemprop="dateCreated datePublished" datetime="2019-07-26T15:44:52+08:00">2019-07-26</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>ubuntu19<br>mysql + php5.6<br>乐尚商城系统v1.5</p>
+<h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>复现这个漏洞之前，我觉得比较重要的是了解MVC的设计模式，因为这个cms基于brophp开发的，是典型的使用mvc设计模式的框架。</p>
+<h2 id="MVC设计模式介绍"><a href="#MVC设计模式介绍" class="headerlink" title="MVC设计模式介绍"></a>MVC设计模式介绍</h2><p>参考文章：<a href="https://www.cnblogs.com/xiaxiaoshu/p/9073209.html" target="_blank" rel="noopener">MVC架构模式详细说明</a><br>在未有面对对象设计模式之前，很多开发人员都是把代码糅杂在一块儿，使得后期维护，和二次开发十分困难，于是有了MVC(Models-Views-Controller)<br>MVC被独特的发展起来用于映射传统的输入、处理和输出功能在一个逻辑的图形化用户界面的结构中。</p>
+<p>模型（Model）：负责存储系统的中心数据。</p>
+<p>视图（View）：将信息显示给用户（可以定义多个视图）。</p>
+<p>控制器（Controller）：处理用户输入的信息。负责从视图读取数据，控制用户输入，并向模型发送数据，是应用程序中处理用户交互的部分。负责管理与用户交互交互控制。</p>
+<p><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/1.png" alt=""></p>
+<h2 id="漏洞分析"><a href="#漏洞分析" class="headerlink" title="漏洞分析"></a>漏洞分析</h2><h3 id="MVC介绍"><a href="#MVC介绍" class="headerlink" title="MVC介绍"></a>MVC介绍</h3><p>我们可以看到，在admin目录中有如下目录,然后我们可以想到，这个cms的设计模式就是MVC<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/2.png" alt=""><br>分析一下，先打开任意一个文件试一下，定位admin/controls/acate.class.php::add()<br>这是一个控制器，用于处理用户输入的信息，从views获取数据，控制用户输入，并向models发送数据，具体分析一下add()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">$this</span>-&gt;validate();</span><br><span class="line">		$acate=D(<span class="string">"acate"</span>);</span><br><span class="line">		$result=$acate-&gt;add();</span><br><span class="line">		<span class="keyword">if</span>(<span class="keyword">false</span> !== $result)&#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;success(<span class="string">"填加成功!"</span>, <span class="number">1</span>, <span class="string">"acate/index"</span>);</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">$this</span>-&gt;error(<span class="string">"填加失败!"</span>, <span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟进validate()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">validate</span><span class="params">()</span></span>&#123;</span><br><span class="line">			validate::notnull($_POST[<span class="string">'name'</span>],<span class="string">"名称不能为空"</span>);</span><br><span class="line">			validate::notnull($_POST[<span class="string">'sort'</span>],<span class="string">"排序不能为空"</span>);</span><br><span class="line">			validate::number($_POST[<span class="string">'sort'</span>],<span class="string">"排序必须为数字"</span>);</span><br><span class="line">			</span><br><span class="line">			<span class="keyword">if</span>(!validate::$flag)&#123;</span><br><span class="line">				$msg=implode(<span class="string">"&lt;br&gt;"</span>,validate::getMsg());</span><br><span class="line">				<span class="keyword">$this</span>-&gt;error($msg, <span class="number">3</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>从这儿获取信息，通过add()函数，调用D()，跟进<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 创建Models中的数据库操作对象</span></span><br><span class="line"><span class="comment">	 *  <span class="doctag">@param</span>	string	$className	类名或表名</span></span><br><span class="line"><span class="comment">	 *  <span class="doctag">@param</span>	string	$app	 应用名,访问其他应用的Model</span></span><br><span class="line"><span class="comment">	 *  <span class="doctag">@return</span>	object	数据库连接对象</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">D</span><span class="params">($className=null,$app=<span class="string">""</span>)</span></span>&#123;</span><br><span class="line">		$db=<span class="keyword">null</span>;	</span><br><span class="line">		<span class="comment">//如果没有传表名或类名，则直接创建DB对象，但不能对表进行操作</span></span><br><span class="line">		<span class="keyword">if</span>(is_null($className))&#123;</span><br><span class="line">			$class=<span class="string">"D"</span>.DRIVER;</span><br><span class="line"></span><br><span class="line">			$db=<span class="keyword">new</span> $class;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			$className=strtolower($className);</span><br><span class="line">			$model=Structure::model($className, $app);	</span><br><span class="line">			$model=<span class="keyword">new</span> $model();</span><br><span class="line"></span><br><span class="line">			<span class="comment">//如果表结构不存在，则获取表结构</span></span><br><span class="line">			$model-&gt;setTable($className);		</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">			$db=$model;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>($app==<span class="string">""</span>)</span><br><span class="line">			$db-&gt;path=APP_PATH;</span><br><span class="line">		<span class="keyword">else</span></span><br><span class="line">			$db-&gt;path=PROJECT_PATH.strtolower($app).<span class="string">'/'</span>;</span><br><span class="line">		<span class="keyword">return</span> $db;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么可以看到，我们创建的models中的acate类，并调用其add()函数<br>定位./admin/models/acate.class.php::add()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">$this</span>-&gt;insert();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过该方法，对数据库进行处理，这样子也同样地验证了models的作用，负责存储系统的中心数据。</p>
+<h3 id="路由分析"><a href="#路由分析" class="headerlink" title="路由分析"></a>路由分析</h3><p>定位./admin.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * 单一入口文件</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	 <span class="keyword">include</span>(<span class="string">"./temp.inc.php"</span>);</span><br><span class="line">	define(<span class="string">"TPLSTYLE"</span>, <span class="string">"new"</span>);                        <span class="comment">//默认模板存放的目录</span></span><br><span class="line">	define(<span class="string">"BROPHP"</span>, <span class="string">"./brophp"</span>);  <span class="comment">//框架源文件的位置</span></span><br><span class="line">	define(<span class="string">"APP"</span>, <span class="string">"./admin"</span>);           <span class="comment">//设置当前应用的目录</span></span><br><span class="line">	define(<span class="string">"PAGENUM"</span>,$temp[<span class="string">'admin_page_num'</span>]);                                 <span class="comment">//默认每页显示记录数</span></span><br><span class="line">	</span><br><span class="line">	<span class="keyword">require</span>(BROPHP.<span class="string">'/brophp.php'</span>); <span class="comment">//加载框架的入口文件</span></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>跟进brophp.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span>	</span><br><span class="line"><span class="comment">/*********************************************************************************</span></span><br><span class="line"><span class="comment"> * brophp2.0 框架入口文件，所有脚本都是从这个文件开始执行，主要是一些全局设置。  *</span></span><br><span class="line"><span class="comment"> * *******************************************************************************</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line">... ....</span><br><span class="line">这里主要是加载一下配置文件,省略掉了</span><br><span class="line">... ....</span><br><span class="line"></span><br><span class="line">    <span class="comment">//控制器类所在的路径</span></span><br><span class="line">	$srccontrolerfile=APP_PATH.<span class="string">"controls/"</span>.strtolower($_GET[<span class="string">"m"</span>]).<span class="string">".class.php"</span>;</span><br><span class="line">    <span class="comment">//从admin.php处获取我们需要调用的模块 </span></span><br><span class="line"></span><br><span class="line">	Debug::addmsg(<span class="string">"当前访问的控制器类在项目应用目录下的: &lt;b&gt;$srccontrolerfile&lt;/b&gt; 文件！"</span>);</span><br><span class="line">	<span class="comment">//控制器类的创建</span></span><br><span class="line">	<span class="keyword">if</span>(file_exists($srccontrolerfile))&#123;</span><br><span class="line">		Structure::commoncontroler(APP_PATH.<span class="string">"controls/"</span>,$controlerpath);</span><br><span class="line">		Structure::controler($srccontrolerfile, $controlerpath, $_GET[<span class="string">"m"</span>]); </span><br><span class="line"></span><br><span class="line">		$className=ucfirst($_GET[<span class="string">"m"</span>]).<span class="string">"Action"</span>;</span><br><span class="line">		</span><br><span class="line">		$controler=<span class="keyword">new</span> $className();</span><br><span class="line">		$controler-&gt;run();</span><br><span class="line"></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		Debug::addmsg(<span class="string">"&lt;font color='red'&gt;对不起!你访问的模块不存在,应该在"</span>.APP_PATH.<span class="string">"controls目录下创建文件名为"</span>.strtolower($_GET[<span class="string">"m"</span>]).<span class="string">".class.php的文件，声明一个类名为"</span>.ucfirst($_GET[<span class="string">"m"</span>]).<span class="string">"的类！&lt;/font&gt;"</span>);</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure></p>
+<p>跟进run()函数<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * 该方法用来运行框架中的操制器，在brophp.php入口文件中调用</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		<span class="function"><span class="keyword">function</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;left_delimiter!=<span class="string">"&lt;&#123;"</span>)</span><br><span class="line">				<span class="keyword">parent</span>::__construct();	</span><br><span class="line"></span><br><span class="line">			</span><br><span class="line">			<span class="comment">//如果有子类Common，调用这个类的init()方法 做权限控制</span></span><br><span class="line">			<span class="keyword">if</span>(method_exists(<span class="keyword">$this</span>, <span class="string">"init"</span>))&#123;</span><br><span class="line">				call_user_func(<span class="keyword">array</span>(<span class="keyword">$this</span>, <span class="string">"init"</span>));		</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="comment">//根据动作去找对应的方法</span></span><br><span class="line">			$method=$_GET[<span class="string">"a"</span>];</span><br><span class="line">			<span class="keyword">if</span>(method_exists(<span class="keyword">$this</span>, $method))&#123;</span><br><span class="line">				call_user_func(<span class="keyword">array</span>(<span class="keyword">$this</span>, $method));</span><br><span class="line">			&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				Debug::addmsg(<span class="string">"&lt;font color='red'&gt;没有&#123;$_GET["</span>a<span class="string">"]&#125;这个操作！&lt;/font&gt;"</span>);</span><br><span class="line">			&#125;	</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>那么也就是说我们想要调用某控制器的某动作，url如下<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/3.png" alt=""></p>
+<h3 id="漏洞分析-1"><a href="#漏洞分析-1" class="headerlink" title="漏洞分析"></a>漏洞分析</h3><p>定位：./admin/controls/backup.class.php::restore()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">restore</span><span class="params">()</span></span>&#123;</span><br><span class="line">			$bu=D(<span class="string">"Backup"</span>);</span><br><span class="line">			$file=trim($_GET[<span class="string">'file'</span>]);</span><br><span class="line">			$d=$bu-&gt;restore($file);</span><br><span class="line">			<span class="keyword">if</span>($d[<span class="string">'res'</span>])&#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;success(<span class="string">"还原成功!"</span>, <span class="number">2</span>, <span class="string">"backup/index"</span>);</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="keyword">$this</span>-&gt;error(<span class="string">"还原失败!"</span>.$d[<span class="string">'info'</span>], <span class="number">2</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>发现这里的file是用户可控的。</p>
+<p>根据以上的分析的分析，我们这次定位到./admin/models/backup.class.php::restore()<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">restore</span><span class="params">($file)</span></span>&#123;</span><br><span class="line">			$filename=PROJECT_PATH.<span class="string">"backup/"</span>.$file;</span><br><span class="line">			<span class="comment">//获取文件路径</span></span><br><span class="line">			$handle=@fopen($filename,<span class="string">"rb"</span>);</span><br><span class="line">			<span class="comment">//打开文件</span></span><br><span class="line">			$head=@fread($handle,<span class="number">70</span>);</span><br><span class="line">			<span class="comment">//读取文件的前70字节长度的内容</span></span><br><span class="line">			fclose($handle);</span><br><span class="line">			<span class="comment">//关闭文件</span></span><br><span class="line"></span><br><span class="line">			$arr=<span class="keyword">$this</span>-&gt;getSqlInfo($head);</span><br><span class="line">			<span class="comment">//调用getSqlInfo()</span></span><br><span class="line">			--------------------------------------------------------------------</span><br><span class="line">			--------------------------------------------------------------------</span><br><span class="line">		    <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">getSqlInfo</span><span class="params">($head)</span></span>&#123;</span><br><span class="line">			$file_info = <span class="keyword">array</span>(<span class="string">'cms_ver'</span>=&gt;<span class="string">''</span>, <span class="string">'mysql_ver'</span>=&gt; <span class="string">''</span>, <span class="string">'add_time'</span>=&gt;<span class="string">''</span>);</span><br><span class="line">			$head=str_replace(<span class="string">"--"</span>,<span class="string">""</span>,$head);</span><br><span class="line">			$arr = explode(<span class="string">"\n"</span>, $head);</span><br><span class="line">			<span class="keyword">foreach</span>($arr <span class="keyword">as</span> $var)&#123;</span><br><span class="line">				$temp = explode(<span class="string">":"</span>, $var);</span><br><span class="line">				<span class="keyword">switch</span>($temp[<span class="number">0</span>])&#123;</span><br><span class="line">					<span class="keyword">case</span> <span class="string">'Version'</span>:</span><br><span class="line">						$file_info[<span class="string">'cms_ver'</span>]=trim($temp[<span class="number">1</span>]);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">					<span class="keyword">case</span> <span class="string">'Mysql Ver'</span>:</span><br><span class="line">						$file_info[<span class="string">'mysql_ver'</span>]=trim($temp[<span class="number">1</span>]);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">					<span class="keyword">case</span> <span class="string">'Create time'</span>:</span><br><span class="line">						$file_info[<span class="string">'add_time'</span>]=trim($temp[<span class="number">1</span>]);</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> $file_info;</span><br><span class="line">		    &#125;</span><br><span class="line">		    <span class="comment">//获取版本信息，mysql版本信息，创建时间</span></span><br><span class="line">           -------------------------------------</span><br><span class="line">           -------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">			$status=<span class="string">""</span>;</span><br><span class="line">			<span class="keyword">if</span>(strpos($arr[<span class="string">'cms_ver'</span>],<span class="string">"update"</span>))&#123;</span><br><span class="line">				$status=<span class="string">"update"</span>;</span><br><span class="line">			&#125; <span class="keyword">elseif</span>($arr[<span class="string">'cms_ver'</span>]!=VERSION)&#123;</span><br><span class="line">				$data[<span class="string">'info'</span>]=<span class="string">"版本不统一，不能还原!"</span>;</span><br><span class="line">				$data[<span class="string">'res'</span>]=<span class="keyword">false</span>;</span><br><span class="line">				<span class="keyword">return</span> $data;</span><br><span class="line">			&#125;</span><br><span class="line">            <span class="comment">//获取版本信息，这里我们就可以直接--Version:1.5.0,或者--Version:update,就可以绕过这个版本验证</span></span><br><span class="line"></span><br><span class="line">			$sql=<span class="keyword">$this</span>-&gt;removeComments(file_get_contents($filename));</span><br><span class="line">			<span class="comment">//调用removeComments()函数</span></span><br><span class="line">			----------------------------------------------------------</span><br><span class="line">			----------------------------------------------------------</span><br><span class="line">			<span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">removeComments</span><span class="params">($sql)</span></span>&#123;</span><br><span class="line">			<span class="comment">/* 删除SQL行注释，行注释不匹配换行符 */</span></span><br><span class="line">			$sql = preg_replace(<span class="string">'/^\s*(?:--|#).*/m'</span>, <span class="string">''</span>, $sql);</span><br><span class="line">	</span><br><span class="line">			<span class="comment">/* 删除SQL块注释，匹配换行符，且为非贪婪匹配 */</span></span><br><span class="line">			<span class="comment">//$sql = preg_replace('/^\s*\/\*(?:.|\n)*\*\//m', '', $sql);</span></span><br><span class="line">			$sql = preg_replace(<span class="string">'/^\s*\/\*.*?\*\//ms'</span>, <span class="string">''</span>, $sql);</span><br><span class="line">	</span><br><span class="line">			<span class="keyword">return</span> $sql;</span><br><span class="line">   		    &#125;</span><br><span class="line">   		    <span class="comment">//这里主要过滤掉一些符号，关键词并没有被过滤掉</span></span><br><span class="line">   		    ----------------------------------------------------------</span><br><span class="line">   		    ----------------------------------------------------------</span><br><span class="line"></span><br><span class="line">			$sql = trim($sql);</span><br><span class="line">			$sql = str_replace(<span class="string">"\r"</span>, <span class="string">''</span>, $sql);</span><br><span class="line">       		$segmentSql = explode(<span class="string">";\n"</span>, $sql);</span><br><span class="line">			<span class="keyword">foreach</span>($segmentSql <span class="keyword">as</span> $var)&#123;</span><br><span class="line">				<span class="keyword">if</span>($var!=<span class="string">''</span>)&#123;</span><br><span class="line">					<span class="keyword">if</span>($status==<span class="string">"update"</span>)&#123;</span><br><span class="line">						$var = str_replace(<span class="string">'update_'</span>,TABPREFIX, $var);</span><br><span class="line">					&#125;</span><br><span class="line"></span><br><span class="line">					$result=<span class="keyword">$this</span>-&gt;query(trim($var));</span><br><span class="line">				&#125;</span><br><span class="line">				<span class="keyword">if</span>(!$result)&#123;</span><br><span class="line">					$data[<span class="string">'info'</span>]=$var;</span><br><span class="line">					$data[<span class="string">'res'</span>]=<span class="keyword">false</span>;</span><br><span class="line">					<span class="keyword">return</span> $data;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里并没有严格的过滤，file可以使用目录穿越，我们想个法子写入一个数据库文件，然后通过目录穿越漏洞，然后代码读取其中的内容，并代入数据库进行处理。</p>
+<h3 id="POC"><a href="#POC" class="headerlink" title="POC"></a>POC</h3><p>写一个文件，并改成jpg<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/8.png" alt=""></p>
+<p>然后在用户修改信息处上传<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/5.png" alt=""></p>
+<p>然后查看源码，查看文件位置<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/6.png" alt=""></p>
+<p>上传成功<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/7.png" alt=""></p>
+<p>查看数据库验证一下，成功<br><img src="/2019/07/26/基于MVC模式的某CMS后台sql执行-复现/hongcms3-0-0后台代码执行-sql注入/9.png" alt=""></p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/25/hongcms3-0-0后台代码执行-sql注入/" rel="next" title="hongcms3.0.0后台代码执行+sql注入">
+                <i class="fa fa-chevron-left"></i> hongcms3.0.0后台代码执行+sql注入
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Inhaltsverzeichnis
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Übersicht
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+  
+    <img class="site-author-image" itemprop="image" src="/images/name.png" alt="cookie">
+  
+  <p class="site-author-name" itemprop="name">cookie</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">72</span>
+          <span class="site-state-item-name">Artikel</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#写在前面"><span class="nav-number">1.1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVC设计模式介绍"><span class="nav-number">1.2.</span> <span class="nav-text">MVC设计模式介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#漏洞分析"><span class="nav-number">1.3.</span> <span class="nav-text">漏洞分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC介绍"><span class="nav-number">1.3.1.</span> <span class="nav-text">MVC介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#路由分析"><span class="nav-number">1.3.2.</span> <span class="nav-text">路由分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#漏洞分析-1"><span class="nav-number">1.3.3.</span> <span class="nav-text">漏洞分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#POC"><span class="nav-number">1.3.4.</span> <span class="nav-text">POC</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cookie</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Erstellt mit  <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Design – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginModelPath":"assets/","model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"right","width":150,"height":300},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
